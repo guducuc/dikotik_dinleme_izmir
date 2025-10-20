@@ -1,0 +1,6 @@
+{
+  "public": true,
+  "routes": [
+    { "src": "/sounds/(.*)", "dest": "/sounds/$1" }
+  ]
+}
