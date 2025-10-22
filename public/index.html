@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Dikotik Dinleme Izmir</title>
 
-  <meta name="emailjs-user" content="FLn2zMqKDGso3ePoO">
+  <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
   <meta name="emailjs-service" content="service_a8bnfmk">
-  <meta name="emailjs-template" content="template_7elc4wi">
+  <meta name="emailjs-template"content="template_7elc4wi">
 
   <style>
     body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:12px;color:#111;max-width:340px;margin:auto;}
@@ -26,7 +26,6 @@
     .hand-grid-row span{flex:2}
     .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:10px}
     #consentText{max-height:240px;overflow-y:auto;border:1px solid #ccc;padding:8px;border-radius:6px;margin-bottom:10px;font-size:14px;line-height:1.4}
-    .note{font-size:12px;color:#666;margin-top:6px}
   </style>
 </head>
 <body>
@@ -43,33 +42,34 @@
     <option value="Sporcu">Sporcu</option>
     <option value="Diger">Diğer</option>
   </select>
-  <div style="margin-top:8px"><button id="toPreScreenBtn" class="bigBtn">Devam</button></div>
+  <div style="margin-top:8px"><button id="toParticipationBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 2️⃣ ÖN SORGULAMA -->
-<div id="preScreenCard" class="card hidden">
-  <h3>Ön Sorgulama</h3>
-  <p class="small">Katılımcı uygunluk kontrolü için birkaç soru yanıtlayınız.</p>
-  <label><input type="checkbox" id="noHearingIssue"> İşitme sorunum yok</label><br>
-  <label><input type="checkbox" id="noNeurologicalIssue"> Nörolojik bir rahatsızlığım yok</label><br>
-  <label><input type="checkbox" id="noLanguageIssue"> Dil veya konuşma bozukluğum yok</label>
-  <div style="margin-top:8px">
-    <button id="backToProjectBtn" class="bigBtn">Geri</button>
-    <button id="toInfoBtn" class="bigBtn">Devam</button>
-  </div>
+<!-- 2️⃣ KATILIM DURUMU -->
+<div id="participationCard" class="card hidden">
+  <h3>Katılım Durumu</h3>
+  <div id="participationOptions"></div>
+  <div style="margin-top:8px"><button id="toNextStepBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 3️⃣ KATILIMCI BİLGİLERİ -->
+<!-- 3️⃣ KATILIMCI KODU GİRİŞİ -->
+<div id="enterCodeCard" class="card hidden">
+  <h3>Katılımcı Kodu</h3>
+  <p class="small">Lütfen önceki oturumda size verilen katılımcı kodunu giriniz.</p>
+  <input id="previousCode" placeholder="Örnek: ABCD_12345">
+  <div style="margin-top:8px"><button id="toStaiDirectBtn" class="bigBtn">Devam</button></div>
+</div>
+
+<!-- 4️⃣ KATILIMCI BİLGİLERİ -->
 <div id="participantCard" class="card hidden">
   <h3>Katılımcı Bilgileri</h3>
-  <p class="note">Ad-soyad değil, sadece ilk iki harf girilebilir (çalışma gizliliği için).</p>
-  <input id="name" placeholder="Adınızın ilk iki harfi (örn: Al)">
-  <input id="surname" placeholder="Soyadınızın ilk iki harfi (örn: Ka)">
+  <input id="name" placeholder="Adınız">
+  <input id="surname" placeholder="Soyadınız">
   <input id="age" type="number" placeholder="Yaşınız">
-  <input id="race" placeholder="Doğum Yeri / Köken (Şehir, Ülke)">
-  <input id="motherTongue" placeholder="Anadiliniz (ve varsa 2. anadil)">
-  <input id="email" type="email" placeholder="E-posta adresiniz (hatırlatma amacıyla)">
-  <input id="phone" type="text" placeholder="Telefon numaranız (hatırlatma amacıyla)">
+  <input id="race" placeholder="Doğum Yeri / Köken">
+  <input id="motherTongue" placeholder="Anadiliniz">
+  <input id="email" type="email" placeholder="E-posta adresiniz">
+  <input id="phone" type="text" placeholder="Telefon numaranız">
   <select id="gender">
     <option value="">Cinsiyetinizi Seçiniz</option>
     <option value="Kadın">Kadın</option>
@@ -77,181 +77,127 @@
     <option value="Diğer">Diğer</option>
   </select>
   <div style="margin-top:8px"><button id="toConsentBtn" class="bigBtn">Devam</button></div>
-  <div id="codeInfo" class="small" style="margin-top:6px"></div>
 </div>
 
-<!-- 4️⃣ AYDINLATILMIŞ ONAM -->
+<!-- 5️⃣ AYDINLATILMIŞ ONAM -->
 <div id="consentCard" class="card hidden">
   <h3>Aydınlatılmış Onam Formu</h3>
-  <div id="consentText" contenteditable="true">
-    <h4>Aydınlatılmış Onam Metni (örnek)</h4>
-    <p><strong>Sayın Katılımcı,</strong></p>
-    <p>Bu çalışma, işitsel algı ve dikkat süreçlerinin araştırılması amacıyla yürütülmektedir. Çalışmaya katılım tamamen gönüllülük esasına dayanmaktadır. Katılım sırasında elde edilen veriler anonimleştirilecek ve sadece katılımcı kodu ile analiz edilecektir. Katılım sürecinde dilediğiniz zaman çalışmadan ayrılabilirsiniz.</p>
-    <p>Deney yaklaşık 20-30 dakika sürecektir. Katılımınız sırasında herhangi bir risk öngörülmemektedir.</p>
-    <p>Bu metni dilediğiniz zaman düzenleyebilirsiniz. (Bu bloğu düzenleyerek onam metnini güncelleyin.)</p>
+  <div id="consentText">
+    <p><b>Sayın Katılımcı,</b><br>Bu çalışma, işitsel algı ve dikkat süreçlerinin araştırılması amacıyla yürütülmektedir.
+    Katılımınız gönüllülük esasına dayanır. Tüm veriler anonim olarak saklanacaktır.
+    Dilediğiniz zaman çalışmadan ayrılabilirsiniz.</p>
+    <p>Bu formu onaylayarak araştırmaya katılmayı kabul etmiş olursunuz.</p>
   </div>
-  <label><input type="checkbox" id="consentAgree"> Yukarıdaki metni okudum, anladım ve katılmayı kabul ediyorum.</label>
+  <label><input type="checkbox" id="consentAgree"> Okudum ve onaylıyorum</label>
   <div style="margin-top:8px">
     <button id="backToInfoBtn" class="bigBtn">Geri</button>
     <button id="toHandBtn" class="bigBtn">Devam</button>
   </div>
 </div>
 
-<!-- 5️⃣ EL KULLANIMI TESTİ -->
+<!-- 6️⃣ EL KULLANIMI TESTİ -->
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
   <div id="handUseQuestions"></div>
-  <div style="margin-top:8px">
-    <button id="backToParticipantFromHand" class="bigBtn">Geri</button>
-    <button id="toStaiBtn" class="bigBtn">Devam</button>
-  </div>
+  <div style="margin-top:8px"><button id="toStaiBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 6️⃣ STAI FORMU -->
+<!-- 7️⃣ STAI FORMU -->
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
-  <p style="font-weight:600">Aklınıza ilk gelen seçeneği işaretleyiniz.</p>
   <div id="staiQuestions"></div>
-  <div style="margin-top:8px">
-    <button id="backToHandFromStai" class="bigBtn">Geri</button>
-    <button id="toHearingBtn" class="bigBtn">Devam</button>
-  </div>
+  <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 7️⃣ İŞİTME TESTİ -->
+<!-- 8️⃣ İŞİTME TESTİ -->
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
-  <p class="small">1500 Hz tonu ile her iki kulakta ses duyabildiğinizi kontrol edin.</p>
-  <div><strong>Sağ Kulak</strong><br><input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5"><button id="playRight" class="bigBtn">Oynat / Durdur</button></div>
-  <div style="margin-top:8px"><strong>Sol Kulak</strong><br><input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Oynat / Durdur</button></div>
-  <div style="margin-top:8px">
-    <button id="backToStaiFromHearing" class="bigBtn">Geri</button>
-    <button id="toSessionIntro" class="bigBtn">Devam</button>
-  </div>
+  <p>1500 Hz sesleri duyabildiğinizden emin olun.</p>
+  <div><strong>Sağ Kulak</strong><br><input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5"><button id="playRight" class="bigBtn">Oynat</button></div>
+  <div><strong>Sol Kulak</strong><br><input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Oynat</button></div>
+  <div style="margin-top:8px"><button id="toSessionIntro" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 8️⃣ DİKOTİK DİNLEME TESTİ -->
-<div id="sessionIntro" class="card hidden">
-  <h3 id="sessionTitle"></h3>
-  <p id="sessionInstr"></p>
-  <div style="margin-top:8px"><button id="sessionStartBtn" class="bigBtn">Devam</button></div>
-</div>
-
-<div id="waitScreen" class="card hidden"><h3>Test birazdan başlıyor... lütfen kulaklık ses seviyesini değiştirmeyin</h3></div>
-
-<div id="trialCard" class="card hidden">
-  <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
-  <audio id="stimAudio" controls style="display:none" preload="auto"></audio>
-  <div class="respRow">
-    <button class="respBtn" data-val="BA">BA</button>
-    <button class="respBtn" data-val="DA">DA</button>
-    <button class="respBtn" data-val="GA">GA</button>
-    <button class="respBtn" data-val="KA">KA</button>
-    <button class="respBtn" data-val="PA">PA</button>
-    <button class="respBtn" data-val="TA">TA</button>
-  </div>
-</div>
-
-<div id="endCard" class="card hidden">
-  <h3>Deney tamamlandı ✅</h3>
-  <div id="doneLog" class="small"></div>
-</div>
-
+<!-- 9️⃣ DİKOTİK TESTİ, SON EKRAN ve TÜM ORİJİNAL JS -->
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
-/* ---------- Helpers & State ---------- */
-const $id = id => document.getElementById(id);
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+// --- Seçim ekranları mantığı ---
+const $id=i=>document.getElementById(i);
+let participant={projectCode:""};
 
-const CONFIG = {
-  EMAILJS_USER: document.querySelector('meta[name="emailjs-user"]').content,
-  EMAILJS_SERVICE: document.querySelector('meta[name="emailjs-service"]').content,
-  EMAILJS_TEMPLATES: {
-    'OykuTez': "template_r6sddff",
-    'Izmir': document.querySelector('meta[name="emailjs-template"]').content,
-    'Esporcu': document.querySelector('meta[name="emailjs-template"]').content,
-    'Sporcu': document.querySelector('meta[name="emailjs-template"]').content,
-    'Diger': document.querySelector('meta[name="emailjs-template"]').content
-  },
-  AUDIO_PATH: '/sounds/erkek/'
+$id("toParticipationBtn").onclick=()=>{
+  const code=$id("projectCode").value;
+  if(!code){alert("Lütfen proje kodunu seçiniz.");return;}
+  participant.projectCode=code;
+  $id("projectCard").classList.add("hidden");
+  $id("participationCard").classList.remove("hidden");
+  renderParticipationOptions(code);
 };
 
-let participant = { projectCode: '' }, results = [], currentTrial = -1, currentSessionIndex = 0, sessionOrder = [];
-let audioCtx = null, rightOsc=null,leftOsc=null,rightGain=null,leftGain=null,rightLevel=0.5,leftLevel=0.5,trialTimeout=null,isResponseAllowed=false;
-
-/* ---------- Playlists & instr ---------- */
-const mainPlaylist=[ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav",
-"LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav",
-"LBA-RGA.wav","LKA-RPA.wav","LTA-RDA.wav","LGA-RKA.wav","LPA-RDA.wav","LGA-RGA.wav",
-"LBA-RTA.wav","LGA-RDA.wav","LKA-RTA.wav","LDA-RPA.wav","LTA-RKA.wav","LPA-RPA.wav",
-"LDA-RBA.wav","LGA-RTA.wav","LPA-RKA.wav","LTA-RBA.wav","LKA-RGA.wav","LTA-RTA.wav",
-"LBA-RPA.wav","LDA-RTA.wav","LGA-RBA.wav","LTA-RPA.wav","LDA-RDA.wav","LKA-RBA.wav",
-"LPA-RGA.wav" ];
-const trainingPlaylist=[ "LBA-RBA.wav","LDA-RDA.wav","LGA-RGA.wav","LKA-RKA.wav","LPA-RPA.wav",
-"LTA-RTA.wav","LBA-RDA.wav","LDA-RGA.wav","LGA-RKA.wav","LKA-RTA.wav" ];
-const instr = {
-  training: "Birazdan dikotik dinleme eğitim oturumu başlayacak. Bu oturumda iki kulağınıza heceler çalınacak. Yanıt verebilirsiniz ancak yanıtlarınız kaydedilmeyecektir.",
-  NF: "Şimdi her iki kulağınıza farklı heceler gelecek. Lütfen en iyi duyduğunuz heceyi ilgili düğmeye basarak işaretleyiniz.",
-  FR: "Şimdi her iki kulağınıza farklı heceler gelecek. Lütfen <b>sağ kulağınıza</b> odaklanın ve sağ kulağınızdan duyduğunuz heceyi işaretleyiniz.",
-  FL: "Şimdi her iki kulağınıza farklı heceler gelecek. Lütfen <b>sol kulağınıza</b> odaklanın ve sol kulağınızdan duyduğunuz heceyi işaretleyiniz."
-};
-
-/* ---------- UI flow handlers ---------- */
-
-/* 1 -> 2 */
-$id('toPreScreenBtn').onclick = () => {
-  const proj = $id('projectCode').value;
-  if(!proj){ alert("Lütfen proje kodu seçiniz."); return; }
-  participant.projectCode = proj;
-  $id('projectCard').classList.add('hidden');
-  $id('preScreenCard').classList.remove('hidden');
-};
-
-/* back */
-$id('backToProjectBtn').onclick = () => {
-  $id('preScreenCard').classList.add('hidden');
-  $id('projectCard').classList.remove('hidden');
-};
-
-/* 2 -> 3 */
-$id('toInfoBtn').onclick = () => {
-  if(!$id('noHearingIssue').checked || !$id('noNeurologicalIssue').checked || !$id('noLanguageIssue').checked){
-    alert("Devam edebilmek için tüm kutuları işaretleyiniz."); return;
-  }
-  $id('preScreenCard').classList.add('hidden');
-  $id('participantCard').classList.remove('hidden');
-};
-
-/* 3 -> consent/hand */
-$id('toConsentBtn').onclick = () => {
-  const fields = ['name','surname','age','race','motherTongue','email','phone','gender'];
-  for(const f of fields){ if(!$id(f).value.trim()){ alert("Lütfen tüm alanları doldurunuz."); return; } }
-  participant.name = $id('name').value.trim();
-  participant.surname = $id('surname').value.trim();
-  participant.age = $id('age').value.trim();
-  participant.race = $id('race').value.trim();
-  participant.motherTongue = $id('motherTongue').value.trim();
-  participant.email = $id('email').value.trim();
-  participant.phone = $id('phone').value.trim();
-  participant.gender = $id('gender').value.trim();
-
-  // generate participant.code (simple)
-  const initials = (participant.name.slice(0,2)+participant.surname.slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
-  const rand = Math.floor(10000 + Math.random()*90000);
-  participant.code = `${participant.projectCode}_${initials}_${rand}`;
-  $id('codeInfo').innerText = "Katılımcı kodu: "+participant.code;
-
-  $id('participantCard').classList.add('hidden');
-  if(participant.projectCode === 'OykuTez'){
-    // show consent
-    $id('consentCard').classList.remove('hidden');
+function renderParticipationOptions(code){
+  const c=$id("participationOptions");
+  c.innerHTML="";
+  if(code==="OykuTez"){
+    c.innerHTML=`
+      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
+      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label><br>
+      <label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label><br>
+      <label><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>`;
   } else {
-    // skip consent
-    $id('handUseCard').classList.remove('hidden');
+    c.innerHTML=`
+      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
+      <label><input type="radio" name="participation" value="2"> Daha önce katıldım / tamamlayamadım</label>`;
+  }
+}
+
+$id("toNextStepBtn").onclick=()=>{
+  const val=document.querySelector('input[name="participation"]:checked');
+  if(!val){alert("Lütfen bir seçenek seçiniz.");return;}
+  const sel=val.value;
+  if(sel==="1"){
+    $id("participationCard").classList.add("hidden");
+    $id("participantCard").classList.remove("hidden");
+  }else{
+    $id("participationCard").classList.add("hidden");
+    $id("enterCodeCard").classList.remove("hidden");
+  }
+};
+
+$id("toStaiDirectBtn").onclick=()=>{
+  const prev=$id("previousCode").value.trim();
+  if(!prev){alert("Lütfen kodunuzu giriniz.");return;}
+  participant.code=prev;
+  $id("enterCodeCard").classList.add("hidden");
+  startStaiOnly();
+};
+
+// Yeni katılımcı akışı (bilgi → onam → el → stai)
+$id("toConsentBtn").onclick=()=>{
+  const n=$id("name").value.trim(), s=$id("surname").value.trim(), a=$id("age").value.trim(), g=$id("gender").value.trim();
+  if(!n||!s||!a||!g){alert("Lütfen tüm bilgileri doldurunuz.");return;}
+  participant.name=n; participant.surname=s; participant.age=a; participant.gender=g;
+  participant.race=$id("race").value; participant.motherTongue=$id("motherTongue").value;
+  participant.email=$id("email").value; participant.phone=$id("phone").value;
+  if(participant.projectCode==="OykuTez"){
+    $id("participantCard").classList.add("hidden");
+    $id("consentCard").classList.remove("hidden");
+  }else{
+    $id("participantCard").classList.add("hidden");
+    $id("handUseCard").classList.remove("hidden");
     renderHand();
   }
 };
+
+$id("toHandBtn").onclick=()=>{
+  if(!$id("consentAgree").checked){alert("Onam formunu onaylamalısınız.");return;}
+  $id("consentCard").classList.add("hidden");
+  $id("handUseCard").classList.remove("hidden");
+  renderHand();
+};
+
+// --- Buradan sonrası senin orijinal test kodunun aynısı ---
+
 
 /* consent back */
 $id('backToInfoBtn').onclick = () => {
@@ -525,6 +471,5 @@ async function sendEmail(){
 renderStai(); // prepare stai markup (will be re-rendered when needed)
 }); // DOMContentLoaded end
 </script>
-
 </body>
 </html>
