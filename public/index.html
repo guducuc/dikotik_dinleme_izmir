@@ -113,6 +113,8 @@
     <div><input id="motherTongue" placeholder="Anadilinizi giriniz, varsa ikinci anadilinizi de girebilirsiniz"></div>
     <label for="email">E-posta Adresiniz (Sadece hatırlatma amaçlıdır):</label>
     <input type="email" id="email" placeholder="ornek@mail.com">
+    <label for="phone">Telefon Numaranız (Sadece hatırlatma amaçlıdır):</label>
+    <input type="tel" id="phone" placeholder="5xx xxx xx xx">
     <div>
         <select id="gender">
             <option value="">Cinsiyetinizi seçiniz</option>
@@ -351,6 +353,7 @@ $id('toPreScreenBtn').onclick=()=>{
     $id('prevCodeInput').classList.add('hidden');
   // YENİ: OykuTez projesi ise e-posta alanını göster/gizle
     $id('email').parentNode.style.display = isOykuTez ? 'block' : 'none'; // E-posta input'unun parent'ını göster/gizle
+    $id('phone').parentNode.style.display = isOykuTez ? 'block' : 'none';
 }; // Fonksiyon sonu
 
   // Ön Sorgulama Geri Butonu (GÜNCEL)
@@ -502,24 +505,26 @@ $id('rejectConsentBtn').onclick = () => {
     // Reddedildiğinde sadece Reddetme Mesajı kartını göster ve akışı bitir.
     $id('rejectionCard').classList.remove('hidden'); 
 };
-// 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (GÜNCEL)
+// 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (SON GÜNCEL)
 $id('toHandednessBtnNew').onclick=()=>{
     // Yalnızca 'full' akışındakiler bu ekranı görmelidir.
     if (currentFlow !== 'full') return; 
 
     const n=$id('name').value.trim(), s=$id('surname').value.trim(), a=$id('age').value.trim(), g=$id('gender').value.trim(), r=$id('race').value.trim(), m=$id('motherTongue').value.trim();
-    const e = $id('email').value.trim(); // YENİ: E-posta adresini al
+    const e = $id('email').value.trim();
+    const p = $id('phone').value.trim(); // YENİ: Telefon numarasını al
 
     // Zorunlu alan kontrolü
     if (!n || !s || !a || !r || !m || !g) { alert("Lütfen tüm zorunlu katılımcı bilgilerini doldurunuz."); return; }
     
-    // YENİ KONTROL: OykuTez ise e-posta zorunlu
-    if (participant.projectCode === 'OykuTez' && !e) {
-        alert("Lütfen hatırlatma e-postası için e-posta adresinizi giriniz."); return;
+    // YENİ KONTROL: OykuTez ise e-posta VEYA telefon zorunlu
+    if (participant.projectCode === 'OykuTez' && (!e && !p)) {
+        alert("Lütfen hatırlatma amacıyla e-posta VEYA telefon numaranızı giriniz."); 
+        return;
     }
 
     // Yeni bilgileri kaydet
-    Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, email:e, name:n, surname:s}); // YENİ: E-postayı kaydet
+    Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, email:e, phone:p, name:n, surname:s}); // YENİ: Telefonu kaydet
     
     // Yeni kod oluştur (sadece 'full' akışında)
     generateParticipantCode(n, s, a, g, r, m, participant.projectCode);
@@ -708,7 +713,8 @@ function makeCsv(){
             gender: participant.gender || "",
             race: participant.race || "",
             motherTongue: participant.motherTongue || "",
-            email: participant.email || "", // YENİ: E-posta alanını ekle  
+            email: participant.email || "", 
+            phone: participant.phone || "",
             projectCode: participant.projectCode || "", 
             prevCode: participant.prevCode || "", // Yeni
             staiAnswers: JSON.stringify(participant.staiAnswers || {}),
