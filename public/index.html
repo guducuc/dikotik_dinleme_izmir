@@ -47,8 +47,21 @@
   </style>
 </head>
 <body>
-  <h1>Dikotik Dinleme Izmir</h1>
-
+  <h1>Dikotik Dinleme İzmir</h1>
+<div id="consentCard" class="card hidden">
+    <h3>Aydınlatılmış Onam Formu</h3>
+    <div id="consentTextContainer" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; text-align: left; background-color: #f9f9f9; border-radius: 4px;">
+        <p>Lütfen bekleyiniz, onam metni yükleniyor...</p>
+    </div>
+    <div style="margin-top:10px; display: flex; justify-content: space-between;">
+        <button id="rejectConsentBtn" class="bigBtn" style="background-color: #f44336; color: white;">Kabul Etmiyorum</button>
+        <button id="acceptConsentBtn" class="bigBtn" style="background-color: #4CAF50; color: white;">Okudum, Anladım, Onaylıyorum</button>
+    </div>
+</div>
+  <div id="rejectionCard" class="card hidden">
+    <h3>Katılım Reddedildi</h3>
+    <p>Aydınlatılmış Onam Formunu onaylamadığınız için çalışmamıza katılmayı kabul etmediniz. Fikrinizi değiştirmeniz durumunda size verilen linke tekrar tıklayarak ve onay vererek çalışmamıza katılabilirsiniz. Desteğiniz için teşekkür ederiz.</p>
+</div>
   <div id="participantCard" class="card">
     <h3>Lütfen Proje Kodunuzu Seçiniz</h3>
     <div>
@@ -192,7 +205,32 @@ let participant={projectCode: ''}, results=[], currentTrial=-1, sessionOrder=[],
 let rightLevel=0.5,leftLevel=0.5,trialTimeout=null,isResponseAllowed=false;
 let currentFlow = ''; // 'full' (tam test), 'dichotic_only' (sadece dikotik)
 let removedOptions = [];
-  
+const CONSENT_TEXTS = {
+    // Proje koduna göre metinler (Lütfen içeriği güncelleyiniz)
+    "OykuTez": `
+        <h4>Yüksek Lisans Tez Projesi Aydınlatılmış Onam Metni</h4>
+        <p>Merhaba, bu çalışma Ege Üniversitesi'nde yürütülen bir yüksek lisans tez çalışmasıdır. Katılımınız tamamen gönüllülük esasına dayanmaktadır.</p>
+        <p>Çalışma yaklaşık 20 dakika sürecektir. Çalışma sırasında kişisel bilgileriniz gizli tutulacak ve sadece katılımcı kodu üzerinden analiz edilecektir. Çalışmanın herhangi bir aşamasında dilediğiniz zaman, herhangi bir sebep göstermeksizin ayrılma hakkına sahipsiniz.</p>
+        <p>Lütfen testlere başlamadan önce kulaklığınızın takılı olduğundan ve ses seviyesinin rahatınız için uygun olduğundan emin olunuz.</p>
+    `,
+    "OtherProjectCode": `
+        <h4>Diğer Projeler İçin Onay Metni</h4>
+        <p>Bu projeye katılımınızın gönüllü olduğunu, dilediğiniz zaman ayrılma hakkınızın saklı olduğunu ve verilerinizin gizli tutulacağını onaylıyor musunuz?</p>
+    `,
+    // Diğer proje kodları buraya eklenebilir.
+    "default": `
+        <h4>Genel Onay Metni</h4>
+        <p>Seçilen proje koduna özel bir metin bulunmamaktadır. Çalışmanın gönüllülük esasına dayandığını ve verilerinizin gizli tutulacağını onaylıyor musunuz?</p>
+    `
+};
+
+// Onay Metni yükleyici fonksiyonu
+function loadConsentText(projectCode) {
+    const textContainer = $id('consentTextContainer');
+    // Proje koduna özel metin yoksa 'default' metni kullanılır.
+    const text = CONSENT_TEXTS[projectCode] || CONSENT_TEXTS.default; 
+    textContainer.innerHTML = text;
+}  
 /* --- Playlist --- */
 const mainPlaylist=[ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav",
 "LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav",
@@ -275,25 +313,30 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
 
 /* --- Navigasyon ve Akış Yönetimi --- */
 
-// 1. Proje Kodu seçimi sonrası -> Ön Sorgulama Ekranı (GÜNCEL)
+  // 1. Proje Kodu seçimi sonrası -> AYDINLATILMIŞ ONAM EKRANINA GEÇ (GÜNCEL)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     $id('participantCard').classList.add('hidden');
-    $id('preScreenCard').classList.remove('hidden');
+    
+    // Yeni Akış: Önce Aydınlatılmış Onam Ekranına Geç
+    $id('consentCard').classList.remove('hidden');
 
+    // Onay Metnini Yükle
+    loadConsentText(participant.projectCode); 
+
+    // OYKUTEZ kısıtlamasını da burada kontrol edip options'ı yönetelim
     const selectElement = $id('hasParticipated');
     const isOykuTez = participant.projectCode === 'OykuTez';
     
-    // Önceki çağrıda kaldırılan seçenekleri geri ekle (Geri butonu ile gelindiyse)
+    // Önceki çağrıda kaldırılan seçenekleri geri ekle
     while (removedOptions.length > 0) {
         selectElement.appendChild(removedOptions.shift());
     }
 
-    // YENİ KISITLAMA MANTIĞI: OykuTez değilse, seçenekleri kaldır
+    // OykuTez değilse, 3. ve 4. seçenekleri kaldır
     if (!isOykuTez) {
         const oykutezOptions = selectElement.querySelectorAll('.oykutez-only');
         oykutezOptions.forEach(option => {
-            // Seçenek listedeyse, kaldır ve removedOptions dizisine sakla
             if (option.parentNode === selectElement) {
                 removedOptions.push(option);
                 selectElement.removeChild(option);
@@ -303,11 +346,10 @@ $id('toPreScreenBtn').onclick=()=>{
 
     // Ekran açılırken seçimi sıfırla
     selectElement.value = '';
-    
-    // Sadece OykuTez akışında göründüğü için burada göstergeyi de kontrol edelim
     $id('prevCodeInput').classList.add('hidden');
 };
-// Ön Sorgulama Geri Butonu (GÜNCEL)
+
+  // Ön Sorgulama Geri Butonu (GÜNCEL)
 $id('backToProjectCodeBtn').onclick=()=>{
     const selectElement = $id('hasParticipated');
     // Kaldırılan seçenekleri geri ekle (Gelecek seçim için hazırla)
@@ -443,7 +485,19 @@ $id('backToHandBtn').onclick = () => {
         $id('preScreenCard').classList.remove('hidden');
     }
 };
+// Onaylama Butonu
+$id('acceptConsentBtn').onclick = () => {
+    $id('consentCard').classList.add('hidden');
+    // Onaylandıktan sonra eski akışa (Ön Sorgulama) devam et.
+    $id('preScreenCard').classList.remove('hidden'); 
+};
 
+// Reddetme Butonu
+$id('rejectConsentBtn').onclick = () => {
+    $id('consentCard').classList.add('hidden');
+    // Reddedildiğinde sadece Reddetme Mesajı kartını göster ve akışı bitir.
+    $id('rejectionCard').classList.remove('hidden'); 
+};
 // 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (GÜNCELLENDİ)
 $id('toHandednessBtnNew').onclick=()=>{
     // Yalnızca 'full' akışındakiler bu ekranı görmelidir.
