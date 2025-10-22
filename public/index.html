@@ -471,8 +471,7 @@ $id('toHandednessBtn').onclick=()=>{
     $id('staiTxiCard').classList.add('hidden');
     $id('hearingCard').classList.remove('hidden'); // İşitme Kontrolü'ne geçiş
 };
-
-// 4. El Kullanımı sonrası -> STAI'dan önce devam/çıkış sorgusu (YENİ YARI DA BIRAKMA NOKTASI)
+// 4. El Kullanımı sonrası -> STAI'dan önce devam/çıkış sorgusu (YENİ YARI DA BIRAKMA NOKTASI - GÜNCEL)
 $id('toHearingBtn').onclick=()=>{ 
     let ok=true;const groups=document.querySelectorAll('#handUseQuestions .hand-grid-row');
     for(const g of groups){const c=g.querySelectorAll('input:checked').length;if(c!==2){ok=false;alert("Her işlem için tam olarak 2 kutucuk işaretleyiniz.");break;}}
@@ -495,12 +494,14 @@ $id('toHearingBtn').onclick=()=>{
         else if (participant.code.endsWith("_2nd_CONT")) participant.code = participant.code.replace("_2nd_CONT", "_2nd_HALF");
         else if (currentFlow === 'full') participant.code += "_1st_HALF"; // İlk kez katılıp burada bıraktı
 
+        // BURADAN İTİBAREN YENİ KOD: Yarıda bırakılan veriyi kaydet ve mail gönder
+        sendEmail();
+
         alert("Lütfen katılımcı kodunuzu (" + participant.code + ") kaydettiğinizden emin olunuz. Bu kodu kullanarak daha sonra devam edebilirsiniz.");
         $id('endCard').classList.remove('hidden');
         $id('doneLog').innerText = "Deney yarıda bırakıldı. Lütfen bu kodu kaydedin: " + participant.code;
     }
 };
-
 
 // 5. İşitme Testi sonrası -> Oturum Girişi (KESİNTİSİZ DEVAM)
 $id('toSessionIntro').onclick=()=>{
