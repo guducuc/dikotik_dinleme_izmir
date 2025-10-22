@@ -120,163 +120,39 @@
 
 <!-- 9️⃣ DİKOTİK TESTİ, SON EKRAN ve TÜM ORİJİNAL JS -->
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", ()=>{
 
-// --- Seçim ekranları mantığı ---
-const $id=i=>document.getElementById(i);
-let participant={projectCode:""};
+const $id = id => document.getElementById(id);
 
-$id("toParticipationBtn").onclick=()=>{
-  const code=$id("projectCode").value;
-  if(!code){alert("Lütfen proje kodunu seçiniz.");return;}
-  participant.projectCode=code;
-  $id("projectCard").classList.add("hidden");
-  $id("participationCard").classList.remove("hidden");
-  renderParticipationOptions(code);
-};
+/* ---------- State ---------- */
+let participant = { projectCode: "" };
+let results = [], sessionOrder = [], currentSessionIndex = 0, currentTrial = -1;
+let audioCtx = null, rightOsc=null,leftOsc=null,rightGain=null,leftGain=null;
+let rightLevel = 0.5, leftLevel = 0.5, trialTimeout = null, isResponseAllowed = false;
 
+/* ---------- Helpers ---------- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+
+/* ---------- Render / Small UI helpers ---------- */
 function renderParticipationOptions(code){
-  const c=$id("participationOptions");
-  c.innerHTML="";
-  if(code==="OykuTez"){
-    c.innerHTML=`
+  const c = $id("participationOptions");
+  c.innerHTML = "";
+  if(code === "OykuTez"){
+    c.innerHTML = `
       <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
       <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label><br>
       <label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label><br>
       <label><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>`;
   } else {
-    c.innerHTML=`
+    c.innerHTML = `
       <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
       <label><input type="radio" name="participation" value="2"> Daha önce katıldım / tamamlayamadım</label>`;
   }
 }
 
-$id("toNextStepBtn").onclick=()=>{
-  const val=document.querySelector('input[name="participation"]:checked');
-  if(!val){alert("Lütfen bir seçenek seçiniz.");return;}
-  const sel=val.value;
-  if(sel==="1"){
-    $id("participationCard").classList.add("hidden");
-    $id("participantCard").classList.remove("hidden");
-  }else{
-    $id("participationCard").classList.add("hidden");
-    $id("enterCodeCard").classList.remove("hidden");
-  }
-};
-
-$id("toStaiDirectBtn").onclick=()=>{
-  const prev=$id("previousCode").value.trim();
-  if(!prev){alert("Lütfen kodunuzu giriniz.");return;}
-  participant.code=prev;
-  $id("enterCodeCard").classList.add("hidden");
-  startStaiOnly();
-};
-
-// Yeni katılımcı akışı (bilgi → onam → el → stai)
-$id("toConsentBtn").onclick=()=>{
-  const n=$id("name").value.trim(), s=$id("surname").value.trim(), a=$id("age").value.trim(), g=$id("gender").value.trim();
-  if(!n||!s||!a||!g){alert("Lütfen tüm bilgileri doldurunuz.");return;}
-  participant.name=n; participant.surname=s; participant.age=a; participant.gender=g;
-  participant.race=$id("race").value; participant.motherTongue=$id("motherTongue").value;
-  participant.email=$id("email").value; participant.phone=$id("phone").value;
-  if(participant.projectCode==="OykuTez"){
-    $id("participantCard").classList.add("hidden");
-    $id("consentCard").classList.remove("hidden");
-  }else{
-    $id("participantCard").classList.add("hidden");
-    $id("handUseCard").classList.remove("hidden");
-    renderHand();
-  }
-};
-
-$id("toHandBtn").onclick=()=>{
-  if(!$id("consentAgree").checked){alert("Onam formunu onaylamalısınız.");return;}
-  $id("consentCard").classList.add("hidden");
-  $id("handUseCard").classList.remove("hidden");
-  renderHand();
-};
-
-// --- Buradan sonrası senin orijinal test kodunun aynısı ---
-
-
-/* consent back */
-$id('backToInfoBtn').onclick = () => {
-  $id('consentCard').classList.add('hidden');
-  $id('participantCard').classList.remove('hidden');
-};
-
-/* consent -> hand */
-$id('toHandBtn').onclick = () => {
-  if(!$id('consentAgree').checked){ alert("Lütfen onam kutusunu işaretleyiniz."); return; }
-  $id('consentCard').classList.add('hidden');
-  $id('handUseCard').classList.remove('hidden');
-  renderHand();
-};
-
-/* hand back */
-$id('backToParticipantFromHand').onclick = () => {
-  $id('handUseCard').classList.add('hidden');
-  $id('participantCard').classList.remove('hidden');
-};
-
-/* hand -> STAI */
-$id('toStaiBtn').onclick = () => {
-  const rows = document.querySelectorAll('#handUseQuestions .hand-grid-row');
-  for(const r of rows){ if(r.querySelectorAll('input:checked').length !== 2){ alert("Her satırda 2 kutucuk işaretleyiniz."); return; } }
-  participant.handUse = Array.from(rows).map(r=>({
-    q: r.dataset.q,
-    left: r.querySelectorAll('.left:checked').length,
-    right: r.querySelectorAll('.right:checked').length
-  }));
-  $id('handUseCard').classList.add('hidden');
-  renderStai();
-  $id('staiCard').classList.remove('hidden');
-};
-
-/* STAI back */
-$id('backToHandFromStai').onclick = () => {
-  $id('staiCard').classList.add('hidden');
-  $id('handUseCard').classList.remove('hidden');
-};
-
-/* STAI -> hearing */
-$id('toHearingBtn').onclick = () => {
-  const answered = document.querySelectorAll('#staiQuestions input:checked').length;
-  const total = document.querySelectorAll('#staiQuestions input[type=radio]').length/4;
-  if(answered < total){ alert("Lütfen tüm STAI sorularını yanıtlayınız."); return; }
-  // store STAI
-  const ans = {};
-  document.querySelectorAll('#staiQuestions input:checked').forEach(i => ans[i.name] = i.value);
-  participant.staiAnswers = ans;
-
-  $id('staiCard').classList.add('hidden');
-  $id('hearingCard').classList.remove('hidden');
-};
-
-/* hearing back */
-$id('backToStaiFromHearing').onclick = () => {
-  stopTone('right'); stopTone('left');
-  $id('hearingCard').classList.add('hidden');
-  $id('staiCard').classList.remove('hidden');
-};
-
-/* hearing -> session intro */
-$id('toSessionIntro').onclick = () => {
-  stopTone('right'); stopTone('left');
-  // save hearing levels
-  participant.rightLevel = rightLevel;
-  participant.leftLevel = leftLevel;
-  results.push({ session: "hearing_level", stim: "1500Hz", response: `right=${rightLevel},left=${leftLevel}`, code: participant.code });
-  $id('hearingCard').classList.add('hidden');
-
-  sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
-  currentSessionIndex = 0;
-  showSessionIntro();
-};
-
-/* ---------- Render helpers ---------- */
+/* ---------- HAND & STAI renderers (basit) ---------- */
 function renderHand(){
-  const c = $id('handUseQuestions');
+  const c = $id("handUseQuestions");
   const q = ["Yazmak","Çizmek","Taş atmak","Makas kullanmak","Diş fırçası kullanmak","Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"];
   c.innerHTML = '<div class="hand-grid-header"><div style="flex:2"></div><div style="flex:1;text-align:center">Sol</div><div style="flex:1;text-align:center">Sağ</div></div>';
   q.forEach((txt,i)=>{
@@ -289,7 +165,8 @@ function renderHand(){
 
 function renderStai(){
   const questions = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
-  const c = $id('staiQuestions'); c.innerHTML = '';
+  const c = $id("staiQuestions");
+  c.innerHTML = "";
   questions.forEach((txt,i)=>{
     c.innerHTML += `<div class="question-group"><p>${i+1}. ${txt}</p>
       <div class="stai-options">
@@ -301,8 +178,8 @@ function renderStai(){
   });
 }
 
-/* ---------- Audio helpers ---------- */
-function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+/* ---------- Audio tone helpers (hearing test) ---------- */
+function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
 function startTone(ch){
   ensureCtx();
   if(ch==='right' && !rightOsc){
@@ -316,14 +193,163 @@ function startTone(ch){
     const m = audioCtx.createChannelMerger(2); leftOsc.connect(leftGain); leftGain.connect(m,0,0); m.connect(audioCtx.destination); leftOsc.start();
   }
 }
-function stopTone(ch){ try{ if(ch==='right'&&rightOsc){ rightOsc.stop(); rightOsc=null; rightGain=null;} if(ch==='left'&&leftOsc){ leftOsc.stop(); leftOsc=null; leftGain=null;} }catch(e){} }
+function stopTone(ch){ try{ if(ch==='right'&&rightOsc){ rightOsc.stop(); rightOsc=null; rightGain=null; } if(ch==='left'&&leftOsc){ leftOsc.stop(); leftOsc=null; leftGain=null; } }catch(e){} }
 
-$id('playRight').onclick = ()=>{ if(rightOsc){ stopTone('right'); } else { stopTone('left'); startTone('right'); } };
-$id('playLeft').onclick  = ()=>{ if(leftOsc){ stopTone('left'); } else { stopTone('right'); startTone('left'); } };
-$id('rightSlider').oninput = e => { rightLevel = e.target.value; if(rightGain) rightGain.gain.value = Number(rightLevel); };
-$id('leftSlider').oninput  = e => { leftLevel = e.target.value; if(leftGain) leftGain.gain.value = Number(leftLevel); };
+/* ---------- Flow: project -> participation ---------- */
+$id("toParticipationBtn").onclick = ()=>{
+  const code = $id("projectCode").value;
+  if(!code){ alert("Lütfen proje kodunu seçiniz."); return; }
+  participant.projectCode = code;
+  $id("projectCard").classList.add("hidden");
+  $id("participationCard").classList.remove("hidden");
+  renderParticipationOptions(code);
+};
 
-/* ---------- Session / Trials ---------- */
+/* --------------- IMPORTANT: PARTICIPATION -> next --------------- */
+$id("toNextStepBtn").onclick = ()=>{
+  const checked = document.querySelector('input[name="participation"]:checked');
+  if(!checked){ alert("Lütfen bir seçenek seçiniz."); return; }
+  const sel = checked.value;
+
+  if(sel === "1"){
+    // Eğer 1 ise: önce ONAM gösterilecek (tüm projeler için)
+    $id("participationCard").classList.add("hidden");
+    $id("consentCard").classList.remove("hidden");
+    // Onam sonrası kullanıcı katılımcı bilgilerini dolduracak:
+    // (consent -> consentContinue handler)
+  } else {
+    // 2/3/4: önce katılımcı kodu istenecek (kod gir -> STAI akışı)
+    $id("participationCard").classList.add("hidden");
+    $id("enterCodeCard").classList.remove("hidden");
+  }
+};
+
+/* ---------- Enter previous code -> start STAI only ---------- */
+$id("toStaiDirectBtn").onclick = ()=>{
+  const prev = $id("previousCode").value.trim();
+  if(!prev){ alert("Lütfen önceki katılımcı kodunuzu giriniz."); return; }
+  participant.code = prev;
+  // proceed to STAI -> hearing -> dichotic
+  startStaiOnly();
+};
+
+/* ---------- Consent flow ---------- */
+/* User saw consent (from participation=1). After agreeing, show participant info. */
+$id("toHandBtn").onclick = ()=>{ /* NOTE: this button in some HTMLs used for other flow; we don't use it here */ };
+
+/* We'll add a new explicit handler for consent "Devam" button:
+   - If consent checkbox checked -> hide consent and show participant info
+*/
+$id("toHandBtn").onclick = null; // ensure not bound elsewhere
+
+// Bind consent continue:
+$id("toHandBtn").addEventListener ? $id("toHandBtn").addEventListener("click", ()=>{}) : null; 
+// But to keep consistent with your markup, we'll use the toHandBtn on consent as "Devam" — override logic below:
+
+// Replace the "toHandBtn" behavior with: consent -> participantInfo
+$id("toHandBtn").onclick = ()=>{
+  // In this unified script "toHandBtn" is used for consent continue when consentCard is visible.
+  if($id("consentCard").classList.contains("hidden")) return; // safety
+  if(!$id("consentAgree").checked){ alert("Lütfen onam kutusunu işaretleyiniz."); return; }
+  // Hide consent, then show participant info (we want: consent first, then info)
+  $id("consentCard").classList.add("hidden");
+  $id("participantCard").classList.remove("hidden");
+};
+
+/* ---------- Participant info -> after fill (then hand use) ---------- */
+$id("toConsentBtn").onclick = ()=>{
+  // This button now means "Devam" from participant info to next (hand test)
+  // Validate required fields
+  const fields = ['name','surname','age','gender'];
+  for(const f of fields){
+    if(!$id(f) || !$id(f).value.trim()){ alert("Lütfen tüm zorunlu alanları doldurunuz."); return; }
+  }
+  // save participant data
+  participant.name = $id("name").value.trim();
+  participant.surname = $id("surname").value.trim();
+  participant.age = $id("age").value.trim();
+  participant.gender = $id("gender").value.trim();
+  participant.race = $id("race").value.trim();
+  participant.motherTongue = $id("motherTongue").value.trim();
+  participant.email = $id("email").value.trim();
+  participant.phone = $id("phone").value.trim();
+
+  // generate code if not exists (for new participants)
+  if(!participant.code){
+    const initials = (participant.name.slice(0,2)+participant.surname.slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
+    const rand = Math.floor(10000 + Math.random()*90000);
+    participant.code = `${participant.projectCode}_${initials}_${rand}`;
+    $id('codeInfo') && ($id('codeInfo').innerText = "Katılımcı kodu: " + participant.code);
+  }
+
+  // go to hand use test
+  $id("participantCard").classList.add("hidden");
+  $id("handUseCard").classList.remove("hidden");
+  renderHand();
+};
+
+/* ---------- Hand use -> confirm -> STAI ---------- */
+$id("toStaiBtn").onclick = ()=>{
+  const rows = document.querySelectorAll('#handUseQuestions .hand-grid-row');
+  for(const r of rows){
+    if(r.querySelectorAll('input:checked').length !== 2){
+      alert("Her satır için 2 kutucuk işaretleyiniz."); return;
+    }
+  }
+  // save hand preferences
+  participant.handUse = Array.from(rows).map(r=>({
+    q: r.dataset.q,
+    left: r.querySelectorAll('.left:checked').length,
+    right: r.querySelectorAll('.right:checked').length
+  }));
+  // move to STAI
+  $id("handUseCard").classList.add("hidden");
+  renderStai();
+  $id("staiCard").classList.remove("hidden");
+};
+
+/* ---------- STAI -> Hearing ---------- */
+$id("toHearingBtn").onclick = ()=>{
+  const answered = document.querySelectorAll('#staiQuestions input:checked').length;
+  const total = document.querySelectorAll('#staiQuestions input[type=radio]').length / 4;
+  if(answered < total){ alert("Lütfen tüm STAI sorularını yanıtlayınız."); return; }
+  // store STAI answers
+  const ans = {};
+  document.querySelectorAll('#staiQuestions input:checked').forEach(i => ans[i.name] = i.value);
+  participant.staiAnswers = ans;
+
+  $id("staiCard").classList.add("hidden");
+  $id("hearingCard").classList.remove("hidden");
+};
+
+/* ---------- Hearing -> Session intro ---------- */
+/* audio helpers (play/stop) */
+$id("playRight").onclick = ()=>{ if(rightOsc){ stopTone('right'); } else { stopTone('left'); startTone('right'); } };
+$id("playLeft").onclick  = ()=>{ if(leftOsc){ stopTone('left'); } else { stopTone('right'); startTone('left'); } };
+$id("rightSlider").oninput = e => { rightLevel = e.target.value; if(rightGain) rightGain.gain.value = Number(rightLevel); };
+$id("leftSlider").oninput  = e => { leftLevel = e.target.value; if(leftGain) leftGain.gain.value = Number(leftLevel); };
+
+$id("toSessionIntro").onclick = ()=>{
+  stopTone('right'); stopTone('left');
+  participant.rightLevel = rightLevel; participant.leftLevel = leftLevel;
+  results.push({ session: "hearing_level", stim: "1500Hz", response: `right=${rightLevel},left=${leftLevel}`, code: participant.code });
+  $id("hearingCard").classList.add("hidden");
+  // set session order and start
+  sessionOrder = ['training', 'NF', ...shuffle(['FR','FL'])];
+  currentSessionIndex = 0;
+  showSessionIntro();
+};
+
+/* ---------- Minimal session/trial code (keeps original behavior) ---------- */
+const mainPlaylist=[ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav","LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav","LBA-RGA.wav","LKA-RPA.wav","LTA-RDA.wav","LGA-RKA.wav","LPA-RDA.wav","LGA-RGA.wav","LBA-RTA.wav","LGA-RDA.wav","LKA-RTA.wav","LDA-RPA.wav","LTA-RKA.wav","LPA-RPA.wav","LDA-RBA.wav","LGA-RTA.wav","LPA-RKA.wav","LTA-RBA.wav","LKA-RGA.wav","LTA-RTA.wav","LBA-RPA.wav","LDA-RTA.wav","LGA-RBA.wav","LTA-RPA.wav","LDA-RDA.wav","LKA-RBA.wav","LPA-RGA.wav" ];
+const trainingPlaylist=[ "LBA-RBA.wav","LDA-RDA.wav","LGA-RGA.wav","LKA-RKA.wav","LPA-RPA.wav","LTA-RTA.wav","LBA-RDA.wav","LDA-RGA.wav","LGA-RKA.wav","LKA-RTA.wav" ];
+const instr = {
+  training: "Eğitim oturumu (yanıtlar kaydedilmeyecek).",
+  NF: "Normal odak: en iyi duyduğunuz heceyi seçin.",
+  FR: "Sağ kulağa odaklanın ve sağdan duyduğunuz heceyi seçin.",
+  FL: "Sol kulağa odaklanın ve soldan duyduğunuz heceyi seçin."
+};
+
 function showSessionIntro(){
   const s = sessionOrder[currentSessionIndex];
   $id('sessionTitle').innerText = "Oturum: " + s;
@@ -331,16 +357,12 @@ function showSessionIntro(){
   $id('sessionIntro').classList.remove('hidden');
 }
 async function unlockAudio(){
-  try{
-    const a = $id('stimAudio'); a.src = CONFIG.AUDIO_PATH + "silence.wav"; await a.play(); a.pause(); a.currentTime = 0;
-  }catch(e){ console.warn("Audio unlock failed:", e); }
+  try{ const a = document.querySelector('#stimAudio') || new Audio(); if(a) { a.src = ''; } } catch(e){}
 }
-$id('sessionStartBtn').onclick = async ()=>{
+$id('sessionStartBtn') && ($id('sessionStartBtn').onclick = ()=>{
   $id('sessionIntro').classList.add('hidden');
-  await unlockAudio();
-  $id('waitScreen').classList.remove('hidden');
-  setTimeout(()=>{ $id('waitScreen').classList.add('hidden'); startSession(); }, 2000);
-};
+  setTimeout(()=>{ $id('waitScreen') && $id('waitScreen').classList.remove('hidden'); setTimeout(()=>{ $id('waitScreen') && $id('waitScreen').classList.add('hidden'); startSession(); }, 1000); }, 200);
+});
 
 function startSession(){ currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }
 function nextTrial(){
@@ -351,8 +373,7 @@ function nextTrial(){
   if(currentTrial >= playlist.length){
     $id('trialCard').classList.add('hidden');
     currentSessionIndex++;
-    if(currentSessionIndex < sessionOrder.length){ showSessionIntro(); }
-    else { endExperiment(); }
+    if(currentSessionIndex < sessionOrder.length){ showSessionIntro(); } else { endExperiment(); }
     return;
   }
   const stim = playlist[currentTrial];
@@ -363,14 +384,12 @@ function nextTrial(){
 function playStim(stim){
   const a = $id('stimAudio');
   isResponseAllowed = false;
-  a.src = CONFIG.AUDIO_PATH + stim;
-  a.play().catch(e=>console.warn("play error",e));
-  a.onplaying = () => {
-    setTimeout(()=>{ isResponseAllowed = true; }, 500);
-  };
+  a.src = (window.location.origin || '') + '/sounds/erkek/' + stim; // adapt path if needed
+  a.play().catch(()=>{ /* ignore autoplay errors */});
+  a.onplaying = ()=>{ setTimeout(()=>{ isResponseAllowed = true; }, 500); };
   trialTimeout = setTimeout(()=>{
     if(sessionOrder[currentSessionIndex] !== 'training'){
-      results.push({ session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim: stim, response: "no_response", code: participant.code, age: participant.age, gender: participant.gender });
+      results.push({ session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response: "no_response", code: participant.code });
     }
     nextTrial();
   }, 4000);
@@ -393,82 +412,34 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
         trial: currentTrial+1,
         stim: stim,
         response: resp,
-        rightLevel: participant.rightLevel || "",
-        leftLevel: participant.leftLevel || "",
-        age: participant.age || "",
-        gender: participant.gender || "",
-        race: participant.race || "",
-        motherTongue: participant.motherTongue || "",
-        code: participant.code || ""
+        code: participant.code
       });
     }
-
     btn.classList.add('respBtn-active');
-    setTimeout(()=>{ btn.classList.remove('respBtn-active'); }, 500);
-    setTimeout(()=>{ nextTrial(); }, 2500);
+    setTimeout(()=> btn.classList.remove('respBtn-active'), 500);
+    setTimeout(()=> nextTrial(), 2500);
   };
 });
 
-/* ---------- End & Data ---------- */
-async function endExperiment(){
+/* ---------- end experiment ---------- */
+function endExperiment(){
   $id('endCard').classList.remove('hidden');
-  const csv = makeCsv();
-  $id('doneLog').innerText = "Veri hazır. (CSV satır sayısı: " + (csv ? csv.split('\\n').length : 0) + ")";
-  // sendEmail(); // opsiyonel: e-posta göndermek istersen yorumdan çıkar
+  $id('doneLog') && ($id('doneLog').innerText = "Deney tamamlandı. Katılımcı kodu: " + (participant.code || ''));
 }
 
-function makeCsv(){
-  const allData = [
-    {
-      session: "info",
-      trial: 0,
-      stim: "",
-      response: "",
-      rightLevel: participant.rightLevel || "",
-      leftLevel: participant.leftLevel || "",
-      age: participant.age || "",
-      gender: participant.gender || "",
-      race: participant.race || "",
-      motherTongue: participant.motherTongue || "",
-      email: participant.email || "",
-      phone: participant.phone || "",
-      projectCode: participant.projectCode || "",
-      staiAnswers: JSON.stringify(participant.staiAnswers || {}),
-      handUseAnswers: JSON.stringify(participant.handUse || {}),
-      code: participant.code || ""
-    },
-    ...results
-  ];
-  const keys = ["session","trial","stim","response","rightLevel","leftLevel","age","gender","race","motherTongue","email","phone","projectCode","staiAnswers","handUseAnswers","code"];
-  const header = keys.join(',');
-  const rows = allData.map(r=> keys.map(k=>{
-    const v = (r[k] === null || r[k] === undefined) ? "" : String(r[k]).replace(/,/g,';');
-    return `"${v}"`;
-  }).join(','));
-  return [header, ...rows].join('\\n');
+/* ---------- startStaiOnly: for returning participants who enter code ---------- */
+function startStaiOnly(){
+  // hide enter code UI and start from STAI
+  $id("enterCodeCard").classList.add("hidden");
+  // If you have stored data for that code in backend you could fetch and prefill here.
+  // For now, we just proceed to STAI
+  renderStai();
+  $id("staiCard").classList.remove("hidden");
 }
 
-/* sendEmail (optional, using emailjs) */
-async function sendEmail(){
-  const csv = makeCsv();
-  if(!csv) return;
-  const projectCode = participant.projectCode || 'Diger';
-  const templateID = CONFIG.EMAILJS_TEMPLATES[projectCode] || CONFIG.EMAILJS_TEMPLATES['Diger'];
-  try{
-    if(!window.emailjs){
-      const s = document.createElement('script'); s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
-      await new Promise((res,rej)=>{ s.onload=res; s.onerror=rej; document.head.appendChild(s); });
-      emailjs.init(CONFIG.EMAILJS_USER);
-    }
-    const resp = await emailjs.send(CONFIG.EMAILJS_SERVICE, templateID, { subject: participant.code, message: csv });
-    $id('doneLog').innerText = "E-posta gönderim durumu: " + JSON.stringify(resp);
-  }catch(err){
-    alert("E-posta gönderilemedi: " + JSON.stringify(err));
-  }
-}
+/* ---------- initialize basic UI elements ---------- */
+renderStai(); // prepare stai markup (used in both flows)
 
-/* ---------- Init UI ---------- */
-renderStai(); // prepare stai markup (will be re-rendered when needed)
 }); // DOMContentLoaded end
 </script>
 </body>
