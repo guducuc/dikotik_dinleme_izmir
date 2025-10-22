@@ -401,12 +401,27 @@ $id('toHandednessBtnNew').onclick=()=>{
     $id('handUseCard').classList.remove('hidden'); // El Kullanımı Testine geçiş
     renderHand();
 };
-
 // Geri Butonları
 $id('backToParticipantBtn').onclick = () => {
-    // STAI'dan Geri -> Bilgi Formu (infoCard)
+    // STAI'dan Geri -> Katılımcı Bilgileri (infoCard) veya Ön Sorgulama (preScreenCard)
+
     $id('staiTxiCard').classList.add('hidden');
-    $id('infoCard').classList.remove('hidden');
+
+    // Eğer akış 'full_cont' veya 'dichotic_only' ise (yani devam ediyorsa), 
+    // Ön Sorgulama ekranına geri dön.
+    if (currentFlow === 'full_cont' || currentFlow === 'dichotic_only') {
+        $id('preScreenCard').classList.remove('hidden');
+        
+        // Bu akışta, Ön Sorgulama ekranına dönerken,
+        // Proje Kodu ve Katılım Durumu bilgisini tekrar seçmesi gerekir.
+        $id('hasParticipated').value = '';
+        $id('prevCodeInput').classList.add('hidden');
+
+    } else {
+        // Eğer akış 'full' ise (yani ilk kez tam katılım), 
+        // Katılımcı Bilgileri ekranına geri dön.
+        $id('infoCard').classList.remove('hidden');
+    }
 };
 
 $id('backToStaiBtn').onclick = () => {
