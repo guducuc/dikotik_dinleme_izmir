@@ -77,7 +77,8 @@
     </div>
     <div style="margin-top:8px"><button id="toPreScreenBtn" class="bigBtn">Devam</button></div>
   </div>
-  
+  <div id="infoCard" class="card hidden">
+     </div>
   <div id="preScreenCard" class="card hidden">
     <h3>Ön Sorgulama</h3>
     <p>Bu deneye daha önceki katılım durumunuz nedir?</p>
@@ -103,8 +104,8 @@
     </div>
 </div>
   
-  <div id="infoCard" class="card hidden">
-    <h3>Katılımcı Bilgileri</h3>
+
+  <h3>Katılımcı Bilgileri</h3>
     <p class="small" style="margin-bottom: 10px;">Çalışmamıza hoş geldiniz.<strong> Çalışma süresince kulaklık takmanız gerekmektedir.</strong> Bu bölüme girdiğiniz bilgileri doğru girdiğinize emin olun. Sizden tam adınızı ve soyadınızı girmenizi istemiyoruz.</p>
     <div><input id="name" placeholder="Adınızın ilk iki harfini giriniz"></div>
     <div><input id="surname" placeholder="Soyadınızın ilk iki harfini giriniz"></div>
@@ -331,25 +332,25 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     
-    // *** KRİTİK ADIM ***: Tüm kartları akışa başlamadan önce zorla gizle!
-    $id('participantCard').classList.add('hidden');
-    $id('preScreenCard').classList.add('hidden'); 
-    $id('infoCard').classList.add('hidden');      // OykuTez hatasını çözer
+    // *** KRİTİK GİZLEME BLOKU ***: Açık kalan her şeyi kapatır
+    $id('participantCard').classList.add('hidden'); 
+    $id('preScreenCard').classList.add('hidden');  
+    $id('infoCard').classList.add('hidden');      // Kökten Çözüm: infoCard'u zorla gizle
     $id('consentCard').classList.add('hidden');   
     $id('rejectionCard').classList.add('hidden'); 
     
     const isOykuTez = participant.projectCode === 'OykuTez';
     
     if (isOykuTez) {
-        // AKIŞ 1: OykuTez ise Önce Aydınlatılmış Onam
+        // OykuTez ise Önce Aydınlatılmış Onam
         $id('consentCard').classList.remove('hidden');
         loadConsentText(participant.projectCode); 
     } else {
-        // AKIŞ 2: Diğer projeler ise direkt Ön Sorgulama
+        // Diğer projeler ise direkt Ön Sorgulama
         $id('preScreenCard').classList.remove('hidden'); 
     }
     
-    // ... (Kısıtlama ve e-posta/telefon gösterme kodu aynı kalacak) ...
+    // ... (Geri kalan kısıtlama ve gösterme kodu aynı) ...
     const selectElement = $id('hasParticipated');
     
     // Önceki çağrıda kaldırılan seçenekleri geri ekle
@@ -408,7 +409,7 @@ $id('toNextStepBtn').onclick=()=>{
     if (hasParticipated === 'first_full') {
         // AKIŞ 1: İlk kez tam katılım (Bilgi Girişi'nden başla)
         currentFlow = 'full';
-        $id('infoCard').classList.remove('hidden'); // KRİTİK: Bilgi Girişi ekranını AÇ
+        $id('infoCard').classList.remove('hidden'); // KRİTİK: Bilgi Girişi ekranını AÇ! (Diğer projelerin akışını düzeltir)
     } else {
         const prevCode = $id('prevCode').value.trim();
         if (!prevCode) { alert("Lütfen bir önceki katılımcı kodunuzu giriniz."); $id('preScreenCard').classList.remove('hidden'); return; }
@@ -512,13 +513,12 @@ $id('backToHandBtn').onclick = () => {
 // Onaylama Butonu
 $id('acceptConsentBtn').onclick = () => {
     $id('consentCard').classList.add('hidden');
-    $id('infoCard').classList.add('hidden'); // EĞER AÇIK KALDIYSA GİZLE
+    $id('infoCard').classList.add('hidden'); // Onaylandıktan sonra infoCard'u gizle
 
-    // Onaylandıktan sonra eski akışa (Ön Sorgulama) devam et.
+    // Onaylandıktan sonra Ön Sorgulama ekranına geç.
     $id('preScreenCard').classList.remove('hidden'); 
 };
-
-// Reddetme Butonu
+  // Reddetme Butonu
 $id('rejectConsentBtn').onclick = () => {
     $id('consentCard').classList.add('hidden');
     // Reddedildiğinde sadece Reddetme Mesajı kartını göster ve akışı bitir.
