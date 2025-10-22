@@ -296,12 +296,12 @@ $id('backToProjectCodeBtn').onclick=()=>{
     $id('participantCard').classList.remove('hidden');
 };
 
-// Ön Sorgulama Devam Butonu (Akış ayrımı burada yapılır)
+// 1. Blok: Ön Sorgulama Devam Butonu (Ana Akış Ayrımı - GÜNCELLENDİ)
 $id('toNextStepBtn').onclick=()=>{
     const hasParticipated = $id('hasParticipated').value;
     if (!hasParticipated) { alert("Lütfen katılım durumunuzu belirtiniz."); return; }
 
-    // Sadece 'OykuTez' için bu detaylı akış çalışır
+    // Proje Kodu kontrolü (OykuTez dışındakiler zaten 'first_full' olarak işlenir)
     if (participant.projectCode !== 'OykuTez' && hasParticipated !== 'first_full') {
         alert("Seçtiğiniz proje kodu için sadece 'İlk defa katılıyorum ve şimdi tamamlayacağım' seçeneği geçerlidir.");
         return;
@@ -310,7 +310,8 @@ $id('toNextStepBtn').onclick=()=>{
     $id('preScreenCard').classList.add('hidden');
 
     if (hasParticipated === 'first_full') {
-        currentFlow = 'full'; // Yeni katılımcı, tüm testleri yapacak.
+        // AKIŞ 1: İlk kez tam katılım (Bilgi Girişi'nden başla)
+        currentFlow = 'full';
         $id('infoCard').classList.remove('hidden'); 
     } else {
         const prevCode = $id('prevCode').value.trim();
@@ -319,20 +320,24 @@ $id('toNextStepBtn').onclick=()=>{
         participant.prevCode = prevCode;
         
         if (hasParticipated === 'first_half') {
-            // 1. katılımı yarıda bıraktı, Bilgi Girişi'nden başlayıp El Kullanımı'na geçmeli
-            participant.code = prevCode + "_1st_CONT"; 
+            // AKIŞ 2: İlk katılımı yarım bıraktı (infoCard ve HandUseCard tamamlandı, STAI'dan devam etmeli)
+            participant.code = prevCode.replace("_1st_HALF", "") + "_1st_CONT"; // _HALF soneğini temizle ve _CONT ekle
             currentFlow = 'full_cont';
-            $id('infoCard').classList.remove('hidden');
+            $id('staiTxiCard').classList.remove('hidden'); // STAI'ye atla
+            renderStai(); 
+            
         } else if (hasParticipated === 'second_full') {
-            // 2. kez katılıyor, STAI/Handedness/Hearing atla, direkt Dikotik
+            // AKIŞ 3: İkinci kez tam katılım (Sadece Dikotik Dinleme, STAI/Handedness/Hearing atla)
             participant.code = prevCode + "_2nd_FULL"; 
             currentFlow = 'dichotic_only';
             $id('hearingCard').classList.remove('hidden'); 
+            
         } else if (hasParticipated === 'second_half') {
-            // 2. kez katılıp yarıda bıraktı, STAI/Handedness/Hearing atla, direkt Dikotik
-            participant.code = prevCode + "_2nd_CONT"; 
-            currentFlow = 'dichotic_only';
-            $id('hearingCard').classList.remove('hidden'); 
+            // AKIŞ 4: İkinci kez katılıp yarım bıraktı (STAI'dan devam etmeli)
+            participant.code = prevCode.replace("_2nd_HALF", "") + "_2nd_CONT"; 
+            currentFlow = 'dichotic_only'; // Bu akış STAI'den başlar (HandUseCard atlanmıştır)
+            $id('staiTxiCard').classList.remove('hidden'); // STAI'ye atla
+            renderStai(); 
         }
         $id('prevCodeInfo').innerText = "Kullanılan kod: " + participant.code;
     }
@@ -394,7 +399,25 @@ $id('backToHandBtn').onclick = () => {
     }
 };
 
-// 3. STAI sonrası -> İşitme Kontrolü
+// 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (GÜNCELLENDİ)
+$id('toHandednessBtnNew').onclick=()=>{
+    // Yalnızca 'full' akışındakiler bu ekranı görmelidir.
+    if (currentFlow !== 'full') return; 
+
+    const n=$id('name').value.trim(), s=$id('surname').value.trim(), a=$id('age').value.trim(), g=$id('gender').value.trim(), r=$id('race').value.trim(), m=$id('motherTongue').value.trim();
+    if (!n || !s || !a || !r || !m || !g) { alert("Lütfen tüm katılımcı bilgilerini doldurunuz."); return; }
+
+    // Yeni bilgileri kaydet
+    Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, name:n, surname:s});
+    
+    // Yeni kod oluştur (sadece 'full' akışında)
+    generateParticipantCode(n, s, a, g, r, m, participant.projectCode);
+
+    $id('infoCard').classList.add('hidden');
+    $id('handUseCard').classList.remove('hidden'); // El Kullanımı Testine geçiş
+    renderHand();
+};
+  // 3. STAI sonrası -> İşitme Kontrolü
 $id('toHandednessBtn').onclick=()=>{
     const answered=document.querySelectorAll('#staiQuestions input:checked').length;
     if(answered<staiQuestions.length){alert("Lütfen tüm STAI sorularını yanıtlayınız.");return;}
