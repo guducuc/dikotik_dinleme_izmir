@@ -316,19 +316,22 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
  if(ch==='left'&&leftOsc){leftOsc.stop();leftOsc=null;leftGain=null}}catch(e){}}
 
 /* --- Navigasyon ve Akış Yönetimi --- */
-
-  // 1. Proje Kodu seçimi sonrası -> AYDINLATILMIŞ ONAM EKRANINA GEÇ (GÜNCEL)
+// 1. Proje Kodu seçimi sonrası -> AYDINLATILMIŞ ONAM EKRANINA GEÇ (HATA DÜZELTİLDİ)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
-    $id('participantCard').classList.add('hidden');
     
+    // Geçişten önce ilgili tüm kartları gizle (Savunma amaçlı)
+    $id('participantCard').classList.add('hidden');
+    $id('preScreenCard').classList.add('hidden'); // Ön Sorgulama ekranını gizle
+    $id('infoCard').classList.add('hidden');     // Katılımcı Bilgileri ekranını gizle
+
     // Yeni Akış: Önce Aydınlatılmış Onam Ekranına Geç
     $id('consentCard').classList.remove('hidden');
-
+    
     // Onay Metnini Yükle
     loadConsentText(participant.projectCode); 
 
-    // OYKUTEZ kısıtlamasını da burada kontrol edip options'ı yönetelim
+    // OYKUTEZ kısıtlamasını yöneten kod (Aynı kalacak)
     const selectElement = $id('hasParticipated');
     const isOykuTez = participant.projectCode === 'OykuTez';
     
@@ -351,11 +354,12 @@ $id('toPreScreenBtn').onclick=()=>{
     // Ekran açılırken seçimi sıfırla
     selectElement.value = '';
     $id('prevCodeInput').classList.add('hidden');
-  // YENİ: OykuTez projesi ise e-posta alanını göster/gizle
-    $id('email').parentNode.style.display = isOykuTez ? 'block' : 'none'; // E-posta input'unun parent'ını göster/gizle
-    $id('phone').parentNode.style.display = isOykuTez ? 'block' : 'none';
-}; // Fonksiyon sonu
-
+    
+    // OykuTez projesi ise e-posta/telefon alanlarını göster/gizle
+    $id('email').parentNode.style.display = isOykuTez ? 'block' : 'none'; 
+    $id('phone').parentNode.style.display = isOykuTez ? 'block' : 'none'; 
+};
+  
   // Ön Sorgulama Geri Butonu (GÜNCEL)
 $id('backToProjectCodeBtn').onclick=()=>{
     const selectElement = $id('hasParticipated');
