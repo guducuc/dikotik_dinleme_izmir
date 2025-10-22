@@ -301,10 +301,16 @@ $id('toNextStepBtn').onclick=()=>{
     const hasParticipated = $id('hasParticipated').value;
     if (!hasParticipated) { alert("Lütfen katılım durumunuzu belirtiniz."); return; }
 
-    // Proje Kodu kontrolü (OykuTez dışındakiler zaten 'first_full' olarak işlenir)
-    if (participant.projectCode !== 'OykuTez' && hasParticipated !== 'first_full') {
-        alert("Seçtiğiniz proje kodu için sadece 'İlk defa katılıyorum ve şimdi tamamlayacağım' seçeneği geçerlidir.");
-        return;
+    const isOykuTez = participant.projectCode === 'OykuTez';
+    
+    // Proje Kodu Kısıtlaması Kontrolü
+    if (!isOykuTez) {
+        // OykuTez dışındaysa sadece first_full veya first_half seçenekleri geçerlidir.
+        if (hasParticipated !== 'first_full' && hasParticipated !== 'first_half') {
+            alert("Seçtiğiniz proje kodu için sadece 'İlk defa katılıyorum...' veya 'İlk defa katıldım ancak yarım bıraktım' seçenekleri geçerlidir.");
+            $id('preScreenCard').classList.remove('hidden'); // Ekranı geri getir
+            return;
+        }
     }
 
     $id('preScreenCard').classList.add('hidden');
@@ -320,14 +326,15 @@ $id('toNextStepBtn').onclick=()=>{
         participant.prevCode = prevCode;
         
         if (hasParticipated === 'first_half') {
-            // AKIŞ 2: İlk katılımı yarım bıraktı (infoCard ve HandUseCard tamamlandı, STAI'dan devam etmeli)
-            participant.code = prevCode.replace("_1st_HALF", "") + "_1st_CONT"; // _HALF soneğini temizle ve _CONT ekle
+            // AKIŞ 2: İlk katılımı yarım bıraktı (STAI'dan devam etmeli)
+            // _HALF soneğini temizle ve _CONT ekle (Kontrol amaçlı)
+            participant.code = prevCode.replace("_1st_HALF", "") + "_1st_CONT"; 
             currentFlow = 'full_cont';
             $id('staiTxiCard').classList.remove('hidden'); // STAI'ye atla
             renderStai(); 
             
         } else if (hasParticipated === 'second_full') {
-            // AKIŞ 3: İkinci kez tam katılım (Sadece Dikotik Dinleme, STAI/Handedness/Hearing atla)
+            // AKIŞ 3: İkinci kez tam katılım (Sadece Dikotik Dinleme, İşitme Testi'nden başla)
             participant.code = prevCode + "_2nd_FULL"; 
             currentFlow = 'dichotic_only';
             $id('hearingCard').classList.remove('hidden'); 
@@ -335,7 +342,7 @@ $id('toNextStepBtn').onclick=()=>{
         } else if (hasParticipated === 'second_half') {
             // AKIŞ 4: İkinci kez katılıp yarım bıraktı (STAI'dan devam etmeli)
             participant.code = prevCode.replace("_2nd_HALF", "") + "_2nd_CONT"; 
-            currentFlow = 'dichotic_only'; // Bu akış STAI'den başlar (HandUseCard atlanmıştır)
+            currentFlow = 'dichotic_only';
             $id('staiTxiCard').classList.remove('hidden'); // STAI'ye atla
             renderStai(); 
         }
@@ -343,10 +350,10 @@ $id('toNextStepBtn').onclick=()=>{
     }
 };
   
-// "Daha önce katıldınız mı?" değiştiğinde input'u göster/gizle
+// "Daha önce katıldınız mı?" değiştiğinde input'u göster/gizle (DEĞİŞİKLİK GEREKMEZ)
 $id('hasParticipated').onchange=()=>{
     const val = $id('hasParticipated').value;
-    // first_full dışındaki tüm senaryolarda eski kodu istiyoruz.
+    // first_full dışındaki tüm senaryolarda (yarım/tam katılım) eski kodu istiyoruz.
     if(val === 'first_half' || val === 'second_full' || val === 'second_half') {
         $id('prevCodeInput').classList.remove('hidden');
     } else {
