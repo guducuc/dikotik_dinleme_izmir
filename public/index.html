@@ -327,16 +327,16 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
  if(ch==='left'&&leftOsc){leftOsc.stop();leftOsc=null;leftGain=null}}catch(e){}}
 
 /* --- Navigasyon ve Akış Yönetimi --- */
-// 1. Proje Kodu seçimi sonrası -> Aydınlatılmış Onam VEYA Ön Sorgulama (NİHAİ DÜZELTME)
+// 1. Proje Kodu seçimi sonrası -> Aydınlatılmış Onam VEYA Ön Sorgulama (NİHAİ ÇÖZÜM)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     
-    // *** KRİTİK ***: Tüm olası görünen ekranları zorla gizle
-    $id('participantCard').classList.add('hidden'); // Proje Kodu Seçim kartını gizle
-    $id('preScreenCard').classList.add('hidden');  // Ön Sorgulama ekranını gizle
-    $id('infoCard').classList.add('hidden');      // Katılımcı Bilgileri ekranını GİZLE (OykuTez hatasını çözer)
-    $id('consentCard').classList.add('hidden');   // Onam Kartını gizle
-    $id('rejectionCard').classList.add('hidden'); // Reddedilme Kartını gizle
+    // *** KRİTİK ADIM ***: Tüm kartları akışa başlamadan önce zorla gizle!
+    $id('participantCard').classList.add('hidden');
+    $id('preScreenCard').classList.add('hidden'); 
+    $id('infoCard').classList.add('hidden');      // OykuTez hatasını çözer
+    $id('consentCard').classList.add('hidden');   
+    $id('rejectionCard').classList.add('hidden'); 
     
     const isOykuTez = participant.projectCode === 'OykuTez';
     
@@ -349,7 +349,7 @@ $id('toPreScreenBtn').onclick=()=>{
         $id('preScreenCard').classList.remove('hidden'); 
     }
     
-    // ... (Geri kalan kısıtlama kodu aynı) ...
+    // ... (Kısıtlama ve e-posta/telefon gösterme kodu aynı kalacak) ...
     const selectElement = $id('hasParticipated');
     
     // Önceki çağrıda kaldırılan seçenekleri geri ekle
@@ -372,11 +372,10 @@ $id('toPreScreenBtn').onclick=()=>{
     selectElement.value = '';
     $id('prevCodeInput').classList.add('hidden');
     
-    // OykuTez projesi ise e-posta/telefon alanlarını göster/gizle
+    // E-posta/Telefon alanlarını göster/gizle
     $id('email').parentNode.style.display = isOykuTez ? 'block' : 'none'; 
     $id('phone').parentNode.style.display = isOykuTez ? 'block' : 'none'; 
 };
-
   
   // Ön Sorgulama Geri Butonu (GÜNCEL)
 $id('backToProjectCodeBtn').onclick=()=>{
@@ -389,13 +388,12 @@ $id('backToProjectCodeBtn').onclick=()=>{
     $id('preScreenCard').classList.add('hidden');
     $id('participantCard').classList.remove('hidden');
 };
-  
-// 1. Blok: Ön Sorgulama Devam Butonu (NİHAİ DÜZELTME)
+// 1. Blok: Ön Sorgulama Devam Butonu (NİHAİ ÇÖZÜM)
 $id('toNextStepBtn').onclick=()=>{
     const hasParticipated = $id('hasParticipated').value;
     if (!hasParticipated) { alert("Lütfen katılım durumunuzu belirtiniz."); return; }
     
-    // Kısıtlama kontrolü aynı kalacak
+    // Kısıtlama kontrolü
     const isOykuTez = participant.projectCode === 'OykuTez';
     if (!isOykuTez) {
         if (hasParticipated !== 'first_full' && hasParticipated !== 'first_half') {
@@ -405,8 +403,7 @@ $id('toNextStepBtn').onclick=()=>{
         }
     }
     
-    // Geçişten önce Ön Sorgulama ekranını gizle
-    $id('preScreenCard').classList.add('hidden');
+    $id('preScreenCard').classList.add('hidden'); // Ön Sorgulama ekranını gizle
 
     if (hasParticipated === 'first_full') {
         // AKIŞ 1: İlk kez tam katılım (Bilgi Girişi'nden başla)
@@ -515,6 +512,8 @@ $id('backToHandBtn').onclick = () => {
 // Onaylama Butonu
 $id('acceptConsentBtn').onclick = () => {
     $id('consentCard').classList.add('hidden');
+    $id('infoCard').classList.add('hidden'); // EĞER AÇIK KALDIYSA GİZLE
+
     // Onaylandıktan sonra eski akışa (Ön Sorgulama) devam et.
     $id('preScreenCard').classList.remove('hidden'); 
 };
