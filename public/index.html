@@ -67,12 +67,14 @@
   
   <div id="preScreenCard" class="card hidden">
     <h3>Ön Sorgulama</h3>
-    <p>Bu deneye daha önce katıldınız mı?</p>
+    <p>Bu deneye daha önceki katılım durumunuz nedir?</p>
     <div>
         <select id="hasParticipated">
             <option value="">Lütfen Seçiniz</option>
-            <option value="yes">Evet, daha önce katıldım</option>
-            <option value="no">Hayır, ilk defa katılıyorum</option>
+            <option value="first_full">1. İlk defa katılıyorum ve şimdi tamamlayacağım.</option>
+            <option value="first_half">2. İlk defa katıldım ancak testi yarım bıraktım.</option>
+            <option value="second_full">3. Daha önce bir kez katıldım (tamamladım veya yarım bıraktım).</option>
+            <option value="second_half">4. Daha önce iki kez katıldım (İkinci kez katılımda testi yarım bıraktım).</option>
         </select>
     </div>
     <div id="prevCodeInput" class="hidden">
@@ -102,9 +104,9 @@
             <option value="Diğer">Diğer</option>
         </select>
     </div>
-    <div style="margin-top:8px"><button id="toStaiBtnNew" class="bigBtn">Devam</button></div>
+    <div style="margin-top:8px"><button id="toHandednessBtnNew" class="bigBtn">Devam</button></div>
     <div id="codeInfo" class="small" style="margin-top:8px"></div>
-  </div>
+    </div>
 
 <div id="staiTxiCard" class="card hidden">
     <h3>STAI-TXI Formu</h3>
@@ -297,50 +299,73 @@ $id('backToProjectCodeBtn').onclick=()=>{
 // Ön Sorgulama Devam Butonu (Akış ayrımı burada yapılır)
 $id('toNextStepBtn').onclick=()=>{
     const hasParticipated = $id('hasParticipated').value;
-    if (!hasParticipated) { alert("Lütfen daha önce katılıp katılmadığınızı belirtiniz."); return; }
+    if (!hasParticipated) { alert("Lütfen katılım durumunuzu belirtiniz."); return; }
 
-    if (hasParticipated === 'yes') {
+    // Sadece 'OykuTez' için bu detaylı akış çalışır
+    if (participant.projectCode !== 'OykuTez' && hasParticipated !== 'first_full') {
+        alert("Seçtiğiniz proje kodu için sadece 'İlk defa katılıyorum ve şimdi tamamlayacağım' seçeneği geçerlidir.");
+        return;
+    }
+
+    $id('preScreenCard').classList.add('hidden');
+
+    if (hasParticipated === 'first_full') {
+        currentFlow = 'full'; // Yeni katılımcı, tüm testleri yapacak.
+        $id('infoCard').classList.remove('hidden'); 
+    } else {
         const prevCode = $id('prevCode').value.trim();
-        if (!prevCode) { alert("Lütfen bir önceki katılımcı kodunuzu giriniz."); return; }
+        if (!prevCode) { alert("Lütfen bir önceki katılımcı kodunuzu giriniz."); $id('preScreenCard').classList.remove('hidden'); return; }
         
         participant.prevCode = prevCode;
-        participant.code = prevCode; // İkinci katılım için aynı kodu kullan
-        currentFlow = 'dichotic_only';
         
-        // STAI ve El Tercihi'ni atla
-        $id('prevCodeInfo').innerText = "Lütfen bu kodu not alınız: " + prevCode;
-        $id('preScreenCard').classList.add('hidden');
-        $id('hearingCard').classList.remove('hidden'); // Direkt işitme testine geç
-    } else { // Hayır, ilk kez katılıyorum
-        currentFlow = 'full';
-        $id('preScreenCard').classList.add('hidden');
-        $id('infoCard').classList.remove('hidden'); // Bilgi giriş formuna geç
+        if (hasParticipated === 'first_half') {
+            // 1. katılımı yarıda bıraktı, Bilgi Girişi'nden başlayıp El Kullanımı'na geçmeli
+            participant.code = prevCode + "_1st_CONT"; 
+            currentFlow = 'full_cont';
+            $id('infoCard').classList.remove('hidden');
+        } else if (hasParticipated === 'second_full') {
+            // 2. kez katılıyor, STAI/Handedness/Hearing atla, direkt Dikotik
+            participant.code = prevCode + "_2nd_FULL"; 
+            currentFlow = 'dichotic_only';
+            $id('hearingCard').classList.remove('hidden'); 
+        } else if (hasParticipated === 'second_half') {
+            // 2. kez katılıp yarıda bıraktı, STAI/Handedness/Hearing atla, direkt Dikotik
+            participant.code = prevCode + "_2nd_CONT"; 
+            currentFlow = 'dichotic_only';
+            $id('hearingCard').classList.remove('hidden'); 
+        }
+        $id('prevCodeInfo').innerText = "Kullanılan kod: " + participant.code;
     }
 };
-
+  
 // "Daha önce katıldınız mı?" değiştiğinde input'u göster/gizle
 $id('hasParticipated').onchange=()=>{
-    if($id('hasParticipated').value === 'yes') {
+    const val = $id('hasParticipated').value;
+    // first_full dışındaki tüm senaryolarda eski kodu istiyoruz.
+    if(val === 'first_half' || val === 'second_full' || val === 'second_half') {
         $id('prevCodeInput').classList.remove('hidden');
     } else {
         $id('prevCodeInput').classList.add('hidden');
     }
 };
-
-// 2. İlk Kez Katılanlar için Bilgi Girişi sonrası -> STAI
-$id('toStaiBtnNew').onclick=()=>{
+  
+// 2. İlk Kez/Yarıda Kalanlar için Bilgi Girişi sonrası -> EL KULLANIMI TESTİ
+$id('toHandednessBtnNew').onclick=()=>{
     const n=$id('name').value.trim(), s=$id('surname').value.trim(), a=$id('age').value.trim(), g=$id('gender').value.trim(), r=$id('race').value.trim(), m=$id('motherTongue').value.trim();
     if (!n || !s || !a || !r || !m || !g) { alert("Lütfen tüm katılımcı bilgilerini doldurunuz."); return; }
 
-    // Yeni bilgileri kaydet ve kod oluştur
+    // Yeni bilgileri kaydet
     Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, name:n, surname:s});
-    generateParticipantCode(n, s, a, g, r, m, participant.projectCode);
+    
+    // Eğer akış tam ise (ilk kez katılıyorsa), yeni kod oluştur
+    if (currentFlow === 'full') {
+       generateParticipantCode(n, s, a, g, r, m, participant.projectCode);
+    }
 
     $id('infoCard').classList.add('hidden');
-    $id('staiTxiCard').classList.remove('hidden');
-    renderStai();
+    $id('handUseCard').classList.remove('hidden'); // El Kullanımı Testine geçiş
+    renderHand();
 };
-
 
 // Geri Butonları
 $id('backToParticipantBtn').onclick = () => {
@@ -369,53 +394,58 @@ $id('backToHandBtn').onclick = () => {
     }
 };
 
-// 3. STAI sonrası -> El Kullanımı
+// 3. STAI sonrası -> İşitme Kontrolü
 $id('toHandednessBtn').onclick=()=>{
     const answered=document.querySelectorAll('#staiQuestions input:checked').length;
     if(answered<staiQuestions.length){alert("Lütfen tüm STAI sorularını yanıtlayınız.");return;}
     const ans={};document.querySelectorAll('#staiQuestions input:checked').forEach(i=>ans[i.name]=i.value);participant.staiAnswers=ans;
     
     $id('staiTxiCard').classList.add('hidden');
-    $id('handUseCard').classList.remove('hidden'); 
-    renderHand();
+    $id('hearingCard').classList.remove('hidden'); // İşitme Kontrolü'ne geçiş
 };
 
-// 4. El Kullanımı sonrası -> İşitme Kontrolü
-$id('toHearingBtn').onclick=()=>{
+// 4. El Kullanımı sonrası -> STAI'dan önce devam/çıkış sorgusu (YENİ YARI DA BIRAKMA NOKTASI)
+$id('toHearingBtn').onclick=()=>{ 
     let ok=true;const groups=document.querySelectorAll('#handUseQuestions .hand-grid-row');
     for(const g of groups){const c=g.querySelectorAll('input:checked').length;if(c!==2){ok=false;alert("Her işlem için tam olarak 2 kutucuk işaretleyiniz.");break;}}
     if(!ok)return;const ans={};groups.forEach(g=>{const q=g.dataset.questionId,l=g.querySelectorAll('.left-option:checked').length,r=g.querySelectorAll('.right-option:checked').length;ans[q]={left:l,right:r};});participant.handUseAnswers=ans;
 
     $id('handUseCard').classList.add('hidden');
-    $id('hearingCard').classList.remove('hidden');
+    
+    // Yarıda bırakma opsiyonu SADECE bu noktada sunulur.
+    const confirmContinue = confirm(
+        "El Kullanımı Testi tamamlandı. STAI ve Dikotik Dinleme testlerine şimdi devam etmek istiyor musunuz?\n\n" +
+        "İPTAL derseniz, bu kodu (" + participant.code + ") not alıp çıkış yapınız. Devam etmek için TAMAM'a basınız."
+    );
+
+    if (confirmContinue) {
+        $id('staiTxiCard').classList.remove('hidden'); // STAI'ye devam
+        renderStai();
+    } else {
+        // Yarıda bırakma durumunda kodu _HALF soneki ile sonlandırıyoruz.
+        if (participant.code.endsWith("_1st_CONT")) participant.code = participant.code.replace("_1st_CONT", "_1st_HALF");
+        else if (participant.code.endsWith("_2nd_CONT")) participant.code = participant.code.replace("_2nd_CONT", "_2nd_HALF");
+        else if (currentFlow === 'full') participant.code += "_1st_HALF"; // İlk kez katılıp burada bıraktı
+
+        alert("Lütfen katılımcı kodunuzu (" + participant.code + ") kaydettiğinizden emin olunuz. Bu kodu kullanarak daha sonra devam edebilirsiniz.");
+        $id('endCard').classList.remove('hidden');
+        $id('doneLog').innerText = "Deney yarıda bırakıldı. Lütfen bu kodu kaydedin: " + participant.code;
+    }
 };
 
 
-// 5. İşitme Testi sonrası -> Devam/Çıkış Sorgusu
+// 5. İşitme Testi sonrası -> Oturum Girişi (KESİNTİSİZ DEVAM)
 $id('toSessionIntro').onclick=()=>{
     stopTone('right');
     stopTone('left');
     results.push({session:"hearing_level",stim:"1500Hz",response:`right=${rightLevel},left=${leftLevel}`});
     
-    // Katılımcıya işitme testine devam edip etmeyeceğini sor
-    const confirmContinue = confirm(
-        "İşitme kontrolü tamamlandı. Dikotik dinleme testine şimdi devam etmek istiyor musunuz?\n\n" +
-        "İPTAL derseniz, katılımcı kodunuzu (" + participant.code + ") not alıp çıkış yapınız. Devam etmek için TAMAM'a basınız."
-    );
-
-    if (confirmContinue) {
-        $id('hearingCard').classList.add('hidden');
-        sessionOrder=['training','NF',...shuffle(['FR','FL'])];
-        currentSessionIndex=0;
-        showSessionIntro();
-    } else {
-        // Çıkış yapılması istendi
-        alert("Lütfen katılımcı kodunuzu (" + participant.code + ") kaydettiğinizden emin olunuz. Bu kodu kullanarak daha sonra kaldığınız yerden devam edebilirsiniz.");
-        $id('hearingCard').classList.add('hidden');
-        $id('endCard').classList.remove('hidden');
-        $id('doneLog').innerText = "Deney yarıda bırakıldı. Katılımcı kodu: " + participant.code;
-        // Bu noktada veri göndermiyoruz.
-    }
+    // Yarıda bırakma opsiyonu kaldırıldı, direkt oturuma devam
+    $id('hearingCard').classList.add('hidden');
+    // Training, NF ve rastgele FR/FL sırasını ayarla
+    sessionOrder=['training','NF',...shuffle(['FR','FL'])];
+    currentSessionIndex=0;
+    showSessionIntro();
 };
 
 /* --- İşitme Butonları --- */
