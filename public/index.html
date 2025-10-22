@@ -3,221 +3,184 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Dikotik Dinleme Çalışması</title>
+  <title>Dikotik Dinleme Izmir</title>
 
-  <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
+  <meta name="emailjs-user" content="FLn2zMqKDGso3ePoO">
   <meta name="emailjs-service" content="service_a8bnfmk">
-  <meta name="emailjs-template"content="template_7elc4wi">
+  <meta name="emailjs-template" content="template_7elc4wi">
 
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:12px;color:#111;max-width:300px; margin-left: auto; margin-right: auto;}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:12px;color:#111;max-width:340px;margin:auto;}
     h1{font-size:20px;margin-bottom:8px}
     .hidden{display:none}
     .card{padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px}
-    input[type=text], input[type=number], select{padding:8px;margin:6px 0;width:100% ;box-sizing:border-box}
-    .respRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;}
-    .respBtn{
-      font-size:1.2rem;
-      padding:14px 24px;
-      margin:6px;
-      min-width:120px;
-      border-radius:10px;
-      border:1px solid #444;
-      background:#f2f2f2;
-      cursor:pointer;
-      transition:background-color 0.2s;
-    }
-    .respBtn-active { background-color:#bdbdbd; }
-    .bigBtn{
-      font-size:1.2rem;
-      padding:14px 24px;
-      margin:6px;
-      border-radius:8px;
-      border:1px solid #444;
-      background:#eaeaea;
-      cursor:pointer;
-    }
+    input[type=text], input[type=number], input[type=email], select{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
+    .bigBtn{font-size:1.1rem;padding:12px 20px;margin:6px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer;}
     .small{font-size:13px;color:#666}
-    .question-group{margin-bottom:12px;}
+    .stai-options{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
+    .respRow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+    .respBtn{font-size:1.2rem;padding:14px 24px;margin:6px;min-width:110px;border-radius:10px;border:1px solid #444;background:#f2f2f2;cursor:pointer;transition:background-color 0.2s;}
+    .respBtn-active{background-color:#bdbdbd;}
     .hand-grid-header{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
     .hand-grid-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;padding:4px 0}
     .hand-grid-row span{flex:2}
     .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:10px}
-    .stai-options{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
-    .consent-text-container {max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; text-align: left; background-color: #f9f9f9; border-radius: 4px;}
+    #consentText{max-height:240px;overflow-y:auto;border:1px solid #ccc;padding:8px;border-radius:6px;margin-bottom:10px;font-size:14px;line-height:1.4}
+    .note{font-size:12px;color:#666;margin-top:6px}
   </style>
 </head>
 <body>
-  <h1>Dikotik Dinleme Izmir</h1>
+<h1>Dikotik Dinleme İzmir</h1>
 
-  <div id="participantCard" class="card">
-    
-    <h3>Katılımcı Bilgileri</h3>
-    <p class="small" style="margin-bottom: 10px;">Çalışmamıza hoş geldiniz.<strong> Çalışma süresince kulaklık takmanız gerekmektedir.</strong></p>
-    <div><input id="name" placeholder="Adınızın ilk iki harfini giriniz"></div>
-    <div><input id="surname" placeholder="Soyadınızın ilk iki harfini giriniz"></div>
-    <div><input id="age" type="number" placeholder="Yaşınız"></div>
-    <div><input id="race" placeholder="Doğum yerinizi şehir ve ülke olarak giriniz"></div>
-    <div><input id="motherTongue" placeholder="Anadilinizi giriniz, varsa ikinci anadilinizi de girebilirsiniz"></div>
-    <div>
-      <select id="gender">
-        <option value="">Cinsiyetinizi seçiniz</option>
-        <option value="Kadın">Kadın</option>
-        <option value="Erkek">Erkek</option>
-        <option value="Diğer">Diğer</option>
-      </select>
-    </div>
-    <div>
-      <select id="projectCode">
-        <option value="">Proje Kodu Seçin</option>
-        <option value="OykuTez">OykuTez</option>
-        <option value="Diğer">Diğer</option>
-        <option value="Izmir">Izmir</option>
-        <option value="Esporcu">espor</option>
-        <option value="Sporcu">Sporcu</option>
-        <option value="Migren">migren</option>
-      </select>
-    </div>
-    <div style="margin-top:8px"><button id="toPreScreenBtn" class="bigBtn">Devam</button></div>
-    <div id="codeInfo" class="small" style="margin-top:8px"></div>
+<!-- 1️⃣ PROJE KODU SEÇİMİ -->
+<div id="projectCard" class="card">
+  <h3>Proje Kodu Seçimi</h3>
+  <select id="projectCode">
+    <option value="">Proje Kodunuzu Seçin</option>
+    <option value="OykuTez">OykuTez</option>
+    <option value="Izmir">Izmir</option>
+    <option value="Esporcu">Esporcu</option>
+    <option value="Sporcu">Sporcu</option>
+    <option value="Diger">Diğer</option>
+  </select>
+  <div style="margin-top:8px"><button id="toPreScreenBtn" class="bigBtn">Devam</button></div>
+</div>
+
+<!-- 2️⃣ ÖN SORGULAMA -->
+<div id="preScreenCard" class="card hidden">
+  <h3>Ön Sorgulama</h3>
+  <p class="small">Katılımcı uygunluk kontrolü için birkaç soru yanıtlayınız.</p>
+  <label><input type="checkbox" id="noHearingIssue"> İşitme sorunum yok</label><br>
+  <label><input type="checkbox" id="noNeurologicalIssue"> Nörolojik bir rahatsızlığım yok</label><br>
+  <label><input type="checkbox" id="noLanguageIssue"> Dil veya konuşma bozukluğum yok</label>
+  <div style="margin-top:8px">
+    <button id="backToProjectBtn" class="bigBtn">Geri</button>
+    <button id="toInfoBtn" class="bigBtn">Devam</button>
   </div>
-  
-  <div id="preScreenCard" class="card hidden">
-      <h1>Katılım Durumu</h1>
-      <label for="hasParticipated" style="font-weight: bold;">Daha Önce Katıldınız Mı?</label>
-      <select id="hasParticipated">
-          <option value="">Lütfen Seçiniz</option>
-          <option value="first_full">İlk defa katılıyorum ve tam katılacağım.</option>
-          <option value="first_half">İlk defa katıldım ancak yarım bıraktım (STAI'dan devam edeceğim).</option>
-          <option value="second_full" class="oykutez-only">İkinci kez katılıyorum ve tam katılacağım (OykuTez Projesi)</option>
-          <option value="second_half" class="oykutez-only">İkinci kez katıldım ancak yarım bıraktım (STAI'dan devam edeceğim) (OykuTez Projesi)</option>
-      </select>
-      
-      <div id="prevCodeInput" class="hidden">
-          <label for="prevCode" style="margin-top: 10px; font-weight: bold;">Önceki Katılımcı Kodunuz:</label>
-          <input type="text" id="prevCode" placeholder="Kodunuzu buraya giriniz">
-      </div>
+</div>
 
-      <div style="margin-top:8px; display: flex; justify-content: space-between;">
-        <button id="backToParticipantBtn" class="bigBtn">Geri</button>
-        <button id="toFlowBtn" class="bigBtn">Devam</button>
-      </div>
+<!-- 3️⃣ KATILIMCI BİLGİLERİ -->
+<div id="participantCard" class="card hidden">
+  <h3>Katılımcı Bilgileri</h3>
+  <p class="note">Ad-soyad değil, sadece ilk iki harf girilebilir (çalışma gizliliği için).</p>
+  <input id="name" placeholder="Adınızın ilk iki harfi (örn: Al)">
+  <input id="surname" placeholder="Soyadınızın ilk iki harfi (örn: Ka)">
+  <input id="age" type="number" placeholder="Yaşınız">
+  <input id="race" placeholder="Doğum Yeri / Köken (Şehir, Ülke)">
+  <input id="motherTongue" placeholder="Anadiliniz (ve varsa 2. anadil)">
+  <input id="email" type="email" placeholder="E-posta adresiniz (hatırlatma amacıyla)">
+  <input id="phone" type="text" placeholder="Telefon numaranız (hatırlatma amacıyla)">
+  <select id="gender">
+    <option value="">Cinsiyetinizi Seçiniz</option>
+    <option value="Kadın">Kadın</option>
+    <option value="Erkek">Erkek</option>
+    <option value="Diğer">Diğer</option>
+  </select>
+  <div style="margin-top:8px"><button id="toConsentBtn" class="bigBtn">Devam</button></div>
+  <div id="codeInfo" class="small" style="margin-top:6px"></div>
+</div>
+
+<!-- 4️⃣ AYDINLATILMIŞ ONAM -->
+<div id="consentCard" class="card hidden">
+  <h3>Aydınlatılmış Onam Formu</h3>
+  <div id="consentText" contenteditable="true">
+    <h4>Aydınlatılmış Onam Metni (örnek)</h4>
+    <p><strong>Sayın Katılımcı,</strong></p>
+    <p>Bu çalışma, işitsel algı ve dikkat süreçlerinin araştırılması amacıyla yürütülmektedir. Çalışmaya katılım tamamen gönüllülük esasına dayanmaktadır. Katılım sırasında elde edilen veriler anonimleştirilecek ve sadece katılımcı kodu ile analiz edilecektir. Katılım sürecinde dilediğiniz zaman çalışmadan ayrılabilirsiniz.</p>
+    <p>Deney yaklaşık 20-30 dakika sürecektir. Katılımınız sırasında herhangi bir risk öngörülmemektedir.</p>
+    <p>Bu metni dilediğiniz zaman düzenleyebilirsiniz. (Bu bloğu düzenleyerek onam metnini güncelleyin.)</p>
   </div>
-
-
-  <div id="consentCard" class="card hidden">
-      <h3>Aydınlatılmış Onam Formu</h3>
-      <div id="consentTextContainer" class="consent-text-container">
-          <p>Lütfen bekleyiniz, onam metni yükleniyor...</p>
-      </div>
-      <div style="margin-top:10px; display: flex; justify-content: space-between;">
-          <button id="rejectConsentBtn" class="bigBtn" style="background-color: #f44336; color: white;">Kabul Etmiyorum</button>
-          <button id="acceptConsentBtn" class="bigBtn" style="background-color: #4CAF50; color: white;">Okudum, Anladım, Onaylıyorum</button>
-      </div>
+  <label><input type="checkbox" id="consentAgree"> Yukarıdaki metni okudum, anladım ve katılmayı kabul ediyorum.</label>
+  <div style="margin-top:8px">
+    <button id="backToInfoBtn" class="bigBtn">Geri</button>
+    <button id="toHandBtn" class="bigBtn">Devam</button>
   </div>
+</div>
 
-  <div id="rejectionCard" class="card hidden">
-      <h3>Katılım Reddedildi</h3>
-      <p>Aydınlatılmış Onam Formunu onaylamadığınız için çalışmamıza katılmayı kabul etmediniz. Fikrinizi değiştirmeniz durumunda size verilen linke tekrar tıklayarak ve onay vererek çalışmamıza katılabilirsiniz. Desteğiniz için teşekkür ederiz.</p>
+<!-- 5️⃣ EL KULLANIMI TESTİ -->
+<div id="handUseCard" class="card hidden">
+  <h3>El Kullanımı Testi</h3>
+  <div id="handUseQuestions"></div>
+  <div style="margin-top:8px">
+    <button id="backToParticipantFromHand" class="bigBtn">Geri</button>
+    <button id="toStaiBtn" class="bigBtn">Devam</button>
   </div>
+</div>
 
-  <div id="staiTxiCard" class="card hidden">
-    <h3>STAI-TXI Formu</h3>
-    <p style="font-weight: 600; margin-bottom: 12px;">
-      Aşağıdaki soruları <strong>üzerine düşünmeden, aklınıza ilk gelen seçeneği işaretleyerek</strong> yanıtlayınız. Değerlendirme yaparken, <strong>şu anki halinizi</strong> göz önüne alınız.
-    </p>
-    <div id="staiQuestions"></div>
-    <div style="margin-top:10px; display: flex; justify-content: space-between;">
-      <button id="backToPreScreenBtnStai" class="bigBtn">Geri</button>
-      <button id="toHandednessBtn" class="bigBtn">Devam</button>
-    </div>
+<!-- 6️⃣ STAI FORMU -->
+<div id="staiCard" class="card hidden">
+  <h3>STAI-TXI Formu</h3>
+  <p style="font-weight:600">Aklınıza ilk gelen seçeneği işaretleyiniz.</p>
+  <div id="staiQuestions"></div>
+  <div style="margin-top:8px">
+    <button id="backToHandFromStai" class="bigBtn">Geri</button>
+    <button id="toHearingBtn" class="bigBtn">Devam</button>
   </div>
+</div>
 
-  <div id="handUseCard" class="card hidden">
-      <h3>El Kullanımı Testi</h3>
-      <p class="small" style="margin-bottom: 10px;">Sağ veya sol elinizi hangi işlemlerde kullandığınızı bilmek istiyoruz. Lütfen her işlemde kullandığınız ele göre ‘sol’ veya ‘sağ’ hanesindeki kutucukları işaretleyin. Mesela yazı yazarken, genellikle sağ ama ara sıra sol elinizi kullanıyorsanız, <strong> her iki ele ait kutucuklardan birer tanesini işaretleyin </strong>. Daima sağ elinizi kullanıyorsanız, <strong>sağ el atındaki kutucukların her ikisini de işaretleyin.</strong> <strong>Lütfen her eylem için en az iki kutucuk işaretlemeyi unutmayın./</strong> Diğer soruları aynı şekilde cevaplandırın.</p>
-      <div id="handUseQuestions"></div>
-      <div style="margin-top:8px; display: flex; justify-content: space-between;">
-        <button id="backToStaiBtn" class="bigBtn">Geri</button>
-        <button id="toHearingBtn" class="bigBtn">Devam</button>
-      </div>
+<!-- 7️⃣ İŞİTME TESTİ -->
+<div id="hearingCard" class="card hidden">
+  <h3>İşitme Kontrolü</h3>
+  <p class="small">1500 Hz tonu ile her iki kulakta ses duyabildiğinizi kontrol edin.</p>
+  <div><strong>Sağ Kulak</strong><br><input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5"><button id="playRight" class="bigBtn">Oynat / Durdur</button></div>
+  <div style="margin-top:8px"><strong>Sol Kulak</strong><br><input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Oynat / Durdur</button></div>
+  <div style="margin-top:8px">
+    <button id="backToStaiFromHearing" class="bigBtn">Geri</button>
+    <button id="toSessionIntro" class="bigBtn">Devam</button>
   </div>
+</div>
 
-  <div id="hearingCard" class="card hidden">
-      <h3>İşitme Kontrolü</h3>
-      <div style="margin-top:8px"><button id="backToHandBtn" class="bigBtn">Geri</button></div>
-      <div><strong>Sağ kulak (1500 Hz)</strong><br>
-        <input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5">
-        <button id="playRight" class="bigBtn">Oynat / Durdur</button>
-      </div>
-      <div style="margin-top:12px"><strong>Sol kulak (1500 Hz)</strong><br>
-        <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5">
-        <button id="playLeft" class="bigBtn">Oynat / Durdur</button>
-      </div>
-      <div style="margin-top:12px"><button id="toSessionIntro" class="bigBtn">Devam</button></div>
+<!-- 8️⃣ DİKOTİK DİNLEME TESTİ -->
+<div id="sessionIntro" class="card hidden">
+  <h3 id="sessionTitle"></h3>
+  <p id="sessionInstr"></p>
+  <div style="margin-top:8px"><button id="sessionStartBtn" class="bigBtn">Devam</button></div>
+</div>
+
+<div id="waitScreen" class="card hidden"><h3>Test birazdan başlıyor... lütfen kulaklık ses seviyesini değiştirmeyin</h3></div>
+
+<div id="trialCard" class="card hidden">
+  <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
+  <audio id="stimAudio" controls style="display:none" preload="auto"></audio>
+  <div class="respRow">
+    <button class="respBtn" data-val="BA">BA</button>
+    <button class="respBtn" data-val="DA">DA</button>
+    <button class="respBtn" data-val="GA">GA</button>
+    <button class="respBtn" data-val="KA">KA</button>
+    <button class="respBtn" data-val="PA">PA</button>
+    <button class="respBtn" data-val="TA">TA</button>
   </div>
+</div>
 
-  <div id="sessionIntro" class="card hidden">
-      <h3 id="sessionTitle"></h3>
-      <p id="sessionInstr"></p>
-      <div style="margin-top:10px"><button id="sessionStartBtn" class="bigBtn">Devam</button></div>
-  </div>
+<div id="endCard" class="card hidden">
+  <h3>Deney tamamlandı ✅</h3>
+  <div id="doneLog" class="small"></div>
+</div>
 
-  <div id="waitScreen" class="card hidden"><h3>Test birazdan başlıyor...lütfen kulaklık ses seviyesini değiştirmeyin</h3></div>
-
-  <div id="trialCard" class="card hidden">
-    <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
-    <audio id="stimAudio" controls style="display:none" preload="auto"></audio>
-    <div class="respRow">
-      <button class="respBtn" data-val="BA">BA</button>
-      <button class="respBtn" data-val="DA">DA</button>
-      <button class="respBtn" data-val="GA">GA</button>
-      <button class="respBtn" data-val="KA">KA</button>
-      <button class="respBtn" data-val="PA">PA</button>
-      <button class="respBtn" data-val="TA">TA</button>
-    </div>
-  </div>
-
-  <div id="endCard" class="card hidden">
-    <h3>Deney tamamlandı ✅</h3>
-    <div id="doneLog" class="small"></div>
-  </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', ()=>{
 
-/* --- Config --- */
+/* ---------- Helpers & State ---------- */
+const $id = id => document.getElementById(id);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+
 const CONFIG = {
-    EMAILJS_USER: document.querySelector('meta[name="emailjs-user"]').content,
-    EMAILJS_SERVICE: document.querySelector('meta[name="emailjs-service"]').content,
-    EMAILJS_TEMPLATES: {
-        'OykuTez': "template_r6sddff", // Lütfen kendi şablon ID'nizle güncelleyin
-        'Diğer': document.querySelector('meta[name="emailjs-template"]').content // Varsayılan/Mevcut şablon
-    },
-    AUDIO_PATH: '/sounds/erkek/' 
+  EMAILJS_USER: document.querySelector('meta[name="emailjs-user"]').content,
+  EMAILJS_SERVICE: document.querySelector('meta[name="emailjs-service"]').content,
+  EMAILJS_TEMPLATES: {
+    'OykuTez': "template_r6sddff",
+    'Izmir': document.querySelector('meta[name="emailjs-template"]').content,
+    'Esporcu': document.querySelector('meta[name="emailjs-template"]').content,
+    'Sporcu': document.querySelector('meta[name="emailjs-template"]').content,
+    'Diger': document.querySelector('meta[name="emailjs-template"]').content
+  },
+  AUDIO_PATH: '/sounds/erkek/'
 };
 
-/* --- Sabit Onam Metinleri --- */
-const CONSENT_TEXTS = {
-    "OykuTez": `
-        <h4>Yüksek Lisans Tez Projesi Aydınlatılmış Onam Metni</h4>
-        <p>Merhaba, bu çalışma Ege Üniversitesi'nde yürütülen bir yüksek lisans tez çalışmasıdır. Katılımınız tamamen gönüllülük esasına dayanmaktadır.</p>
-        <p>Çalışma yaklaşık 20 dakika sürecektir. Çalışma sırasında kişisel bilgileriniz gizli tutulacak ve sadece katılımcı kodu üzerinden analiz edilecektir. Çalışmanın herhangi bir aşamasında dilediğiniz zaman, herhangi bir sebep göstermeksizin ayrılma hakkına sahipsiniz.</p>
-        <p>Lütfen testlere başlamadan önce kulaklığınızın takılı olduğundan ve ses seviyesinin rahatınız için uygun olduğundan emin olunuz.</p>
-    `,
-    "default": `
-        <h4>Genel Onay Metni</h4>
-        <p>Çalışmanın gönüllülük esasına dayandığını ve verilerinizin gizli tutulacağını onaylıyor musunuz?</p>
-    `
-};
-const removedOptions = []; // OykuTez dışındaki projeler için seçenekleri tutmak
+let participant = { projectCode: '' }, results = [], currentTrial = -1, currentSessionIndex = 0, sessionOrder = [];
+let audioCtx = null, rightOsc=null,leftOsc=null,rightGain=null,leftGain=null,rightLevel=0.5,leftLevel=0.5,trialTimeout=null,isResponseAllowed=false;
 
-/* --- State --- */
-let participant={}, results=[], currentTrial=-1, sessionOrder=[], currentSessionIndex=0;
-let rightLevel=0.5,leftLevel=0.5,trialTimeout=null,isResponseAllowed=false;
-
-/* --- Playlist, STAI, Hand Use Constants (Aynı Kaldı) --- */
+/* ---------- Playlists & instr ---------- */
 const mainPlaylist=[ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav",
 "LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav",
 "LBA-RGA.wav","LKA-RPA.wav","LTA-RDA.wav","LGA-RKA.wav","LPA-RDA.wav","LGA-RGA.wav",
@@ -233,351 +196,335 @@ const instr = {
   FR: "Şimdi her iki kulağınıza farklı heceler gelecek. Lütfen <b>sağ kulağınıza</b> odaklanın ve sağ kulağınızdan duyduğunuz heceyi işaretleyiniz.",
   FL: "Şimdi her iki kulağınıza farklı heceler gelecek. Lütfen <b>sol kulağınıza</b> odaklanın ve sol kulağınızdan duyduğunuz heceyi işaretleyiniz."
 };
-const staiQuestions=[ "Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin",
-"Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok",
-"Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım",
-"Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim",
-"Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum",
-"Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum",
-"Şu anda sevinçliyim","Şu anda keyfim yerinde"];
-const handUseQuestions=["Yazmak","Çizmek","Taş Atmak","Makas kullanmak","Diş fırçası kullanmak",
-"Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"];
 
-/* --- Helpers (Aynı Kaldı) --- */
-function $id(i){return document.getElementById(i)}
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function trToEn(s){return s.replace(/Ğ/g,"G").replace(/ğ/g,"g").replace(/İ/g,"I").replace(/ı/g,"i").replace(/Ş/g,"S").replace(/ş/g,"s").replace(/Ü/g,"U").replace(/ü/g,"u").replace(/Ö/g,"O").replace(/ö/g,"o").replace(/Ç/g,"C").replace(/ç/g,"c")}
-function loadConsentText(projectCode) {
-    const textContainer = $id('consentTextContainer');
-    const text = CONSENT_TEXTS[projectCode] || CONSENT_TEXTS.default; 
-    textContainer.innerHTML = text;
-}
-function renderStai(){const c=$id("staiQuestions");c.innerHTML="";
- staiQuestions.forEach((q,i)=>{c.innerHTML+=`<div class="question-group"><p>${i+1}. ${q}</p>
- <div class="stai-options">
- <label><input type="radio" name="staiQ${i+1}" value="1">Hiç</label>
- <label><input type="radio" name="staiQ${i+1}" value="2">Biraz</label>
- <label><input type="radio" name="staiQ${i+1}" value="3">Çok</label>
- <label><input type="radio" name="staiQ${i+1}" value="4">Tamamıyla</label>
- </div></div>`;});}
-function renderHand(){const c=$id("handUseQuestions");c.innerHTML=
- `<div class="hand-grid-header"><div style="flex:2"></div><div style="flex:1;text-align:center">Sol</div><div style="flex:1;text-align:center">Sağ</div></div>`;
- handUseQuestions.forEach((q,i)=>{const qid=`handQ${i+1}`;
- c.innerHTML+=`<div class="hand-grid-row" data-question-id="${qid}">
- <span>${i+1}. ${q}</span>
- <div class="col"><input type="checkbox" class="left-option"><input type="checkbox" class="left-option"></div>
- <div class="col"><input type="checkbox" class="right-option"><input type="checkbox" class="right-option"></div>
- </div>`;});}
+/* ---------- UI flow handlers ---------- */
 
-
-/* --- Katılımcı kodu --- */
-function makeCode(){
-    const n=trToEn($id('name').value.trim()),
-    s=trToEn($id('surname').value.trim()),
-    a=$id('age').value.trim(),
-    g=$id('gender').value.trim(),
-    r=$id('race').value.trim(),
-    m=$id('motherTongue').value.trim(),
-    p=$id('projectCode').value.trim();
-
-    if (!n || !s || !a || !r || !m || !g || !p) { alert("Lütfen tüm katılımcı bilgilerini ve proje kodunu doldurunuz."); return false; }
-
-    participant={age:a,gender:g,race:r,motherTongue:m,name:n,surname:s,projectCode:p};
-    const four=(n.padEnd(2).slice(0,2)+s.padEnd(2).slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
-    const rand5=Math.floor(10000+Math.random()*90000);
-    participant.code=p+"_"+four+"_"+rand5;
-    $id('codeInfo').innerText="Katılımcı kodu: "+participant.code;
-    return true;
-}
-
-/* --- İşitme testi --- (Aynı Kaldı) */
-let audioCtx=null,rightOsc=null,leftOsc=null,rightGain=null,leftGain=null;
-function ensureCtx(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
-function startTone(ch){ensureCtx();
- if(ch==='right'&&!rightOsc){rightOsc=audioCtx.createOscillator();rightGain=audioCtx.createGain();
- rightOsc.frequency.value=1500;rightGain.gain.value=Number(rightLevel);
- const m=audioCtx.createChannelMerger(2);rightOsc.connect(rightGain);rightGain.connect(m,0,1);m.connect(audioCtx.destination);rightOsc.start();}
- if(ch==='left'&&!leftOsc){leftOsc=audioCtx.createOscillator();leftGain=audioCtx.createGain();
- leftOsc.frequency.value=1500;leftGain.gain.value=Number(leftLevel);
- const m=audioCtx.createChannelMerger(2);leftOsc.connect(leftGain);leftGain.connect(m,0,0);m.connect(audioCtx.destination);leftOsc.start();}}
-function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=null;rightGain=null}
- if(ch==='left'&&leftOsc){leftOsc.stop();leftOsc=null;leftGain=null}}catch(e){}}
-
-
-/* ---------------------------------------------------------------------- */
-/* --- NAVİGASYON VE AKIŞ KONTROLÜ (DÜZELTİLMİŞ) --- */
-/* ---------------------------------------------------------------------- */
-
-// Step 1: Katılımcı Bilgilerinden Ön Sorgulamaya
-$id('toPreScreenBtn').onclick=()=>{
-    if(!makeCode()) return; 
-
-    $id('participantCard').classList.add('hidden');
-    $id('preScreenCard').classList.remove('hidden');
-
-    // Proje kodu OykuTez değilse, sadece birinci katılım seçeneklerini göster.
-    const selectElement = $id('hasParticipated');
-    const isOykuTez = participant.projectCode === 'OykuTez';
-    
-    // Geri gelme durumunda seçenekleri geri ekle
-    while (removedOptions.length > 0) {
-        selectElement.appendChild(removedOptions.shift());
-    }
-
-    if (!isOykuTez) {
-        const oykutezOptions = selectElement.querySelectorAll('.oykutez-only');
-        oykutezOptions.forEach(option => {
-            if (option.parentNode === selectElement) {
-                removedOptions.push(option);
-                selectElement.removeChild(option);
-            }
-        });
-    }
-
-    $id('hasParticipated').value = '';
-    $id('prevCodeInput').classList.add('hidden');
+/* 1 -> 2 */
+$id('toPreScreenBtn').onclick = () => {
+  const proj = $id('projectCode').value;
+  if(!proj){ alert("Lütfen proje kodu seçiniz."); return; }
+  participant.projectCode = proj;
+  $id('projectCard').classList.add('hidden');
+  $id('preScreenCard').classList.remove('hidden');
 };
 
-// Ön Sorgulama (Katılım Durumu) Seçimi Değiştiğinde
-$id('hasParticipated').onchange = (e) => {
-    const val = e.target.value;
-    if (val === 'first_half' || val === 'second_full' || val === 'second_half') {
-        $id('prevCodeInput').classList.remove('hidden');
-    } else {
-        $id('prevCodeInput').classList.add('hidden');
-    }
+/* back */
+$id('backToProjectBtn').onclick = () => {
+  $id('preScreenCard').classList.add('hidden');
+  $id('projectCard').classList.remove('hidden');
 };
 
-// Step 2: Ön Sorgulamadan Akışa Başlama
-$id('toFlowBtn').onclick = () => {
-    const hasParticipated = $id('hasParticipated').value;
-    if (!hasParticipated) { alert("Lütfen katılım durumunuzu belirtiniz."); return; }
-    
-    $id('preScreenCard').classList.add('hidden');
-    participant.hasParticipated = hasParticipated;
-    const isOykuTez = participant.projectCode === 'OykuTez';
-
-    if (hasParticipated === 'first_full') {
-        if (isOykuTez) {
-            // OykuTez İlk Tam Katılım: Onay Formu
-            loadConsentText(participant.projectCode);
-            $id('consentCard').classList.remove('hidden');
-        } else {
-            // Diğer Projeler İlk Tam Katılım: Direkt STAI
-            $id('staiTxiCard').classList.remove('hidden');
-            renderStai();
-        }
-    } else {
-        // Devam Katılımları (Half/Second)
-        const prevCode = $id('prevCode').value.trim();
-        if (!prevCode) { alert("Lütfen bir önceki katılımcı kodunuzu giriniz."); $id('preScreenCard').classList.remove('hidden'); return; }
-        
-        participant.prevCode = prevCode;
-        
-        if (hasParticipated === 'first_half' || hasParticipated === 'second_half') {
-            // Yarım bırakanlar STAI'dan başlar
-            $id('staiTxiCard').classList.remove('hidden'); 
-            renderStai(); 
-            
-        } else if (hasParticipated === 'second_full') {
-            // İkinci Tam Katılım STAI'yı atlayıp İşitme Kontrolüne gider
-            $id('hearingCard').classList.remove('hidden'); 
-        }
-    }
+/* 2 -> 3 */
+$id('toInfoBtn').onclick = () => {
+  if(!$id('noHearingIssue').checked || !$id('noNeurologicalIssue').checked || !$id('noLanguageIssue').checked){
+    alert("Devam edebilmek için tüm kutuları işaretleyiniz."); return;
+  }
+  $id('preScreenCard').classList.add('hidden');
+  $id('participantCard').classList.remove('hidden');
 };
 
-// Step 3: Onam Kabul Edildi
-$id('acceptConsentBtn').onclick = () => {
-    $id('consentCard').classList.add('hidden');
-    // Onaylandıktan sonra STAI ekranına geç.
-    $id('staiTxiCard').classList.remove('hidden'); 
-    renderStai();
-};
+/* 3 -> consent/hand */
+$id('toConsentBtn').onclick = () => {
+  const fields = ['name','surname','age','race','motherTongue','email','phone','gender'];
+  for(const f of fields){ if(!$id(f).value.trim()){ alert("Lütfen tüm alanları doldurunuz."); return; } }
+  participant.name = $id('name').value.trim();
+  participant.surname = $id('surname').value.trim();
+  participant.age = $id('age').value.trim();
+  participant.race = $id('race').value.trim();
+  participant.motherTongue = $id('motherTongue').value.trim();
+  participant.email = $id('email').value.trim();
+  participant.phone = $id('phone').value.trim();
+  participant.gender = $id('gender').value.trim();
 
-// Step 4: Onam Reddedildi
-$id('rejectConsentBtn').onclick = () => {
-    $id('consentCard').classList.add('hidden');
-    $id('rejectionCard').classList.remove('hidden'); 
-};
+  // generate participant.code (simple)
+  const initials = (participant.name.slice(0,2)+participant.surname.slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
+  const rand = Math.floor(10000 + Math.random()*90000);
+  participant.code = `${participant.projectCode}_${initials}_${rand}`;
+  $id('codeInfo').innerText = "Katılımcı kodu: "+participant.code;
 
-
-// Diğer Navigasyon Butonları
-$id('toHandednessBtn').onclick=()=>{const answered=document.querySelectorAll('#staiQuestions input:checked').length;if(answered<staiQuestions.length){alert("Lütfen tüm STAI sorularını yanıtlayınız.");return;}
- const ans={};document.querySelectorAll('#staiQuestions input:checked').forEach(i=>ans[i.name]=i.value);participant.staiAnswers=ans;
- $id('staiTxiCard').classList.add('hidden');$id('handUseCard').classList.remove('hidden');renderHand();};
-$id('toHearingBtn').onclick=()=>{let ok=true;const groups=document.querySelectorAll('#handUseQuestions .hand-grid-row');
- for(const g of groups){const c=g.querySelectorAll('input:checked').length;if(c!==2){ok=false;alert("Her işlem için tam olarak 2 kutucuk işaretleyiniz.");break;}}
- if(!ok)return;const ans={};groups.forEach(g=>{const q=g.dataset.questionId,l=g.querySelectorAll('.left-option:checked').length,r=g.querySelectorAll('.right-option:checked').length;ans[q]={left:l,right:r};});participant.handUseAnswers=ans;
- $id('handUseCard').classList.add('hidden');$id('hearingCard').classList.remove('hidden');};
-$id('toSessionIntro').onclick=()=>{stopTone('right');stopTone('left');
- results.push({session:"hearing_level",stim:"1500Hz",response:`right=${rightLevel},left=${leftLevel}`});
- $id('hearingCard').classList.add('hidden');
- sessionOrder=['training','NF',...shuffle(['FR','FL'])];currentSessionIndex=0;
- showSessionIntro();};
-
-/* --- İşitme Butonları --- */
-$id('playRight').onclick=()=>{if(rightOsc){stopTone('right');}else{stopTone('left');startTone('right');}};
-$id('rightSlider').oninput=e=>{rightLevel=e.target.value;if(rightGain)rightGain.gain.value=Number(rightLevel);};
-$id('playLeft').onclick=()=>{if(leftOsc){stopTone('left');}else{stopTone('right');startTone('left');}};
-$id('leftSlider').oninput=e=>{leftLevel=e.target.value;if(leftGain)leftGain.gain.value=Number(leftLevel);};
-
-/* --- Geri Butonları (GÜNCELLENDİ) --- */
-$id('backToParticipantBtn').onclick = () => {
-    $id('preScreenCard').classList.add('hidden');
-    $id('participantCard').classList.remove('hidden');
-};
-
-$id('backToPreScreenBtnStai').onclick = () => {
-    $id('staiTxiCard').classList.add('hidden');
-    $id('preScreenCard').classList.remove('hidden');
-};
-
-$id('backToStaiBtn').onclick = () => {
-    $id('handUseCard').classList.add('hidden');
-    $id('staiTxiCard').classList.remove('hidden');
-    renderStai(); 
-};
-
-$id('backToHandBtn').onclick = () => {
-    stopTone('right');
-    stopTone('left');
-    $id('hearingCard').classList.add('hidden');
+  $id('participantCard').classList.add('hidden');
+  if(participant.projectCode === 'OykuTez'){
+    // show consent
+    $id('consentCard').classList.remove('hidden');
+  } else {
+    // skip consent
     $id('handUseCard').classList.remove('hidden');
     renderHand();
+  }
 };
 
+/* consent back */
+$id('backToInfoBtn').onclick = () => {
+  $id('consentCard').classList.add('hidden');
+  $id('participantCard').classList.remove('hidden');
+};
 
-/* --- Oturum & Deneme Mantığı ve Veri Gönderimi (Aynı Kaldı) --- */
-function showSessionIntro(){const s=sessionOrder[currentSessionIndex];$id('sessionTitle').innerText="Oturum: "+s;
- $id('sessionInstr').innerHTML=instr[s];$id('sessionIntro').classList.remove('hidden');}
-async function unlockAudio(){try{const a=$id('stimAudio');a.src=CONFIG.AUDIO_PATH+"silence.wav";await a.play();}catch(e){console.warn("Audio unlock failed.");}}
-$id('sessionStartBtn').onclick=async ()=>{$id('sessionIntro').classList.add('hidden');
- await unlockAudio();$id('waitScreen').classList.remove('hidden');
- setTimeout(()=>{ $id('waitScreen').classList.add('hidden'); startSession(); }, 3000);};
-function startSession(){currentTrial=-1;$id('trialCard').classList.remove('hidden');nextTrial();}
-function nextTrial(){clearTimeout(trialTimeout);const sessionType=sessionOrder[currentSessionIndex];
- const playlist=(sessionType==='training')?trainingPlaylist:mainPlaylist;
- currentTrial++;if(currentTrial>=playlist.length){$id('trialCard').classList.add('hidden');
-  currentSessionIndex++;if(currentSessionIndex<sessionOrder.length){showSessionIntro();}else{endExperiment();}return;}
- const stim=playlist[currentTrial];$id('trialStatus').innerText=`Deneme ${currentTrial+1}/${playlist.length} (${sessionType})`;
- playStim(stim);}
+/* consent -> hand */
+$id('toHandBtn').onclick = () => {
+  if(!$id('consentAgree').checked){ alert("Lütfen onam kutusunu işaretleyiniz."); return; }
+  $id('consentCard').classList.add('hidden');
+  $id('handUseCard').classList.remove('hidden');
+  renderHand();
+};
+
+/* hand back */
+$id('backToParticipantFromHand').onclick = () => {
+  $id('handUseCard').classList.add('hidden');
+  $id('participantCard').classList.remove('hidden');
+};
+
+/* hand -> STAI */
+$id('toStaiBtn').onclick = () => {
+  const rows = document.querySelectorAll('#handUseQuestions .hand-grid-row');
+  for(const r of rows){ if(r.querySelectorAll('input:checked').length !== 2){ alert("Her satırda 2 kutucuk işaretleyiniz."); return; } }
+  participant.handUse = Array.from(rows).map(r=>({
+    q: r.dataset.q,
+    left: r.querySelectorAll('.left:checked').length,
+    right: r.querySelectorAll('.right:checked').length
+  }));
+  $id('handUseCard').classList.add('hidden');
+  renderStai();
+  $id('staiCard').classList.remove('hidden');
+};
+
+/* STAI back */
+$id('backToHandFromStai').onclick = () => {
+  $id('staiCard').classList.add('hidden');
+  $id('handUseCard').classList.remove('hidden');
+};
+
+/* STAI -> hearing */
+$id('toHearingBtn').onclick = () => {
+  const answered = document.querySelectorAll('#staiQuestions input:checked').length;
+  const total = document.querySelectorAll('#staiQuestions input[type=radio]').length/4;
+  if(answered < total){ alert("Lütfen tüm STAI sorularını yanıtlayınız."); return; }
+  // store STAI
+  const ans = {};
+  document.querySelectorAll('#staiQuestions input:checked').forEach(i => ans[i.name] = i.value);
+  participant.staiAnswers = ans;
+
+  $id('staiCard').classList.add('hidden');
+  $id('hearingCard').classList.remove('hidden');
+};
+
+/* hearing back */
+$id('backToStaiFromHearing').onclick = () => {
+  stopTone('right'); stopTone('left');
+  $id('hearingCard').classList.add('hidden');
+  $id('staiCard').classList.remove('hidden');
+};
+
+/* hearing -> session intro */
+$id('toSessionIntro').onclick = () => {
+  stopTone('right'); stopTone('left');
+  // save hearing levels
+  participant.rightLevel = rightLevel;
+  participant.leftLevel = leftLevel;
+  results.push({ session: "hearing_level", stim: "1500Hz", response: `right=${rightLevel},left=${leftLevel}`, code: participant.code });
+  $id('hearingCard').classList.add('hidden');
+
+  sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
+  currentSessionIndex = 0;
+  showSessionIntro();
+};
+
+/* ---------- Render helpers ---------- */
+function renderHand(){
+  const c = $id('handUseQuestions');
+  const q = ["Yazmak","Çizmek","Taş atmak","Makas kullanmak","Diş fırçası kullanmak","Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"];
+  c.innerHTML = '<div class="hand-grid-header"><div style="flex:2"></div><div style="flex:1;text-align:center">Sol</div><div style="flex:1;text-align:center">Sağ</div></div>';
+  q.forEach((txt,i)=>{
+    c.innerHTML += `<div class="hand-grid-row" data-q="${i+1}"><span>${i+1}. ${txt}</span>
+      <div class="col"><input type="checkbox" class="left"><input type="checkbox" class="left"></div>
+      <div class="col"><input type="checkbox" class="right"><input type="checkbox" class="right"></div>
+    </div>`;
+  });
+}
+
+function renderStai(){
+  const questions = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
+  const c = $id('staiQuestions'); c.innerHTML = '';
+  questions.forEach((txt,i)=>{
+    c.innerHTML += `<div class="question-group"><p>${i+1}. ${txt}</p>
+      <div class="stai-options">
+        <label><input type="radio" name="staiQ${i+1}" value="1">Hiç</label>
+        <label><input type="radio" name="staiQ${i+1}" value="2">Biraz</label>
+        <label><input type="radio" name="staiQ${i+1}" value="3">Çok</label>
+        <label><input type="radio" name="staiQ${i+1}" value="4">Tamamıyla</label>
+      </div></div>`;
+  });
+}
+
+/* ---------- Audio helpers ---------- */
+function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function startTone(ch){
+  ensureCtx();
+  if(ch==='right' && !rightOsc){
+    rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
+    rightOsc.frequency.value = 1500; rightGain.gain.value = Number(rightLevel);
+    const m = audioCtx.createChannelMerger(2); rightOsc.connect(rightGain); rightGain.connect(m,0,1); m.connect(audioCtx.destination); rightOsc.start();
+  }
+  if(ch==='left' && !leftOsc){
+    leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
+    leftOsc.frequency.value = 1500; leftGain.gain.value = Number(leftLevel);
+    const m = audioCtx.createChannelMerger(2); leftOsc.connect(leftGain); leftGain.connect(m,0,0); m.connect(audioCtx.destination); leftOsc.start();
+  }
+}
+function stopTone(ch){ try{ if(ch==='right'&&rightOsc){ rightOsc.stop(); rightOsc=null; rightGain=null;} if(ch==='left'&&leftOsc){ leftOsc.stop(); leftOsc=null; leftGain=null;} }catch(e){} }
+
+$id('playRight').onclick = ()=>{ if(rightOsc){ stopTone('right'); } else { stopTone('left'); startTone('right'); } };
+$id('playLeft').onclick  = ()=>{ if(leftOsc){ stopTone('left'); } else { stopTone('right'); startTone('left'); } };
+$id('rightSlider').oninput = e => { rightLevel = e.target.value; if(rightGain) rightGain.gain.value = Number(rightLevel); };
+$id('leftSlider').oninput  = e => { leftLevel = e.target.value; if(leftGain) leftGain.gain.value = Number(leftLevel); };
+
+/* ---------- Session / Trials ---------- */
+function showSessionIntro(){
+  const s = sessionOrder[currentSessionIndex];
+  $id('sessionTitle').innerText = "Oturum: " + s;
+  $id('sessionInstr').innerHTML = instr[s];
+  $id('sessionIntro').classList.remove('hidden');
+}
+async function unlockAudio(){
+  try{
+    const a = $id('stimAudio'); a.src = CONFIG.AUDIO_PATH + "silence.wav"; await a.play(); a.pause(); a.currentTime = 0;
+  }catch(e){ console.warn("Audio unlock failed:", e); }
+}
+$id('sessionStartBtn').onclick = async ()=>{
+  $id('sessionIntro').classList.add('hidden');
+  await unlockAudio();
+  $id('waitScreen').classList.remove('hidden');
+  setTimeout(()=>{ $id('waitScreen').classList.add('hidden'); startSession(); }, 2000);
+};
+
+function startSession(){ currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }
+function nextTrial(){
+  clearTimeout(trialTimeout);
+  const sessionType = sessionOrder[currentSessionIndex];
+  const playlist = (sessionType === 'training') ? trainingPlaylist : mainPlaylist;
+  currentTrial++;
+  if(currentTrial >= playlist.length){
+    $id('trialCard').classList.add('hidden');
+    currentSessionIndex++;
+    if(currentSessionIndex < sessionOrder.length){ showSessionIntro(); }
+    else { endExperiment(); }
+    return;
+  }
+  const stim = playlist[currentTrial];
+  $id('trialStatus').innerText = `Deneme ${currentTrial+1}/${playlist.length} (${sessionType})`;
+  playStim(stim);
+}
+
 function playStim(stim){
   const a = $id('stimAudio');
   isResponseAllowed = false;
   a.src = CONFIG.AUDIO_PATH + stim;
-  a.play();
-
+  a.play().catch(e=>console.warn("play error",e));
   a.onplaying = () => {
-    setTimeout(() => {
-      isResponseAllowed = true;
-    }, 500);
+    setTimeout(()=>{ isResponseAllowed = true; }, 500);
   };
+  trialTimeout = setTimeout(()=>{
+    if(sessionOrder[currentSessionIndex] !== 'training'){
+      results.push({ session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim: stim, response: "no_response", code: participant.code, age: participant.age, gender: participant.gender });
+    }
+    nextTrial();
+  }, 4000);
+}
 
-  trialTimeout = setTimeout(() => {
-    if (sessionOrder[currentSessionIndex] !== 'training') {
+/* response buttons */
+document.querySelectorAll('.respBtn').forEach(btn=>{
+  btn.onclick = ()=>{
+    if(!isResponseAllowed) return;
+    isResponseAllowed = false;
+    clearTimeout(trialTimeout);
+    const resp = btn.dataset.val;
+    const sessionType = sessionOrder[currentSessionIndex];
+    const playlist = (sessionType === 'training') ? trainingPlaylist : mainPlaylist;
+    const stim = playlist[currentTrial];
+
+    if(sessionType !== 'training'){
       results.push({
         session: sessionType,
-        trial: currentTrial + 1,
+        trial: currentTrial+1,
         stim: stim,
-        response: "no_response",
-        rightLevel: "",
-        leftLevel: "",
+        response: resp,
+        rightLevel: participant.rightLevel || "",
+        leftLevel: participant.leftLevel || "",
         age: participant.age || "",
         gender: participant.gender || "",
         race: participant.race || "",
         motherTongue: participant.motherTongue || "",
-        projectCode: participant.projectCode || "",
         code: participant.code || ""
       });
     }
-    nextTrial();
-  }, 4000); 
-}
-document.querySelectorAll('.respBtn').forEach(btn=>{btn.onclick=()=>{
- if(!isResponseAllowed)return;isResponseAllowed=false;clearTimeout(trialTimeout);
- const resp=btn.dataset.val;const sessionType=sessionOrder[currentSessionIndex];
- 
- const stimToSave = sessionType === 'training' ? $id('stimAudio').src.split('/').pop() : mainPlaylist[currentTrial];
- 
- if(sessionType!=='training'){
-  results.push({
-    session: sessionType,
-    trial: currentTrial+1,
-    stim: stimToSave,
-    response: resp,
-    rightLevel: "",
-    leftLevel: "",
-    age: participant.age || "",
-    gender: participant.gender || "",
-    race: participant.race || "",
-    motherTongue: participant.motherTongue || "",
-    projectCode: participant.projectCode || "",
-    code: participant.code || ""
-  });
- }
- btn.classList.add('respBtn-active');
- setTimeout(()=>{btn.classList.remove('respBtn-active');},500);
- setTimeout(()=>{nextTrial();},2500); 
-};});
 
+    btn.classList.add('respBtn-active');
+    setTimeout(()=>{ btn.classList.remove('respBtn-active'); }, 500);
+    setTimeout(()=>{ nextTrial(); }, 2500);
+  };
+});
+
+/* ---------- End & Data ---------- */
 async function endExperiment(){
-    $id('endCard').classList.remove('hidden');
-    await sendEmail();
-}
-
-async function sendEmail(){
-    const csv = makeCsv();
-    if(!csv) return;
-    
-    const projectCode = participant.projectCode || 'Diğer';
-    const templateID = CONFIG.EMAILJS_TEMPLATES[projectCode] || CONFIG.EMAILJS_TEMPLATES['Diğer'];
-
-    try{
-        emailjs.init(CONFIG.EMAILJS_USER);
-        const resp=await emailjs.send(CONFIG.EMAILJS_SERVICE, templateID, {
-            subject:participant.code,
-            message:csv
-        });
-        $id('doneLog').innerText="Verileriniz başarıyla kaydedildi. Katılımınız için teşekkürler. E-posta gönderim durumu: "+JSON.stringify(resp);
-    }catch(err){
-        $id('doneLog').innerText="Verileriniz kaydedildi, ancak e-posta gönderilemedi: "+JSON.stringify(err);
-    }
+  $id('endCard').classList.remove('hidden');
+  const csv = makeCsv();
+  $id('doneLog').innerText = "Veri hazır. (CSV satır sayısı: " + (csv ? csv.split('\\n').length : 0) + ")";
+  // sendEmail(); // opsiyonel: e-posta göndermek istersen yorumdan çıkar
 }
 
 function makeCsv(){
-    const allData = [
-        {
-            session: "info",
-            trial: 0,
-            response: participant.hasParticipated || "", // Katılım durumunu info satırına ekle
-            prevCode: participant.prevCode || "", // Önceki kodu info satırına ekle
-            rightLevel: participant.rightLevel || "",
-            leftLevel: participant.leftLevel || "",
-            age: participant.age || "",
-            gender: participant.gender || "",
-            race: participant.race || "",
-            motherTongue: participant.motherTongue || "",
-            projectCode: participant.projectCode || "",
-            staiAnswers: JSON.stringify(participant.staiAnswers || {}),
-            handUseAnswers: JSON.stringify(participant.handUseAnswers || {}),
-            code: participant.code || ""
-        },
-        ...results
-    ];
-    // response, stim, prevCode alanlarını düzenledik
-    const keys = ["session", "trial", "response", "prevCode", "rightLevel", "leftLevel", "age", "gender", "race", "motherTongue", "projectCode", "staiAnswers", "handUseAnswers", "code", "stim"];
-    const header = keys.join(',');
-    const rows = allData.map(r => {
-        return keys.map(k => {
-            const v = (r[k] === null || r[k] === undefined) ? "" : String(r[k]).replace(/,/g, ';').replace(/"/g, '""');
-            return `"${v}"`;
-        }).join(',');
-    });
-    return [header, ...rows].join('\n');
+  const allData = [
+    {
+      session: "info",
+      trial: 0,
+      stim: "",
+      response: "",
+      rightLevel: participant.rightLevel || "",
+      leftLevel: participant.leftLevel || "",
+      age: participant.age || "",
+      gender: participant.gender || "",
+      race: participant.race || "",
+      motherTongue: participant.motherTongue || "",
+      email: participant.email || "",
+      phone: participant.phone || "",
+      projectCode: participant.projectCode || "",
+      staiAnswers: JSON.stringify(participant.staiAnswers || {}),
+      handUseAnswers: JSON.stringify(participant.handUse || {}),
+      code: participant.code || ""
+    },
+    ...results
+  ];
+  const keys = ["session","trial","stim","response","rightLevel","leftLevel","age","gender","race","motherTongue","email","phone","projectCode","staiAnswers","handUseAnswers","code"];
+  const header = keys.join(',');
+  const rows = allData.map(r=> keys.map(k=>{
+    const v = (r[k] === null || r[k] === undefined) ? "" : String(r[k]).replace(/,/g,';');
+    return `"${v}"`;
+  }).join(','));
+  return [header, ...rows].join('\\n');
 }
 
-  // DOMContentLoaded end
-});
+/* sendEmail (optional, using emailjs) */
+async function sendEmail(){
+  const csv = makeCsv();
+  if(!csv) return;
+  const projectCode = participant.projectCode || 'Diger';
+  const templateID = CONFIG.EMAILJS_TEMPLATES[projectCode] || CONFIG.EMAILJS_TEMPLATES['Diger'];
+  try{
+    if(!window.emailjs){
+      const s = document.createElement('script'); s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+      await new Promise((res,rej)=>{ s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+      emailjs.init(CONFIG.EMAILJS_USER);
+    }
+    const resp = await emailjs.send(CONFIG.EMAILJS_SERVICE, templateID, { subject: participant.code, message: csv });
+    $id('doneLog').innerText = "E-posta gönderim durumu: " + JSON.stringify(resp);
+  }catch(err){
+    alert("E-posta gönderilemedi: " + JSON.stringify(err));
+  }
+}
+
+/* ---------- Init UI ---------- */
+renderStai(); // prepare stai markup (will be re-rendered when needed)
+}); // DOMContentLoaded end
 </script>
+
 </body>
 </html>
