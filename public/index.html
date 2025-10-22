@@ -69,13 +69,15 @@
     <h3>Ön Sorgulama</h3>
     <p>Bu deneye daha önceki katılım durumunuz nedir?</p>
     <div>
-        <select id="hasParticipated">
-            <option value="">Lütfen Seçiniz</option>
-            <option value="first_full">1. İlk defa katılıyorum ve şimdi tamamlayacağım.</option>
-            <option value="first_half">2. İlk defa katıldım ancak testi yarım bıraktım.</option>
-            <option value="second_full" class="oykutez-only">3. Daha önce bir kez katıldım (tamamladım veya yarım bıraktım).</option>
-            <option value="second_half" class="oykutez-only">4. Daha önce iki kez katıldım (İkinci kez katılımda testi yarım bıraktım).</option>
-        </select>
+        <div>
+    <select id="hasParticipated">
+        <option value="">Lütfen Seçiniz</option>
+        <option value="first_full">1. İlk defa katılıyorum ve şimdi tamamlayacağım.</option>
+        <option value="first_half">2. İlk defa katıldım ancak testi yarım bıraktım.</option>
+        <option value="second_full" class="oykutez-only">3. Daha önce bir kez katıldım (tamamladım veya yarım bıraktım).</option>
+        <option value="second_half" class="oykutez-only">4. Daha önce iki kez katıldım (İkinci kez katılımda testi yarım bıraktım).</option>
+    </select>
+</div>
     </div>
     <div id="prevCodeInput" class="hidden">
         <p class="small">Lütfen bir önceki katılımcı kodunuzu giriniz.</p>
@@ -189,7 +191,8 @@ const CONFIG = {
 let participant={projectCode: ''}, results=[], currentTrial=-1, sessionOrder=[], currentSessionIndex=0;
 let rightLevel=0.5,leftLevel=0.5,trialTimeout=null,isResponseAllowed=false;
 let currentFlow = ''; // 'full' (tam test), 'dichotic_only' (sadece dikotik)
-
+let removedOptions = [];
+  
 /* --- Playlist --- */
 const mainPlaylist=[ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav",
 "LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav",
@@ -272,33 +275,46 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
 
 /* --- Navigasyon ve Akış Yönetimi --- */
 
-// 1. Proje Kodu seçimi sonrası -> Ön Sorgulama Ekranı (GÜNCELLENDİ)
+// 1. Proje Kodu seçimi sonrası -> Ön Sorgulama Ekranı (GÜNCEL)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     $id('participantCard').classList.add('hidden');
     $id('preScreenCard').classList.remove('hidden');
 
+    const selectElement = $id('hasParticipated');
     const isOykuTez = participant.projectCode === 'OykuTez';
-    // Sadece OykuTez'e özgü seçenekleri seçiyoruz
-    const oykutezOptions = document.querySelectorAll('#hasParticipated .oykutez-only');
     
-    // Opsiyonları gösterme/gizleme mantığı
-    oykutezOptions.forEach(option => {
-        if (isOykuTez) {
-            // OykuTez ise göster (Varsayılan display değeri)
-            option.style.display = ''; 
-        } else {
-            // OykuTez değilse gizle
-            option.style.display = 'none'; 
-        }
-    });
+    // Önceki çağrıda kaldırılan seçenekleri geri ekle (Geri butonu ile gelindiyse)
+    while (removedOptions.length > 0) {
+        selectElement.appendChild(removedOptions.shift());
+    }
+
+    // YENİ KISITLAMA MANTIĞI: OykuTez değilse, seçenekleri kaldır
+    if (!isOykuTez) {
+        const oykutezOptions = selectElement.querySelectorAll('.oykutez-only');
+        oykutezOptions.forEach(option => {
+            // Seçenek listedeyse, kaldır ve removedOptions dizisine sakla
+            if (option.parentNode === selectElement) {
+                removedOptions.push(option);
+                selectElement.removeChild(option);
+            }
+        });
+    }
 
     // Ekran açılırken seçimi sıfırla
-    $id('hasParticipated').value = ''; 
+    selectElement.value = '';
+    
+    // Sadece OykuTez akışında göründüğü için burada göstergeyi de kontrol edelim
+    $id('prevCodeInput').classList.add('hidden');
 };
-
-// Ön Sorgulama Geri Butonu
+// Ön Sorgulama Geri Butonu (GÜNCEL)
 $id('backToProjectCodeBtn').onclick=()=>{
+    const selectElement = $id('hasParticipated');
+    // Kaldırılan seçenekleri geri ekle (Gelecek seçim için hazırla)
+    while (removedOptions.length > 0) {
+        selectElement.appendChild(removedOptions.shift());
+    }
+    
     $id('preScreenCard').classList.add('hidden');
     $id('participantCard').classList.remove('hidden');
 };
