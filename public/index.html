@@ -295,11 +295,22 @@ function makeCode(){
     return true;
 }
 
-function generateParticipantCode(n, s, a, g, r, m, p){
-    const four=(trToEn(n).padEnd(2).slice(0,2)+trToEn(s).padEnd(2).slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
-    const rand5=Math.floor(10000+Math.random()*90000);
-    participant.code=four+"_"+rand5;
-    $id('codeInfo').innerText="Katılımcı kodu: "+participant.code;
+// Katılımcı kodunu oluşturur ve participant objesine atar
+function generateParticipantCode(name, surname, age, gender, race, motherTongue, projectCode) {
+    const initials = (name.charAt(0) + surname.charAt(0)).toUpperCase();
+    const ageCode = String(age).padStart(2, '0');
+    const genderCode = gender.charAt(0).toUpperCase();
+    const raceCode = race.charAt(0).toUpperCase();
+    const langCode = motherTongue.charAt(0).toUpperCase();
+    const timestamp = Date.now() % 100000; // Son 5 hane
+    
+    // Kod oluşturuldu
+    participant.code = `${projectCode}_${initials}${ageCode}${genderCode}${raceCode}${langCode}_${timestamp}`;
+    
+    // **ÖNEMLİ:** Eskiden burada ekran açma komutu vardı. Kaldırıldı.
+
+    // Kod bilgisini göster
+    $id('codeInfo').innerText = "Katılımcı Kodunuz: " + participant.code;
 }
 
 /* --- İşitme testi --- */
