@@ -73,8 +73,8 @@
             <option value="">Lütfen Seçiniz</option>
             <option value="first_full">1. İlk defa katılıyorum ve şimdi tamamlayacağım.</option>
             <option value="first_half">2. İlk defa katıldım ancak testi yarım bıraktım.</option>
-            <option value="second_full">3. Daha önce bir kez katıldım (tamamladım veya yarım bıraktım).</option>
-            <option value="second_half">4. Daha önce iki kez katıldım (İkinci kez katılımda testi yarım bıraktım).</option>
+            <option value="second_full" class="oykutez-only">3. Daha önce bir kez katıldım (tamamladım veya yarım bıraktım).</option>
+            <option value="second_half" class="oykutez-only">4. Daha önce iki kez katıldım (İkinci kez katılımda testi yarım bıraktım).</option>
         </select>
     </div>
     <div id="prevCodeInput" class="hidden">
@@ -86,8 +86,8 @@
         <button id="backToProjectCodeBtn" class="bigBtn">Geri</button>
         <button id="toNextStepBtn" class="bigBtn">Devam</button>
     </div>
-  </div>
-
+</div>
+  
   <div id="infoCard" class="card hidden">
     <h3>Katılımcı Bilgileri</h3>
     <p class="small" style="margin-bottom: 10px;">Çalışmamıza hoş geldiniz.<strong> Çalışma süresince kulaklık takmanız gerekmektedir.</strong> Bu bölüme girdiğiniz bilgileri doğru girdiğinize emin olun. Sizden tam adınızı ve soyadınızı girmenizi istemiyoruz.</p>
@@ -272,22 +272,29 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
 
 /* --- Navigasyon ve Akış Yönetimi --- */
 
-// 1. Proje Kodu seçimi sonrası -> Ön Sorgulama Ekranı
+// 1. Proje Kodu seçimi sonrası -> Ön Sorgulama Ekranı (GÜNCELLENDİ)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     $id('participantCard').classList.add('hidden');
     $id('preScreenCard').classList.remove('hidden');
 
-    // Sadece 'OykuTez' için ön sorgulama gösterilir, diğerleri doğrudan Bilgi Ekranına geçer
-    if (participant.projectCode !== 'OykuTez') {
-        $id('hasParticipated').value = 'no';
-        $id('prevCodeInput').classList.add('hidden');
-        $id('toNextStepBtn').click(); // Doğrudan sonraki adıma geç
-    } else {
-        // OykuTez ise seçimi sıfırla ve göster
-        $id('hasParticipated').value = ''; 
-        $id('prevCodeInput').classList.add('hidden');
-    }
+    const isOykuTez = participant.projectCode === 'OykuTez';
+    // Sadece OykuTez'e özgü seçenekleri seçiyoruz
+    const oykutezOptions = document.querySelectorAll('#hasParticipated .oykutez-only');
+    
+    // Opsiyonları gösterme/gizleme mantığı
+    oykutezOptions.forEach(option => {
+        if (isOykuTez) {
+            // OykuTez ise göster (Varsayılan display değeri)
+            option.style.display = ''; 
+        } else {
+            // OykuTez değilse gizle
+            option.style.display = 'none'; 
+        }
+    });
+
+    // Ekran açılırken seçimi sıfırla
+    $id('hasParticipated').value = ''; 
 };
 
 // Ön Sorgulama Geri Butonu
