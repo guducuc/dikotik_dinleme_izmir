@@ -316,16 +316,18 @@ function stopTone(ch){try{if(ch==='right'&&rightOsc){rightOsc.stop();rightOsc=nu
  if(ch==='left'&&leftOsc){leftOsc.stop();leftOsc=null;leftGain=null}}catch(e){}}
 
 /* --- Navigasyon ve Akış Yönetimi --- */
-// 1. Proje Kodu seçimi sonrası -> AYDINLATILMIŞ ONAM EKRANINA GEÇ (HATA DÜZELTİLDİ)
+// 1. Proje Kodu seçimi sonrası -> AYDINLATILMIŞ ONAM EKRANINA GEÇ (HATA DÜZELTME GÜNCELLEMESİ)
 $id('toPreScreenBtn').onclick=()=>{
     if(!makeCode()) return;
     
-    // Geçişten önce ilgili tüm kartları gizle (Savunma amaçlı)
-    $id('participantCard').classList.add('hidden');
-    $id('preScreenCard').classList.add('hidden'); // Ön Sorgulama ekranını gizle
-    $id('infoCard').classList.add('hidden');     // Katılımcı Bilgileri ekranını gizle
+    // Gerekli tüm kartları gizle
+    $id('participantCard').classList.add('hidden'); // Proje Kodu Seçim kartını gizle
+    $id('preScreenCard').classList.add('hidden');  // Ön Sorgulama ekranını gizle
+    $id('infoCard').classList.add('hidden');      // Katılımcı Bilgileri ekranını GİZLE
+    $id('consentCard').classList.add('hidden');   // (Gerekliyse) Onam Kartını da gizle
+    $id('rejectionCard').classList.add('hidden'); // Reddedilme Kartını gizle
 
-    // Yeni Akış: Önce Aydınlatılmış Onam Ekranına Geç
+    // Yeni Akış: SADECE Aydınlatılmış Onam Ekranını Aç
     $id('consentCard').classList.remove('hidden');
     
     // Onay Metnini Yükle
