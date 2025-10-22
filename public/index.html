@@ -111,6 +111,8 @@
     <div><input id="age" type="number" placeholder="Yaşınız"></div>
     <div><input id="race" placeholder="Doğum yerinizi şehir ve ülke olarak giriniz"></div>
     <div><input id="motherTongue" placeholder="Anadilinizi giriniz, varsa ikinci anadilinizi de girebilirsiniz"></div>
+    <label for="email">E-posta Adresiniz (Sadece hatırlatma amaçlıdır):</label>
+    <input type="email" id="email" placeholder="ornek@mail.com">
     <div>
         <select id="gender">
             <option value="">Cinsiyetinizi seçiniz</option>
@@ -347,7 +349,9 @@ $id('toPreScreenBtn').onclick=()=>{
     // Ekran açılırken seçimi sıfırla
     selectElement.value = '';
     $id('prevCodeInput').classList.add('hidden');
-};
+  // YENİ: OykuTez projesi ise e-posta alanını göster/gizle
+    $id('email').parentNode.style.display = isOykuTez ? 'block' : 'none'; // E-posta input'unun parent'ını göster/gizle
+}; // Fonksiyon sonu
 
   // Ön Sorgulama Geri Butonu (GÜNCEL)
 $id('backToProjectCodeBtn').onclick=()=>{
@@ -498,16 +502,24 @@ $id('rejectConsentBtn').onclick = () => {
     // Reddedildiğinde sadece Reddetme Mesajı kartını göster ve akışı bitir.
     $id('rejectionCard').classList.remove('hidden'); 
 };
-// 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (GÜNCELLENDİ)
+// 3. Blok: Bilgi Girişi sonrası -> EL KULLANIMI TESTİ (GÜNCEL)
 $id('toHandednessBtnNew').onclick=()=>{
     // Yalnızca 'full' akışındakiler bu ekranı görmelidir.
     if (currentFlow !== 'full') return; 
 
     const n=$id('name').value.trim(), s=$id('surname').value.trim(), a=$id('age').value.trim(), g=$id('gender').value.trim(), r=$id('race').value.trim(), m=$id('motherTongue').value.trim();
-    if (!n || !s || !a || !r || !m || !g) { alert("Lütfen tüm katılımcı bilgilerini doldurunuz."); return; }
+    const e = $id('email').value.trim(); // YENİ: E-posta adresini al
+
+    // Zorunlu alan kontrolü
+    if (!n || !s || !a || !r || !m || !g) { alert("Lütfen tüm zorunlu katılımcı bilgilerini doldurunuz."); return; }
+    
+    // YENİ KONTROL: OykuTez ise e-posta zorunlu
+    if (participant.projectCode === 'OykuTez' && !e) {
+        alert("Lütfen hatırlatma e-postası için e-posta adresinizi giriniz."); return;
+    }
 
     // Yeni bilgileri kaydet
-    Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, name:n, surname:s});
+    Object.assign(participant, {age:a, gender:g, race:r, motherTongue:m, email:e, name:n, surname:s}); // YENİ: E-postayı kaydet
     
     // Yeni kod oluştur (sadece 'full' akışında)
     generateParticipantCode(n, s, a, g, r, m, participant.projectCode);
@@ -516,6 +528,7 @@ $id('toHandednessBtnNew').onclick=()=>{
     $id('handUseCard').classList.remove('hidden'); // El Kullanımı Testine geçiş
     renderHand();
 };
+  
   // 3. STAI sonrası -> İşitme Kontrolü
 $id('toHandednessBtn').onclick=()=>{
     const answered=document.querySelectorAll('#staiQuestions input:checked').length;
@@ -695,7 +708,8 @@ function makeCsv(){
             gender: participant.gender || "",
             race: participant.race || "",
             motherTongue: participant.motherTongue || "",
-            projectCode: participant.projectCode || "", 
+            email: participant.email || "", // YENİ: E-posta alanını ekle  
+            projectCode: participant.projectCode || "", 
             prevCode: participant.prevCode || "", // Yeni
             staiAnswers: JSON.stringify(participant.staiAnswers || {}),
             handUseAnswers: JSON.stringify(participant.handUseAnswers || {}),
