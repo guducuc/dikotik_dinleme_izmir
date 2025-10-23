@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Dikotik Dinleme — Tam Sürüm</title>
 
-<!-- EmailJS meta (senin değerlerin) -->
 <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
 <meta name="emailjs-service" content="service_a8bnfmk">
 <meta name="emailjs-template"content="template_7elc4wi">
@@ -35,7 +34,6 @@
 <body>
 <h1>Dikotik Dinleme</h1>
 
-<!-- 1) Proje Kodu -->
 <div id="projectCard" class="card">
   <h3>Proje Kodu Seçimi</h3>
   <select id="projectCode">
@@ -48,14 +46,15 @@
   <div style="margin-top:8px"><button id="toParticipationBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 2) Katılım durumu (ön sorgulama) -->
 <div id="participationCard" class="card hidden">
   <h3>Katılım Durumu</h3>
   <div id="participationOptions" class="small"></div>
-  <div style="margin-top:8px"><button id="toNextStepBtn" class="bigBtn">Devam</button></div>
+  <div style="margin-top:8px; display: flex; justify-content: space-between;">
+    <button id="backToProjectCodeBtn" class="bigBtn">Geri</button>
+    <button id="toNextStepBtn" class="bigBtn">Devam</button>
+  </div>
 </div>
 
-<!-- 3a) İlk kez => Onam -->
 <div id="consentCard" class="card hidden">
   <h3>Aydınlatılmış Onam</h3>
   <div id="consentText" style="border:1px solid #ddd;padding:8px;border-radius:6px;max-height:220px;overflow:auto">
@@ -70,7 +69,6 @@
     Katılım kabul edilmedi. Deney sonlandırıldı.
   </div>
 
-<!-- Modal popup for long consent text -->
 <div id="consentModal" class="modal hidden">
   <div class="modal-content">
     <span id="closeConsentModal" class="close">&times;</span>
@@ -88,7 +86,6 @@
 
 </div>
 
-<!-- 3b) İlk kez: Katılımcı bilgileri (sadece onay sonrası) -->
 <div id="infoCard" class="card hidden">
   <h3>Katılımcı Bilgileri</h3>
   <div class="small">Ad ve soyad için ilk 2 harf yeterli (gizlilik).</div>
@@ -104,7 +101,6 @@
   <div style="margin-top:8px"><button id="toHandFromInfo" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 4) Daha önce katılmışsa: kod girişi (yeniden bilgi istemiyoruz) -->
 <div id="enterCodeCard" class="card hidden">
   <h3>Önceki Katılımcı Kodu</h3>
   <div class="small">Daha önce katıldıysanız lütfen katılımcı kodunuzu girin.</div>
@@ -112,7 +108,6 @@
   <div style="margin-top:8px"><button id="toStaiDirectBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 5) El kullanımı (STAI'dan önce) -->
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
   <p class="small">Her işlem için kullandığınız eli işaretleyin. (Her satır için 2 kutucuk — sol/sağ kombinasyonu — beklenir.)</p>
@@ -120,14 +115,12 @@
   <div style="margin-top:8px"><button id="toStaiBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 6) STAI -->
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
   <div id="staiQuestions"></div>
   <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 7) İşitme (iki slider) -->
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
   <p class="small">1500 Hz tonunu sol ve sağ kulak için ayrı ayrı test edin. Birini çalarken diğeri durur.</p>
@@ -144,14 +137,12 @@
   <div style="margin-top:12px"><button id="toSessionIntro" class="bigBtn">Devam</button></div>
 </div>
 
-<!-- 8) Oturum tanıtımı -->
 <div id="sessionIntro" class="card hidden">
   <h3 id="sessionTitle"></h3>
   <p id="sessionInstr"></p>
   <div style="margin-top:8px"><button id="sessionStartBtn" class="bigBtn">Başla</button></div>
 </div>
 
-<!-- 9) Deneme -->
 <div id="trialCard" class="card hidden">
   <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
   <audio id="stimAudio" preload="auto"></audio>
@@ -165,7 +156,6 @@
   </div>
 </div>
 
-<!-- 10) Bitiş -->
 <div id="endCard" class="card hidden">
   <h3>Deney tamamlandı ✅</h3>
   <div id="doneLog" class="small"></div>
@@ -229,26 +219,33 @@ $id('toParticipationBtn').onclick = ()=>{
   renderParticipationOptions(proj);
 };
 
+/* ---------- Participation back button ---------- */
+$id('backToProjectCodeBtn').onclick = () => {
+    $id('participationCard').classList.add('hidden');
+    $id('projectCard').classList.remove('hidden');
+};
 
 function renderParticipationOptions(project){
   const el = $id('participationOptions'); el.innerHTML = '';
   if(project === 'OykuTez'){
-  el.innerHTML = `
-    <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-    <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-    <label style="margin-right:12px"><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
-    <label style="margin-right:12px"><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
-  `;
-} else {
-  el.innerHTML = `
-    <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-    <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-  `;
+    el.innerHTML = `
+      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+      <label style="margin-right:12px"><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
+      <label style="margin-right:12px"><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
+    `;
+  } else {
+    el.innerHTML = `
+      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+    `;
+  }
 }
 
+/* ---------- FIX: toNextStepBtn event handler - Added checks and logging for debugging ---------- */
 $id('toNextStepBtn').onclick = ()=>{
   const sel = document.querySelector('input[name="participation"]:checked');
-  if(!sel){ alert('Lütfen bir seçenek seçiniz.'); return; }
+  if(!sel){ alert('Lütfen bir seçenek seçiniz.'); return; } // <--- Büyük ihtimalle bu uyarıyı alıyordunuz.
   const val = sel.value;
   participant.participation = val;
   $id('participationCard').classList.add('hidden');
