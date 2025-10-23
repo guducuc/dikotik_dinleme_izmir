@@ -69,6 +69,23 @@
   <div id="consentDeclinedMsg" class="small hidden" style="margin-top:10px;color:#c0392b">
     Katılım kabul edilmedi. Deney sonlandırıldı.
   </div>
+
+<!-- Modal popup for long consent text -->
+<div id="consentModal" class="modal hidden">
+  <div class="modal-content">
+    <span id="closeConsentModal" class="close">&times;</span>
+    <h3>Aydınlatılmış Onam Formu (Tam Metin)</h3>
+    <p>Buraya projenin tam onam metni (4 sayfa) yerleştirilebilir. Bu alan kaydırılabilir.</p>
+  </div>
+</div>
+
+<style>
+.modal{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none}
+.modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:10px;max-width:600px;max-height:80vh;overflow-y:auto}
+.close{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888}
+.close:hover{color:#000}
+</style>
+
 </div>
 
 <!-- 3b) İlk kez: Katılımcı bilgileri (sadece onay sonrası) -->
@@ -78,9 +95,12 @@
   <input id="name" placeholder="Ad (ilk 2 harf)">
   <input id="surname" placeholder="Soyad (ilk 2 harf)">
   <input id="age" type="number" placeholder="Yaş">
+  <input id="email" type="email" placeholder="E-posta adresiniz">
+  <input id="phone" type="tel" placeholder="Telefon numaranız">
   <input id="race" placeholder="Doğum yeri / Irk">
   <input id="motherTongue" placeholder="Anadiliniz">
   <select id="gender"><option value="">Cinsiyet</option><option>Kadın</option><option>Erkek</option><option>Diğer</option></select>
+  <div id="codeInfo" class="small" style="margin-top:6px;color:#2c3e50"></div>
   <div style="margin-top:8px"><button id="toHandFromInfo" class="bigBtn">Devam</button></div>
 </div>
 
@@ -209,21 +229,21 @@ $id('toParticipationBtn').onclick = ()=>{
   renderParticipationOptions(proj);
 };
 
+
 function renderParticipationOptions(project){
   const el = $id('participationOptions'); el.innerHTML = '';
   if(project === 'OykuTez'){
-    el.innerHTML = `
-      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
-      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label><br>
-      <label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label><br>
-      <label><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
-    `;
-  } else {
-    el.innerHTML = `
-      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label><br>
-      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-    `;
-  }
+  el.innerHTML = `
+    <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+    <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+    <label style="margin-right:12px"><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
+    <label style="margin-right:12px"><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
+  `;
+} else {
+  el.innerHTML = `
+    <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+    <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+  `;
 }
 
 $id('toNextStepBtn').onclick = ()=>{
@@ -240,6 +260,14 @@ $id('toNextStepBtn').onclick = ()=>{
     $id('enterCodeCard').classList.remove('hidden');
   }
 };
+
+
+// ----- Modal popup control -----
+document.getElementById('consentText').insertAdjacentHTML('beforebegin', '<button id="openConsentPopup" class="bigBtn" style="margin-bottom:10px">Onam Formunu Görüntüle</button>');
+const openBtn=document.getElementById('openConsentPopup');
+openBtn.onclick=()=>{document.getElementById('consentModal').style.display='block';};
+document.getElementById('closeConsentModal').onclick=()=>{document.getElementById('consentModal').style.display='none';};
+window.onclick=e=>{if(e.target==document.getElementById('consentModal'))document.getElementById('consentModal').style.display='none';};
 
 /* ---------- Consent buttons ---------- */
 $id('consentAccept').onclick = ()=>{
@@ -259,6 +287,9 @@ $id('consentDecline').onclick = ()=>{
 $id('toHandFromInfo').onclick = ()=>{
   const n = $id('name').value.trim(), s = $id('surname').value.trim(), a = $id('age').value.trim();
   if(!n || !s || !a){ alert('Lütfen ad (ilk2), soyad (ilk2) ve yaşı giriniz.'); return; }
+  const e=$id('email').value.trim(), p=$id('phone').value.trim();
+  if(!e || !p){ alert('Lütfen e-posta ve telefon bilgilerinizi giriniz.'); return; }
+  participant.email=e; participant.phone=p;
   participant.name = n.slice(0,2);
   participant.surname = s.slice(0,2);
   participant.age = a;
