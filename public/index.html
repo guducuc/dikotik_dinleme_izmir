@@ -14,6 +14,7 @@
   h1{font-size:20px;margin-bottom:10px}
   .card{padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px}
   .hidden{display:none}
+  
   /* GENEL INPUT STILI */
   input,select,textarea{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
 
@@ -207,6 +208,7 @@ function renderStai(){
 function renderHand(){
   const c = $id('handUseQuestions'); c.innerHTML = `<div class="hand-grid-header"><div style="flex:2"></div><div style="flex:1;text-align:center">Sol</div><div style="flex:1;text-align:center">Sağ</div></div>`;
   handQs.forEach((q,i)=>{
+    // .hand-grid-row input[type="checkbox"] CSS kuralı sayesinde kayma sorunu düzeldi.
     c.innerHTML += `<div class="hand-grid-row" data-q="${i+1}"><span>${i+1}. ${q}</span>
       <div class="col"><input type="checkbox" class="left"><input type="checkbox" class="left"></div>
       <div class="col"><input type="checkbox" class="right"><input type="checkbox" class="right"></div>
@@ -401,6 +403,10 @@ $id('toSessionIntro').onclick = ()=>{
   // session order: training, NF, random FR/FL
   sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
   currentSessionIndex = 0;
+  
+  // FIX: İşitme kontrol kartını gizle
+  $id('hearingCard').classList.add('hidden');
+
   showSessionIntro();
 };
 
