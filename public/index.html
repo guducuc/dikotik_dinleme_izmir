@@ -16,17 +16,23 @@
   .hidden{display:none}
   input,select,textarea{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
 
-  /* FIX 3: Radyo/Checkbox kutucuklarının yanındaki yazıların alt satıra kaymasını engeller. */
+  /* FIX 2.1: Radyo/Checkbox kutucuklarının global %100 genişliğini geçersiz kılar */
   input[type="radio"], input[type="checkbox"] {
-    width: auto; /* Global 100% width'i geçersiz kılar */
-    margin-right: 4px; /* Kutucuk ile yazı arasına boşluk koyar */
+    width: auto; 
+    margin-right: 6px; 
+  }
+  
+  /* FIX 2.2: Katılım seçeneklerinin her birini yeni satırda ve düzgün hizalanmış gösterir */
+  #participationOptions label {
+      display: block;
+      margin-bottom: 8px; 
   }
 
   .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
   
-  /* FIX 2: Yanıt butonlarını 2 sütunlu grid yapısı ile düzenler */
+  /* FIX 1: Yanıt butonlarını 2 sütunlu grid yapısı ile düzenler (2 kolon 3 satır) */
   .respRow{
     display: grid; 
     grid-template-columns: 1fr 1fr; /* İki eşit sütun */
@@ -41,6 +47,7 @@
     border:1px solid #444;
     background:#f2f2f2;
     cursor:pointer;
+    text-align: center; /* Buton içeriğini ortala */
   }
 
   .respBtn-active{background:#bdbdbd}
@@ -242,19 +249,18 @@ $id('toParticipationBtn').onclick = ()=>{
 
 function renderParticipationOptions(project){
   const el = $id('participationOptions'); el.innerHTML = '';
+  // FIX 2.2: CSS'te #participationOptions label kuralı ile her seçeneğin yeni satırda ve düzgün görünmesi sağlandı.
   if(project === 'OykuTez'){
-    // Noticed you used style="margin-right:12px" on the labels, but this is causing wrapping
-    // for now, keeping the code as is since the global CSS fix for input[type="radio"] handles the main issue.
     el.innerHTML = `
-      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
+      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+      <label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
+      <label><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
     `;
   } else {
     el.innerHTML = `
-      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
     `;
   }
 }
@@ -390,6 +396,8 @@ function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=nu
 
 function startLeft(){
   ensureCtx(); stopRight(); stopLeft();
+  // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
   leftOsc.frequency.value = 1500; leftGain.gain.value = Number($id('leftSlider').value);
   const m = audioCtx.createChannelMerger(2);
@@ -398,6 +406,8 @@ function startLeft(){
 }
 function startRight(){
   ensureCtx(); stopLeft(); stopRight();
+  // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
   rightOsc.frequency.value = 1500; rightGain.gain.value = Number($id('rightSlider').value);
   const m = audioCtx.createChannelMerger(2);
@@ -418,9 +428,7 @@ $id('toSessionIntro').onclick = ()=>{
   sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
   currentSessionIndex = 0;
   
-  // FIX 1: İşitme kontrol kartını gizle
-  $id('hearingCard').classList.add('hidden');
-
+  $id('hearingCard').classList.add('hidden'); // İşitme kontrol kartını gizle
   showSessionIntro();
 };
 
