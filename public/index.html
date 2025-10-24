@@ -421,26 +421,28 @@ $id('toHearingBtn').onclick = ()=>{
   $id('staiCard').classList.add('hidden');
   $id('hearingCard').classList.remove('hidden');
 };
-
 /* ---------- Hearing: two channels ---------- */
 function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; leftGain=null; }
 function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; rightGain=null; }
 
-function startLeft(){
+// startLeft fonksiyonunu async olarak değiştiriyoruz
+async function startLeft(){
   ensureCtx(); stopRight(); stopLeft();
   // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx.state === 'suspended') await audioCtx.resume(); // await eklendi
   leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
   leftOsc.frequency.value = 1500; leftGain.gain.value = Number($id('leftSlider').value);
   const m = audioCtx.createChannelMerger(2);
   leftOsc.connect(leftGain); leftGain.connect(m,0,0); m.connect(audioCtx.destination);
   leftOsc.start();
 }
-function startRight(){
+
+// startRight fonksiyonunu async olarak değiştiriyoruz
+async function startRight(){
   ensureCtx(); stopLeft(); stopRight();
   // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  if (audioCtx.state === 'suspended') await audioCtx.resume(); // await eklendi
   rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
   rightOsc.frequency.value = 1500; rightGain.gain.value = Number($id('rightSlider').value);
   const m = audioCtx.createChannelMerger(2);
@@ -505,7 +507,7 @@ function nextTrial(){
   $id('trialStatus').innerText = `Deneme ${currentTrial+1}/${playlist.length} (${sType})`;
   playStim(stim);
 }
-
+// playStim fonksiyonu (değiştirilecek kısım)
 async function playStim(stim){
   isResponseAllowed = false;
   const path = './sounds/erkek/' + stim; // adjust if needed
@@ -513,7 +515,11 @@ async function playStim(stim){
     stimAudio.src = path;
     await stimAudio.play();
     // start timing when actually playing
-    stimAudio.onplaying = ()=> { responseStart = Date.now(); setTimeout(()=> isResponseAllowed = true, 400); };
+    stimAudio.onplaying = ()=> { 
+        responseStart = Date.now(); 
+        // 400 ms olan kısım 500 ms olarak değiştirildi
+        setTimeout(()=> isResponseAllowed = true, 500); 
+    };
     // fallback timeout
     trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex] !== 'training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); nextTrial(); }, 4000);
   }catch(e){
@@ -558,7 +564,7 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
     if(sType !== 'training'){ saveTrial(stim, resp, rt, rt); }
     btn.classList.add('respBtn-active');
     setTimeout(()=> btn.classList.remove('respBtn-active'), 300);
-    setTimeout(()=> nextTrial(), 800);
+    setTimeout(()=> nextTrial(), 2500); //yanıt sonrası bekleme süresi
   });
 });
 
