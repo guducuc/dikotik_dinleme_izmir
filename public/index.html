@@ -179,20 +179,21 @@ input[type="checkbox"] {
 
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
-  <p class="small">Her işlem için kullandığınız eli işaretleyin. (Her satır için 2 kutucuk — sol/sağ kombinasyonu — beklenir.)</p>
+  <p class="small">Aşağıda günlük hayatta yapyığınız işlemler bulunmaktadır. Lütfen her işlem için kullandığınız eli işaretleyin. Örneğin; yazı yazarken sürekli sağ elinizi kullanıyorsanız sağ el altındaki iki kutucuğu da işaretleyin. Eğer hem sol hem de sağ elinizi kullanıyorsanız her iki el için de birer kutucuk işaretleyin. Lütfen her satır için toplam 2 kutucuk işaretlemeyi unutmayın!</p>
   <div id="handUseQuestions"></div>
   <div style="margin-top:8px"><button id="toStaiBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
+  <p class="small">Aşağıda kişilerin kendilerine ait duygularını anlatmada kullandıkları bir takım ifadeler verilmiştir. Her ifadeyi okuyun, sonra da nasıl hissettiğinizi ifadelerin sağ tarafındaki parantezlerden uygun olan kutucuğu işaretleyin. Doğru ya da yanlış cevap yoktur. Herhangi bir ifadenin üzerinde fazla zaman sarf etmeksizin anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
-  <p class="small">1500 Hz tonunu sol ve sağ kulak için ayrı ayrı test edin. Birini çalarken diğeri durur.</p>
+  <p class="small">Lütfen kulaklığınızı takın! Sol ve sağ kulak için ayrı ayrı sesi dinleyin ve size uygun olan ses seviyesini ayarlayın.</p>
   <div style="margin-top:8px">
     <label><b>Sol Kulak</b></label>
     <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5">
@@ -393,11 +394,23 @@ $id('toStaiDirectBtn').onclick = ()=>{
     }
   }catch(e){ console.warn('local load err', e); }
   $id('enterCodeCard').classList.add('hidden');
-  // Directly to STAI for returning participants
-  renderStai();
-  $id('staiCard').classList.remove('hidden');
-};
+// Geri dönen katılımcılar için: STAI → İşitme testi de dahil
+renderStai();
+$id('staiCard').classList.remove('hidden');
 
+// STAI tamamlanınca işitme testine geçişi aktif et
+$id('toHearingBtn').onclick = ()=>{
+  const answered = document.querySelectorAll('#staiQuestions input:checked').length;
+  if(answered < staiQuestions.length){
+    alert('Lütfen tüm STAI sorularını yanıtlayınız.');
+    return;
+  }
+  participant.staiAnswers = {};
+  document.querySelectorAll('#staiQuestions input:checked')
+    .forEach(i=> participant.staiAnswers[i.name] = i.value);
+  $id('staiCard').classList.add('hidden');
+  $id('hearingCard').classList.remove('hidden');
+};
 /* ---------- Hand -> STAI ---------- */
 $id('toStaiBtn').onclick = ()=>{
   // validate two checked per row
@@ -490,7 +503,7 @@ const mainPlaylist = [ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","
 function showSessionIntro(){
   const s = sessionOrder[currentSessionIndex];
   $id('sessionTitle').innerText = 'Oturum: ' + s;
-  $id('sessionInstr').innerHTML = (s === 'training') ? 'Eğitim oturumu (yanıtlar kaydedilmeyecek).' : (s === 'NF' ? 'Normal odak: en iyi duyduğunuz heceyi seçiniz.' : (s === 'FR' ? 'Sağ kulağa odaklanın.' : 'Sol kulağa odaklanın.'));
+  $id('sessionInstr').innerHTML = (s === 'training') ? 'Eğitim oturumuna hoşgeldiniz. Yanıt vermeye çalışmadan heceleri dinleyin. Bir sonraki oturumda testimiz başlayacak' : (s === 'NF' ? 'Lütfen kulaklığınızın takılı olduğuna ve ses seviyeleri ile oynamadığınızdan emin olunuz. Şimdi sizden en iyi duyduğunuz heceyi seçmenizi istiyoruz.' : (s === 'FR' ? 'Şimdi sizden sağ kulağınıza odaklanmanızı ve sağ kulağınızdan duyduğunuz heceyi seçmenizi istiyoruz. Hazır olun!' : 'Şimdi sizden sol kulağınıza odaklanmanızı ve sol kulağınızdan duyduğunuz heceyi seçmenizi istiyoruz. Hazır olun!'));
   $id('sessionIntro').classList.remove('hidden');
 }
 
