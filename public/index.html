@@ -533,18 +533,21 @@ function nextTrial(){
 // playStim fonksiyonu (değiştirilecek kısım)
 async function playStim(stim){
   isResponseAllowed = false;
-  const path = './sounds/erkek/yeni' + stim; // adjust if needed
+  const path = './sounds/erkek/yeni/' + stim; // adjust if needed
   try{
     stimAudio.src = path;
     await stimAudio.play();
-    // start timing when actually playing
-    stimAudio.onplaying = ()=> { 
-        responseStart = Date.now(); 
-        // 400 ms olan kısım 500 ms olarak değiştirildi
-        setTimeout(()=> isResponseAllowed = true, 500); 
-    };
-    // fallback timeout
-    trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex] !== 'training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); nextTrial(); }, 4000);
+    
+    // FIX: onplaying olayına güvenmek yerine, play() promise'ının çözülmesini baz alıyoruz.
+    // Bu, özellikle oturumun ilk denemesinde yanıtın etkinleşmesini garanti eder.
+    responseStart = Date.now(); 
+    setTimeout(()=> isResponseAllowed = true, 500); 
+
+    // 4000ms zaman aşımı (timeout)
+    trialTimeout = setTimeout(()=>{ 
+        if(sessionOrder[currentSessionIndex] !== 'training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); 
+        nextTrial(); 
+    }, 4000);
   }catch(e){
     console.warn('Audio play failed', e);
     // mark no_response and continue
