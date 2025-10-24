@@ -238,27 +238,27 @@ function renderParticipationOptions(project){
   el.innerHTML = '';
   if(project === 'OykuTez'){
     el.innerHTML = `
-      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+      <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <input type="radio" name="participation" value="1"> İlk kez katılıyorum
-      </label></div>
-      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
-      </label></div>
-      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <input type="radio" name="participation" value="3"> İkinci kez katılıyorum
-      </label></div>
-      <div><label style="display:flex;align-items:center;gap:6px;">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;">
         <input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım
-      </label></div>
+      </label>
     `;
   } else {
     el.innerHTML = `
-      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+      <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
         <input type="radio" name="participation" value="1"> İlk kez katılıyorum
-      </label></div>
-      <div><label style="display:flex;align-items:center;gap:6px;">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;">
         <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
-      </label></div>
+      </label>
     `;
   }
 }
