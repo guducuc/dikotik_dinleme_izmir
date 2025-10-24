@@ -429,27 +429,50 @@ function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=nu
 // startLeft fonksiyonunu async olarak değiştiriyoruz
 async function startLeft(){
   ensureCtx(); stopRight(); stopLeft();
-  // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
-  if (audioCtx.state === 'suspended') await audioCtx.resume(); // await eklendi
-  leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
-  leftOsc.frequency.value = 1500; leftGain.gain.value = Number($id('leftSlider').value);
-  const m = audioCtx.createChannelMerger(2);
-  leftOsc.connect(leftGain); leftGain.connect(m,0,0); m.connect(audioCtx.destination);
+  // FIX: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklendi.
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  
+  leftOsc = audioCtx.createOscillator(); 
+  leftGain = audioCtx.createGain();
+  
+  // YENİ: Sesi kesin olarak sol kanala yönlendirmek için StereoPannerNode kullanılır.
+  const panner = audioCtx.createStereoPanner(); 
+  panner.pan.value = -1; // Tam Sol
+
+  leftOsc.frequency.value = 1500; 
+  leftGain.gain.value = Number($id('leftSlider').value);
+
+  // YENİ BAĞLANTI SIRA DÜZENİ: Osc -> Gain -> Panner (-1) -> Destination
+  leftOsc.connect(leftGain);
+  leftGain.connect(panner); 
+  panner.connect(audioCtx.destination); 
+
   leftOsc.start();
 }
-
 // startRight fonksiyonunu async olarak değiştiriyoruz
 async function startRight(){
   ensureCtx(); stopLeft(); stopRight();
-  // FIX 3: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklenir.
-  if (audioCtx.state === 'suspended') await audioCtx.resume(); // await eklendi
-  rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
-  rightOsc.frequency.value = 1500; rightGain.gain.value = Number($id('rightSlider').value);
-  const m = audioCtx.createChannelMerger(2);
-  rightOsc.connect(rightGain); rightGain.connect(m,0,1); m.connect(audioCtx.destination);
+  // FIX: Tarayıcı kısıtlamaları nedeniyle ses çalmayabilir. Resume komutu eklendi.
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  
+  rightOsc = audioCtx.createOscillator(); 
+  rightGain = audioCtx.createGain();
+  
+  // YENİ: Sesi kesin olarak sağ kanala yönlendirmek için StereoPannerNode kullanılır.
+  const panner = audioCtx.createStereoPanner(); 
+  panner.pan.value = 1; // Tam Sağ
+
+  rightOsc.frequency.value = 1500; 
+  rightGain.gain.value = Number($id('rightSlider').value);
+
+  // YENİ BAĞLANTI SIRA DÜZENİ: Osc -> Gain -> Panner (+1) -> Destination
+  rightOsc.connect(rightGain);
+  rightGain.connect(panner); 
+  panner.connect(audioCtx.destination); 
+
   rightOsc.start();
 }
-
+ 
 $id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
 $id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
 
