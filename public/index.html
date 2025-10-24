@@ -28,7 +28,13 @@
   .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
-  .respRow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+  .respRow{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:10px;
+  justify-items:center;
+  margin-top:12px;
+}
   .respBtn{padding:10px 14px;border-radius:8px;border:1px solid #444;background:#f2f2f2;cursor:pointer;min-width:80px}
   .respBtn-active{background:#bdbdbd}
   .stai-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
@@ -232,15 +238,27 @@ function renderParticipationOptions(project){
   const el = $id('participationOptions'); el.innerHTML = '';
   if(project === 'OykuTez'){
     el.innerHTML = `
-      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>
-    `;
+      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="1"> İlk kez katılıyorum
+</label>
+<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
+</label>
+<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="3"> İkinci kez katılıyorum
+</label>
+<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım
+</label>
+        `;
   } else {
     el.innerHTML = `
-      <label style="margin-right:12px"><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label style="margin-right:12px"><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
+      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="1"> İlk kez katılıyorum
+</label>
+      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
+  <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
+</label>
     `;
   }
 }
@@ -458,9 +476,17 @@ async function playStim(stim){
     stimAudio.src = path;
     await stimAudio.play();
     // start timing when actually playing
-    stimAudio.onplaying = ()=> { responseStart = Date.now(); setTimeout(()=> isResponseAllowed = true, 400); };
-    // fallback timeout
-    trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex] !== 'training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); nextTrial(); }, 4000);
+    stimAudio.onplaying = ()=> {
+  responseStart = Date.now();
+  // 500 ms sonra yanıt verilebilir
+  setTimeout(()=> isResponseAllowed = true, 500);
+};
+// 2500 ms sonra hâlâ yanıt yoksa otomatik geç
+trialTimeout = setTimeout(()=>{
+  if(sessionOrder[currentSessionIndex] !== 'training')
+      saveTrial(stim, 'no_response', '', Date.now()-responseStart);
+  nextTrial();
+}, 2500 + 500); // toplam 3 s (500 bekle + 2500 yanıt süresi)
   }catch(e){
     console.warn('Audio play failed', e);
     // mark no_response and continue
@@ -503,7 +529,7 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
     if(sType !== 'training'){ saveTrial(stim, resp, rt, rt); }
     btn.classList.add('respBtn-active');
     setTimeout(()=> btn.classList.remove('respBtn-active'), 300);
-    setTimeout(()=> nextTrial(), 800);
+    setTimeout(()=> nextTrial(), 2000);
   });
 });
 
