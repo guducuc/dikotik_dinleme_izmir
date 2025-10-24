@@ -233,36 +233,35 @@ $id('toParticipationBtn').onclick = ()=>{
   renderParticipationOptions(proj);
 };
 
-
 function renderParticipationOptions(project){
-  const el = $id('participationOptions'); el.innerHTML = '';
+  const el = $id('participationOptions'); 
+  el.innerHTML = '';
   if(project === 'OykuTez'){
     el.innerHTML = `
-      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="1"> İlk kez katılıyorum
-</label>
-<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
-</label>
-<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="3"> İkinci kez katılıyorum
-</label>
-<label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım
-</label>
-        `;
+      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="1"> İlk kez katılıyorum
+      </label></div>
+      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
+      </label></div>
+      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="3"> İkinci kez katılıyorum
+      </label></div>
+      <div><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım
+      </label></div>
+    `;
   } else {
     el.innerHTML = `
-      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="1"> İlk kez katılıyorum
-</label>
-      <label style="display:inline-flex; align-items:center; gap:4px; margin-right:12px;">
-  <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
-</label>
+      <div style="margin-bottom:6px"><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="1"> İlk kez katılıyorum
+      </label></div>
+      <div><label style="display:flex;align-items:center;gap:6px;">
+        <input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım
+      </label></div>
     `;
   }
 }
-
 
 $id('toNextStepBtn').onclick = ()=>{
   const sel = document.querySelector('input[name="participation"]:checked');
