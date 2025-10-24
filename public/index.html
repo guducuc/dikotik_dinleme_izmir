@@ -588,6 +588,17 @@ renderStai(); // prepare stai DOM for later
 // ensure others hidden
 ['participationCard','consentCard','infoCard','enterCodeCard','handUseCard','staiCard','hearingCard','sessionIntro','trialCard','endCard'].forEach(id => { const el = $id(id); if(el) el.classList.add('hidden'); });
 
+  /* ---------- İşitme Testi Sorunu İçin Ek Güvenlik Önlemi: AudioContext'in ilk tıklamada başlatılıp sürdürülmesini sağlar. ---------- */
+document.addEventListener('click', function initAudioContext() {
+    ensureCtx();
+    if (audioCtx && audioCtx.state === 'suspended') {
+        // AudioContext'i devam ettirmeyi dener
+        audioCtx.resume().catch(e => console.error("Audio Context Resume Error:", e));
+    }
+    // İlk tıklamadan sonra dinleyiciyi kaldır
+    document.removeEventListener('click', initAudioContext);
+}, {once: true});
+  
 }); // DOMContentLoaded end
 </script>
 </body>
