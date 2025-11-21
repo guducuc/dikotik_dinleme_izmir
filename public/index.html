@@ -598,8 +598,8 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
 function makeCsv(){
   // --- 1️⃣ Katılımcı Bilgileri ---
   let csv = 'KATILIMCI BİLGİLERİ\n';
-  csv += 'Kod,Proje,Yaş,Cinsiyet,Anadil,DoğumYeri,SolSeviye,SağSeviye\n';
-  csv += `${participant.code || ''},${participant.projectCode || ''},${participant.age || ''},${participant.gender || ''},${participant.motherTongue || ''},${participant.race || ''},${participant.leftLevel || ''},${participant.rightLevel || ''}\n\n`;
+  csv += 'Kod,Proje,Yaş,Cinsiyet,Anadil,DoğumYeri,Eposta,Telefon,SolSeviye,SağSeviye\n'; 
+  csv += `${participant.code || ''},${participant.projectCode || ''},${participant.age || ''},${participant.gender || ''},${participant.motherTongue || ''},${participant.race || ''},${participant.email || ''},${participant.phone || ''},${participant.leftLevel || ''},${participant.rightLevel || ''}\n\n`;
 
   // --- 2️⃣ El Kullanım Testi ---
   csv += 'EL KULLANIMI\n';
