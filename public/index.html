@@ -7,7 +7,7 @@
 
 <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
 <meta name="emailjs-service" content="service_a8bnfmk">
-<meta name="emailjs-template"content="template_r6sddff">
+<meta name="emailjs-template" content="template_r6sddff">
 
 <style>
   body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:12px;color:#111;max-width:480px;margin:auto}
@@ -20,7 +20,7 @@
   input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 6px; }
   #participationOptions label { display: block; margin-bottom: 8px; }
 
-  .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer}
+  .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer; width:100%; margin-top:5px;}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
   
@@ -212,10 +212,11 @@ const CONSENT_TEXTS = {
     <p><b>KATILIMCININ BEYANI:</b> Biyofizik Anabilim dalında, Dr. Öğr. Üyesi Emre Eskicioğlu tarafından bir araştırma yapılacağı belirtilerek bu araştırma ile ilgili yukarıdaki bilgiler bana aktarıldı ve ilgili metni okudum. Araştırmaya katılmam konusunda zorlayıcı bir davranışla karşılaşmış değilim. Araştırma sırasında bir sağlık sorunu ile karşılaştığımda; herhangi bir saatte, Dr. Öğr. Üyesi Emre Eskicioğlu’nu, “0555 740 0187” numaralı telefondan arayabileceğimi biliyorum. Bu koşullarla araştırmaya kendi rızamla katılmayı kabul ediyorum.</p>
   `,
   "OykuTez": `
-    <h3>Aydınlatılmış Onam Formu</h3>
+    <h3>Aydınlatılmış Onam Formu (Tam Metin)</h3>
     <p><b>Araştırmanın Adı:</b> WEB Tabanlı Türkçe Dikotik Dinleme Testi Test – Tekrar Test Güvenirliği</p>
     <p><b>Sorumlu Araştırmacı:</b> Dr. Öğr. Üyesi Emre Eskicioğlu</p>
     <p><b>Yardımcı Araştırmacı:</b> Öykü Akkay</p>
+    <p><b>Destekleyici:</b> Doç. Dr. Çağdaş Güdücü</p>
     <hr>
     <p>Bu araştırma, Türkçe heceler içeren web tabanlı olarak geliştirilen dikotik dinleme testinin test-tekrar test güvenirliğini değerlendirmektir. Normal şartlarda yalnızca laboratuvar ortamında uygulanabilen bu testin dijital ortama aktarılmasıyla daha geniş katılımcı gruplarına ulaşılması hedeflenmektedir.</p>
     <p>Araştırmanın uygulama süreci toplamda 2 hafta olarak planlanmaktadır. İlk test uygulamasından sonra, ikinci test uygulaması 14 gün sonra yapılacaktır. Her bir oturum yaklaşık 20 dakika sürecektir.</p>
@@ -345,8 +346,10 @@ $id('toStaiBtn').onclick = ()=>{
   $id('staiCard').classList.remove('hidden');
 };
 
-$id('toHearingBtn').onclick = ()=>{
+/* --- AKIŞ DÜZELTME: STAI -> HEARING --- */
+$id('toHearingBtn').onclick = async ()=>{
   if(document.querySelectorAll('#staiQuestions input:checked').length < staiQuestions.length){ alert('Tüm soruları yanıtlayın.'); return; }
+  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
   participant.staiAnswers = {};
   document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name] = i.value);
   $id('staiCard').classList.add('hidden');
@@ -380,7 +383,9 @@ async function startRight(){
 $id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
 $id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
 
-$id('toSessionIntro').onclick = ()=>{
+/* --- AKIŞ DÜZELTME: HEARING -> SESSION --- */
+$id('toSessionIntro').onclick = async ()=>{
+  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
   stopLeft(); stopRight();
   participant.leftLevel = $id('leftSlider').value; participant.rightLevel = $id('rightSlider').value;
   results.push({ session: 'hearing_level', trial: 0, stim: '1500Hz', response: '', responseTime: '', leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age, gender: participant.gender, race: participant.race, motherTongue: participant.motherTongue, handUseAnswers: JSON.stringify(participant.handUse), staiAnswers: JSON.stringify(participant.staiAnswers), code: participant.code });
@@ -401,9 +406,11 @@ function showSessionIntro(){
   $id('sessionIntro').classList.remove('hidden');
 }
 
+/* --- AKIŞ DÜZELTME: SESSION -> TRIAL --- */
 $id('sessionStartBtn').onclick = async ()=>{
+  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
   $id('sessionIntro').classList.add('hidden');
-  try{ await $id('stimAudio').play().catch(()=>{}); }catch(e){}
+  try{ const a = $id('stimAudio'); a.src=''; await a.play().catch(()=>{}); }catch(e){}
   setTimeout(()=> { currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }, 200);
 };
 
