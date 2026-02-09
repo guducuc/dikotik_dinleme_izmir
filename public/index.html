@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Dikotik Dinleme — Tam Sürüm</title>
+<title>Dikotik Dinleme — Tam Sürüm (OCM & Esporcu)</title>
 
 <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
 <meta name="emailjs-service" content="service_a8bnfmk">
@@ -27,12 +27,15 @@
   .respBtn{ padding:10px 14px; border-radius:8px; border:1px solid #444; background:#f2f2f2; cursor:pointer; text-align: center; }
   .respBtn-active{background:#bdbdbd}
   .stai-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-  .stai-options label { margin-right: 15px; display: inline-block; } 
+  /* STAI seçenekleri yan yana ve belirgin olsun */
+  .stai-options label { margin-right: 10px; display: flex; align-items: center; } 
+  
   .hand-grid-header{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
   .hand-grid-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;padding:6px 0}
   .hand-grid-row span{flex:2}
   .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:8px}
   .small{font-size:13px;color:#666}
+  
   .question-group{margin-bottom:15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
   .question-title{font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;}
   
@@ -161,28 +164,28 @@
 
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
-  <p class="small">Lütfen her satır için toplam 2 kutucuk işaretlemeyi unutmayın!</p>
   <div id="handUseQuestions"></div>
   <div style="margin-top:8px"><button id="toStaiBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
-  <p class="small">Doğru ya da yanlış cevap yoktur. Anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
+  <p class="small">Anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
-  <p class="small">Lütfen kulaklığınızı takın! Sol ve sağ kulak için ayrı ayrı sesi dinleyin.</p>
   <div style="margin-top:8px">
     <label><b>Sol Kulak</b></label>
-    <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Sol Oynat</button>
+    <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5">
+    <button id="playLeft" class="bigBtn">Sol Oynat</button>
   </div>
   <div style="margin-top:12px">
     <label><b>Sağ Kulak</b></label>
-    <input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5"><button id="playRight" class="bigBtn">Sağ Oynat</button>
+    <input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5">
+    <button id="playRight" class="bigBtn">Sağ Oynat</button>
   </div>
   <div style="margin-top:12px"><button id="toSessionIntro" class="bigBtn">Devam</button></div>
 </div>
@@ -212,7 +215,8 @@ const $id = id => document.getElementById(id);
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
 
 let participant = {}, results = [], sessionOrder = [], currentSessionIndex = 0, currentTrial = -1;
-let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null, leftPanner=null, rightPanner=null;
+/* ORİJİNAL index-20.html DEĞİŞKENLERİ */
+let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null;
 let isResponseAllowed=false, trialTimeout=null, responseStart=0;
 
 /* ---------- ONAM SÖZLÜĞÜ (OCM DAHİL) ---------- */
@@ -220,7 +224,7 @@ const CONSENT_TEXTS = {
   "Sport": `
     <div style="text-align: center; font-weight: bold;">DOKUZ EYLÜL ÜNİVERSİTESİ<br>“GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR” İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU</div>
     <br><p><b>Araştırmanın Adı:</b> Basketbolcu ve Elektronik Sporcularda İşitsel Dikkat ve Beyin Asimetrisinin Değerlendirilmesi</p>
-    <p><b>Sorumlu:</b> Dr. Öğr. Üyesi Emre Eskicioğlu. <b>Yardımcılar:</b> Doç. Dr. Egemen MANCI, Doç. Dr. Çağdaş Güdücü</p>
+    <p><b>Sorumlu:</b> Dr. Öğr. Üyesi Emre Eskicioğlu</p>
     <hr><p>Bu çalışma geleneksel sporcular ile esporcuların beyin asimetrisini incelemeyi amaçlar. Katılım gönüllüdür.</p>
     <p><b>BEYAN:</b> Dr. Öğr. Üyesi Emre Eskicioğlu tarafından bilgilendirildim. 0555 740 0187 numaralı telefondan ulaşabileceğimi biliyorum. Gönüllülük içerisinde katılmayı kabul ediyorum.</p>
   `,
@@ -289,7 +293,7 @@ $id('toNextFromInfo').onclick = ()=>{
   participant.race = $id('race').value; participant.motherTongue = $id('motherTongue').value; participant.gender = $id('gender').value;
   
   participant.code = participant.projectCode + '_' + (n+s).toUpperCase().slice(0,4).padEnd(4,'X') + '_' + Math.floor(10000+Math.random()*90000);
-  $id('codeInfo').innerText = 'Kod: ' + participant.code;
+  $id('codeInfo').innerText = 'Katılımcı kodu: ' + participant.code;
   $id('infoCard').classList.add('hidden');
 
   if(participant.projectCode === 'Esporcu') {
@@ -332,12 +336,12 @@ $id('toStaiBtn').onclick = ()=>{
   $id('handUseCard').classList.add('hidden'); renderStai(); $id('staiCard').classList.remove('hidden');
 };
 
-/* --- STAI FORMU (DÜZELTİLDİ: Kelime Bazlı) --- */
+/* --- STAI FORMU (DÜZELTİLDİ: Kelime Bazlı - index-20.html ile aynı) --- */
 function renderStai(){
   const c = $id('staiQuestions'); c.innerHTML = '';
-  const staiQuestions = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
+  const qs = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
   
-  staiQuestions.forEach((q,i)=>{
+  qs.forEach((q,i)=>{
     c.innerHTML += `<div class="question-group"><p>${i+1}. ${q}</p>
       <div class="stai-options">
         <label><input type="radio" name="staiQ${i+1}" value="1">Hiç</label>
@@ -348,24 +352,17 @@ function renderStai(){
   });
 }
 
-$id('toHearingBtn').onclick = async ()=>{
+$id('toHearingBtn').onclick = ()=>{
   if(document.querySelectorAll('#staiQuestions input:checked').length < 20){ alert('Tüm soruları yanıtlayın.'); return; }
-  // AudioContext RESUME FIX
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
-  
   participant.staiAnswers = {};
   document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name]=i.value);
   $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
 };
 
-/* --- AUDIO LOGIC (SAĞ/SOL DÜZELTME & GLOBAL VARS) --- */
+/* --- SES MANTIĞI (index-20.html'den BİREBİR KOPYALANDI) --- */
 function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function stopLeft(){ 
-  try{ if(leftOsc){ leftOsc.stop(); leftOsc.disconnect(); } }catch(e){} leftOsc=null; 
-}
-function stopRight(){ 
-  try{ if(rightOsc){ rightOsc.stop(); rightOsc.disconnect(); } }catch(e){} rightOsc=null; 
-}
+function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; leftGain=null; }
+function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; rightGain=null; }
 
 async function startLeft(){
   ensureCtx(); stopRight(); stopLeft();
@@ -373,19 +370,17 @@ async function startLeft(){
   
   leftOsc = audioCtx.createOscillator(); 
   leftGain = audioCtx.createGain();
-  leftPanner = audioCtx.createStereoPanner(); 
-  leftPanner.pan.value = -1; // Sol
+  const panner = audioCtx.createStereoPanner(); 
+  panner.pan.value = -1;
 
   leftOsc.frequency.value = 1500; 
   leftGain.gain.value = Number($id('leftSlider').value);
 
   leftOsc.connect(leftGain);
-  leftGain.connect(leftPanner); 
-  leftPanner.connect(audioCtx.destination); 
+  leftGain.connect(panner); 
+  panner.connect(audioCtx.destination); 
 
   leftOsc.start();
-  // Otomatik durdurma (Buton tıklama ile senkronize değil, başlatma ile senkronize)
-  setTimeout(()=> stopLeft(), 1200);
 }
 
 async function startRight(){
@@ -394,35 +389,30 @@ async function startRight(){
   
   rightOsc = audioCtx.createOscillator(); 
   rightGain = audioCtx.createGain();
-  rightPanner = audioCtx.createStereoPanner(); 
-  rightPanner.pan.value = 1; // Sağ
+  const panner = audioCtx.createStereoPanner(); 
+  panner.pan.value = 1;
 
   rightOsc.frequency.value = 1500; 
   rightGain.gain.value = Number($id('rightSlider').value);
 
   rightOsc.connect(rightGain);
-  rightGain.connect(rightPanner); 
-  rightPanner.connect(audioCtx.destination); 
+  rightGain.connect(panner); 
+  panner.connect(audioCtx.destination); 
 
   rightOsc.start();
-  // Otomatik durdurma
-  setTimeout(()=> stopRight(), 1200);
 }
 
-// Butonlara sadece başlatma komutu veriyoruz, durdurma zaman ayarlı.
-// Çift tıklanırsa zaten fonksiyon başında stopLeft/Right çağrılıyor.
-$id('playLeft').onclick = ()=> startLeft();
-$id('playRight').onclick = ()=> startRight();
+// Buton mantığı da index-20.html'den birebir: Tıkla -> Çal, Bekle -> Durdur
+$id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
+$id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
 
-$id('toSessionIntro').onclick = async ()=>{
-  // AudioContext RESUME FIX
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
+$id('toSessionIntro').onclick = ()=>{
   stopLeft(); stopRight();
-  
   participant.leftLevel = $id('leftSlider').value; participant.rightLevel = $id('rightSlider').value;
-  results.push({ session: 'hearing_level', trial: 0, stim: '1500Hz', response: '', responseTime: '', leftLevel: participant.leftLevel, rightLevel: participant.rightLevel });
+  results.push({ session: 'hearing_level', trial: 0, stim: '1500Hz', response: '', responseTime: '', leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age || '', gender: participant.gender || '', race: participant.race || '', motherTongue: participant.motherTongue || '', handUseAnswers: JSON.stringify(participant.handUse || {}), staiAnswers: JSON.stringify(participant.staiAnswers || {}), code: participant.code || '' });
   
   sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
+  currentSessionIndex = 0;
   $id('hearingCard').classList.add('hidden'); showSessionIntro();
 };
 
@@ -430,13 +420,11 @@ function showSessionIntro(){
   const s = sessionOrder[currentSessionIndex];
   $id('sessionTitle').innerText = 'Oturum: ' + s;
   const i = {training:'Eğitim: Sadece dinleyin.', NF:'En iyi duyduğunuzu seçin.', FR:'SAĞ kulağa odaklanın.', FL:'SOL kulağa odaklanın.'};
-  $id('sessionInstr').innerText = i[s];
+  $id('sessionInstr').innerText = i[s] || 'Dinleyin.';
   $id('sessionIntro').classList.remove('hidden');
 }
 
 $id('sessionStartBtn').onclick = async ()=>{
-  // AudioContext RESUME FIX
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
   $id('sessionIntro').classList.add('hidden');
   try{ const a = $id('stimAudio'); a.src=''; await a.play().catch(()=>{}); }catch(e){}
   setTimeout(()=> { currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }, 200);
@@ -460,28 +448,40 @@ function nextTrial(){
 
 async function playStim(stim){
   isResponseAllowed = false;
-  $id('stimAudio').src = './sounds/yeni/erkek/' + stim;
+  const path = './sounds/yeni/erkek/' + stim;
   try {
-    await $id('stimAudio').play();
+    const stimAudio = $id('stimAudio');
+    stimAudio.src = path;
+    await stimAudio.play();
     responseStart = Date.now();
     setTimeout(()=> isResponseAllowed = true, 500);
-    trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', 4000); nextTrial(); }, 4000);
-  } catch(e){ nextTrial(); }
+    trialTimeout = setTimeout(()=>{ 
+        if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); 
+        nextTrial(); 
+    }, 4000);
+  } catch(e){ 
+    console.warn(e);
+    if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', '', '');
+    setTimeout(nextTrial, 200); 
+  }
 }
 
-function saveTrial(stim, resp, rt){
-  results.push({session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response: resp, responseTime: rt, code: participant.code});
+function saveTrial(stim, response, responseTime, rt){
+  results.push({session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response, responseTime: rt, code: participant.code, 
+    leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age, gender: participant.gender, 
+    race: participant.race, motherTongue: participant.motherTongue, handUseAnswers: JSON.stringify(participant.handUse), 
+    staiAnswers: JSON.stringify(participant.staiAnswers)});
 }
 
 document.querySelectorAll('.respBtn').forEach(btn=>{
-  btn.onclick = ()=>{
+  btn.addEventListener('click', ()=>{
     if(!isResponseAllowed) return;
     isResponseAllowed = false; clearTimeout(trialTimeout);
     const rt = Date.now() - responseStart;
-    if(sessionOrder[currentSessionIndex]!=='training') saveTrial((sessionOrder[currentSessionIndex]==='training'?trainingPlaylist:mainPlaylist)[currentTrial], btn.dataset.val, rt);
+    if(sessionOrder[currentSessionIndex]!=='training') saveTrial((sessionOrder[currentSessionIndex]==='training'?trainingPlaylist:mainPlaylist)[currentTrial], btn.dataset.val, rt, rt);
     btn.classList.add('respBtn-active');
     setTimeout(()=>{ btn.classList.remove('respBtn-active'); nextTrial(); }, 2500);
-  };
+  });
 });
 
 /* --- BİTİŞ & CSV --- */
@@ -501,7 +501,7 @@ async function sendEmail(){
     if(!window.emailjs){
       const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
       await new Promise(res=>{ s.onload = res; });
-      emailjs.init($id('emailjs-user').content);
+      emailjs.init(document.querySelector('meta[name="emailjs-user"]').content);
     }
     await emailjs.send($id('emailjs-service').content, $id('emailjs-template').content, { subject: participant.code, message: csv });
     $id('doneLog').innerText = 'Veriler başarıyla gönderildi.';
@@ -510,7 +510,11 @@ async function sendEmail(){
 
 async function endExperiment(){ $id('trialCard').classList.add('hidden'); $id('endCard').classList.remove('hidden'); await sendEmail(); }
 
-document.addEventListener('click', ()=>{ ensureCtx(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }, {once:true});
+document.addEventListener('click', function initAudioContext() {
+    ensureCtx();
+    if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.error(e)); }
+    document.removeEventListener('click', initAudioContext);
+}, {once: true});
 
 });
 </script>
