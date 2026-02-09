@@ -3,45 +3,43 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<title>Dikotik Dinleme — iOS Uyumlu Tam Sürüm</title>
+<title>Dikotik Dinleme — Tam Sürüm (iOS Fix)</title>
 
 <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
 <meta name="emailjs-service" content="service_a8bnfmk">
 <meta name="emailjs-template" content="template_r6sddff">
 
 <style>
-  body{font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin:12px; color:#111; max-width:480px; margin:auto; -webkit-tap-highlight-color: transparent;}
+  body{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;margin:12px;color:#111;max-width:480px;margin:auto}
   h1{font-size:20px;margin-bottom:10px}
   .card{padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px}
   .hidden{display:none}
-  input,select,textarea{padding:10px; margin:6px 0; width:100%; box-sizing:border-box; font-size:16px; border:1px solid #ccc; border-radius:4px;}
+  input,select,textarea{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
 
-  /* Radyo/Checkbox hizalama */
-  input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 8px; transform: scale(1.2); }
-  #participationOptions label, .question-group label { display: flex; align-items: center; margin-bottom: 10px; font-size: 15px; cursor: pointer; }
+  input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 6px; }
+  #participationOptions label, .question-group label { display: block; margin-bottom: 8px; font-size: 14px; }
 
-  .bigBtn{font-size:1.1rem; padding:12px 14px; border-radius:8px; border:1px solid #444; background:#eaeaea; cursor:pointer; width:100%; margin-top:8px; -webkit-appearance: none;}
+  .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer; width:100%; margin-top:5px;}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
   
-  .respRow{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; padding: 0 5px; }
-  .respBtn{ padding:15px; border-radius:8px; border:1px solid #999; background:#f2f2f2; cursor:pointer; text-align: center; font-size: 18px; font-weight: bold; user-select: none; }
-  /* Aktif (basılı) buton stili */
-  .respBtn-active{ background:#888 !important; color: white; border-color: #333; transform: scale(0.98); }
+  .respRow{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; padding: 0 12px; }
+  .respBtn{ padding:10px 14px; border-radius:8px; border:1px solid #444; background:#f2f2f2; cursor:pointer; text-align: center; }
+  .respBtn-active{background:#999 !important; color:#fff;} /* Tıklanınca koyu gri */
 
-  .stai-options{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
-  .stai-options label { margin-right: 15px; } 
-  .hand-grid-header{display:flex; justify-content:space-between; margin-bottom:6px; font-weight:600}
-  .hand-grid-row{display:flex; align-items:center; justify-content:space-between; border-top:1px solid #eee; padding:8px 0}
+  .stai-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .stai-options label { margin-right: 12px; display: inline-block; }
+  .hand-grid-header{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
+  .hand-grid-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;padding:6px 0}
   .hand-grid-row span{flex:2}
-  .hand-grid-row .col{flex:1; display:flex; justify-content:center; gap:10px}
-  .small{font-size:13px; color:#666}
-  .question-group{margin-bottom:20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;}
-  .question-title{font-weight: 700; font-size: 15px; margin-bottom: 10px; display: block; color:#333;}
+  .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:8px}
+  .small{font-size:13px;color:#666}
+  .question-group{margin-bottom:15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+  .question-title{font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;}
   
-  .modal{position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none}
-  .modal-content{background:#fff; margin:5% auto; padding:20px; border-radius:10px; max-width:600px; max-height:80vh; overflow-y:auto}
-  .close{float:right; font-size:28px; font-weight:bold; cursor:pointer; color:#333; padding: 0 10px;}
+  .modal{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none}
+  .modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:10px;max-width:600px;max-height:80vh;overflow-y:auto}
+  .close{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888}
 </style>
 </head>
 <body>
@@ -68,7 +66,7 @@
 
 <div id="consentCard" class="card hidden">
   <h3>Aydınlatılmış Onam</h3>
-  <div id="consentText" style="border:1px solid #ddd;padding:12px;border-radius:6px;max-height:250px;overflow:auto; background: #fff; font-size: 13px; line-height: 1.5; -webkit-overflow-scrolling: touch;"></div>
+  <div id="consentText" style="border:1px solid #ddd;padding:12px;border-radius:6px;max-height:250px;overflow:auto; background: #fff; font-size: 13px; line-height: 1.5;"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="consentAccept" class="bigBtn btnGreen">Okudum, onaylıyorum</button>
     <button id="consentDecline" class="bigBtn btnRed">Kabul etmiyorum</button>
@@ -87,7 +85,7 @@
 
 <div id="infoCard" class="card hidden">
   <h3>Katılımcı Bilgileri</h3>
-  <div class="small">Ad ve soyad için ilk 2 harf yeterli (gizlilik).</div>
+  <div class="small">Ad ve soyad için ilk 2 harf yeterli.</div>
   <input id="name" placeholder="Ad (ilk 2 harf)">
   <input id="surname" placeholder="Soyad (ilk 2 harf)">
   <input id="age" type="number" placeholder="Yaş">
@@ -102,7 +100,6 @@
 
 <div id="esporcuFormCard" class="card hidden">
   <h3>Esporcu Bilgi Formu</h3>
-  
   <div class="question-group">
     <span class="question-title">Eğitim Durumunuz *</span>
     <label><input type="radio" name="eduStatus" value="Ortaokul"> Ortaokul</label>
@@ -111,17 +108,14 @@
     <label><input type="radio" name="eduStatus" value="Yüksek Lisans"> Yüksek Lisans</label>
     <label><input type="radio" name="eduStatus" value="Doktora"> Doktora</label>
   </div>
-
   <div class="question-group">
     <span class="question-title">Kaç yıldır oyun oynuyorsunuz? *</span>
     <input id="playYears" type="number" placeholder="Yanıtınız">
   </div>
-
   <div class="question-group">
     <span class="question-title">Günde kaç saat oyun oynuyorsunuz? *</span>
     <input id="dailyHours" type="number" placeholder="Yanıtınız">
   </div>
-
   <div class="question-group">
     <span class="question-title">Oyun oynadığınız platform hangisi? *</span>
     <label><input type="radio" name="platform" value="Bilgisayar"> Bilgisayar</label>
@@ -129,7 +123,6 @@
     <label><input type="radio" name="platform" value="Playstation"> Playstation</label>
     <label><input type="radio" name="platform" value="Diğer"> Diğer</label>
   </div>
-
   <div class="question-group">
     <span class="question-title">Oynadığınız oyun türünü seçiniz *</span>
     <label><input type="radio" name="gameType" value="FPS"> FPS</label>
@@ -137,22 +130,18 @@
     <label><input type="radio" name="gameType" value="MMORPG"> MMORPG</label>
     <label><input type="radio" name="gameType" value="MOBA"> MOBA</label>
     <label><input type="radio" name="gameType" value="RPG"> RPG</label>
-    <label><input type="radio" name="gameType" value="RTS"> RTS (Real Time Strategy)</label>
-    <label><input type="radio" name="gameType" value="TBS"> TBS (Turn Based Strategy)</label>
+    <label><input type="radio" name="gameType" value="RTS"> RTS</label>
+    <label><input type="radio" name="gameType" value="TBS"> TBS</label>
     <label><input type="radio" name="gameType" value="Diğer"> Diğer</label>
   </div>
-
   <div class="question-group">
     <span class="question-title">Oynadığınız oyunun (en çok saat ayırdığınız) adını yazınız *</span>
     <input id="topGameName" placeholder="Yanıtınız">
   </div>
-
   <div class="question-group">
     <span class="question-title">En Yüksek Rütbeniz (Rank / Seviye) *</span>
-    <p class="small">Oynadığınız oyun sezonlu ise en son başarılı olduğunuz sezona göre yazabilirsiniz.</p>
     <input id="topRank" placeholder="Yanıtınız">
   </div>
-
   <button id="toHandFromEsporcu" class="bigBtn">Devam</button>
 </div>
 
@@ -164,21 +153,18 @@
 
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
-  <p class="small">Lütfen her satır için toplam 2 kutucuk işaretlemeyi unutmayın!</p>
   <div id="handUseQuestions"></div>
   <button id="toStaiBtn" class="bigBtn">Devam</button>
 </div>
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
-  <p class="small">Doğru ya da yanlış cevap yoktur. Anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <button id="toHearingBtn" class="bigBtn">Devam</button>
 </div>
 
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
-  <p class="small"><b>ÖNEMLİ:</b> iPhone/iPad kullanıyorsanız sessiz modun kapalı olduğundan emin olun.</p>
   <div style="margin-top:8px">
     <label><b>Sol Kulak</b></label>
     <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Sol Oynat</button>
@@ -197,7 +183,7 @@
 </div>
 
 <div id="trialCard" class="card hidden">
-  <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
+  <div id="trialStatus" class="small"></div>
   <audio id="stimAudio" preload="auto" playsinline></audio>
   <div class="respRow">
     <button class="respBtn" data-val="BA">BA</button><button class="respBtn" data-val="DA">DA</button>
@@ -215,52 +201,43 @@ const $id = id => document.getElementById(id);
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
 
 let participant = {}, results = [], sessionOrder = [], currentSessionIndex = 0, currentTrial = -1;
+/* GLOBAL SES DEĞİŞKENLERİ (index-19.html yapısı) */
 let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null;
 let isResponseAllowed=false, trialTimeout=null, responseStart=0;
 
-/* ---------- iOS İÇİN SES KİLİDİ AÇMA (UNLOCK) ---------- */
-function initAudio() {
-  if (!audioCtx) {
-    // Webkit prefix desteği
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AudioContext();
-  }
+/* iOS UNLOCKER: Sayfaya ilk dokunuşta ses motorunu açar */
+function unlockAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    audioCtx.resume().then(() => {
+        // Boş bir ses çalarak motoru sıcak tut
+        const buffer = audioCtx.createBuffer(1, 1, 22050);
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioCtx.destination);
+        source.start(0);
+    });
   }
-  // Sessiz bir buffer çalarak iOS ses motorunu tamamen uyandır
-  const buffer = audioCtx.createBuffer(1, 1, 22050);
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  source.start(0);
 }
+document.body.addEventListener('click', unlockAudio, {once:true});
+document.body.addEventListener('touchstart', unlockAudio, {once:true});
 
-/* Tüm butonlara ses kilidini açma özelliği ekle */
-document.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('click', initAudio);
-  btn.addEventListener('touchstart', initAudio); // iOS için touchstart da önemli
-});
-
-/* ---------- ONAM SÖZLÜĞÜ ---------- */
+/* ONAM SÖZLÜĞÜ */
 const CONSENT_TEXTS = {
   "Sport": `
     <div style="text-align: center; font-weight: bold;">DOKUZ EYLÜL ÜNİVERSİTESİ<br>“GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR” İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU</div>
     <br><p><b>Araştırmanın Adı:</b> Basketbolcu ve Elektronik Sporcularda İşitsel Dikkat ve Beyin Asimetrisinin Değerlendirilmesi</p>
-    <p><b>Sorumlu:</b> Dr. Öğr. Üyesi Emre Eskicioğlu. <b>Yardımcılar:</b> Doç. Dr. Egemen MANCI, Doç. Dr. Çağdaş Güdücü</p>
+    <p><b>Sorumlu:</b> Dr. Öğr. Üyesi Emre Eskicioğlu</p>
     <hr><p>Bu çalışma geleneksel sporcular ile esporcuların beyin asimetrisini incelemeyi amaçlar. Katılım gönüllüdür.</p>
     <p><b>BEYAN:</b> Dr. Öğr. Üyesi Emre Eskicioğlu tarafından bilgilendirildim. 0555 740 0187 numaralı telefondan ulaşabileceğimi biliyorum. Gönüllülük içerisinde katılmayı kabul ediyorum.</p>
   `,
   "OCM": `
     <div style="text-align: center; font-weight: bold;">DOKUZ EYLÜL ÜNİVERSİTESİ<br>"GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR" İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU</div>
     <br><p><b>Araştırmanın Adı:</b> Koku Duyusunun İşitsel Beyin Asimetrisi Üzerine Etkisinin Değerlendirilmesi</p>
-    <p><b>Sorumlu Araştırıcı:</b> Emre Eskicioğlu</p>
-    <p><b>Yardımcı Araştırmacılar:</b> Abdullah Suat Kavun, Beril Demirbilek, Neziha Burçin Tokgöz</p>
+    <p><b>Sorumlu:</b> Emre Eskicioğlu</p>
     <hr>
-    <p>Bu araştırma, koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmeyi amaçlar. Toplam 30 sağlıklı gönüllü katılacaktır.</p>
-    <p><b>Süreç:</b> İlk olarak dikotik dinleme testi uygulanacaktır. Ardından size dört farklı kokudan (gül, karanfil, limon ve okaliptüs) oluşan koku çubukları verilecektir. Sizden bu kokuları 12 hafta boyunca, günde iki kez koklamanız istenecektir. Süreç sonunda test yeniden yapılacaktır.</p>
-    <p><b>Riskler:</b> Düşük risk grubundadır. Çok nadir durumlarda koku hassasiyeti veya alerjik reaksiyon görülebilir.</p>
-    <p><b>BEYAN:</b> Tıbbi bir araştırma yapılacağı belirtilerek bilgiler bana aktarıldı. Herhangi bir sağlık sorununda 0555 740 01 87'den araştırmacıya ulaşabileceğimi biliyorum. Kendi rızamla katılmayı kabul ediyorum.</p>
+    <p>Bu araştırma, koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmeyi amaçlar. 12 haftalık bir koku terapisi (gül, karanfil, limon, okaliptüs) sürecini kapsar.</p>
+    <p><b>BEYAN:</b> Tıbbi bir araştırma yapılacağı belirtilerek bilgiler bana aktarıldı. 0555 740 01 87'den araştırmacıya ulaşabileceğimi biliyorum. Kendi rızamla katılmayı kabul ediyorum.</p>
   `,
   "OykuTez": `<h3>WEB Tabanlı Türkçe Dikotik Dinleme Testi Güvenirliği</h3><p>Uygulama süreci 2 hafta planlanmaktadır.</p>`,
   "Default": `<h3>Aydınlatılmış Onam</h3><p>Bu çalışma işitsel algı süreçlerini incelemeyi amaçlar. Katılım gönüllüdür.</p>`
@@ -269,10 +246,10 @@ CONSENT_TEXTS["Sporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Esporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Izmir"] = CONSENT_TEXTS["Default"];
 
-/* ---------- AKIŞ ---------- */
+/* FLOW */
 $id('toParticipationBtn').onclick = ()=>{
   const proj = $id('projectCode').value;
-  if(!proj){ alert('Proje kodu seçiniz.'); return; }
+  if(!proj){ alert('Seçiniz.'); return; }
   participant.projectCode = proj;
   $id('projectCard').classList.add('hidden'); $id('participationCard').classList.remove('hidden');
   renderParticipationOptions(proj);
@@ -288,7 +265,7 @@ function renderParticipationOptions(project){
 
 $id('toNextStepBtn').onclick = ()=>{
   const sel = document.querySelector('input[name="participation"]:checked');
-  if(!sel){ alert('Seçenek seçiniz.'); return; }
+  if(!sel){ alert('Seçiniz.'); return; }
   participant.participation = sel.value;
   $id('participationCard').classList.add('hidden');
   if(sel.value === '1'){
@@ -306,9 +283,10 @@ $id('openConsentPopup').onclick=()=>{ $id('consentModal').style.display='block';
 $id('closeConsentModal').onclick=()=>{ $id('consentModal').style.display='none'; };
 window.onclick=e=>{ if(e.target==$id('consentModal')) $id('consentModal').style.display='none'; };
 
+/* BİLGİ TOPLAMA */
 $id('toNextFromInfo').onclick = ()=>{
   const n = $id('name').value.trim(), s = $id('surname').value.trim(), a = $id('age').value.trim();
-  if(!n || !s || !a){ alert('Ad, Soyad ve Yaş zorunludur.'); return; }
+  if(!n || !s || !a){ alert('Eksik bilgi.'); return; }
   participant.name = n.slice(0,2); participant.surname = s.slice(0,2); participant.age = a;
   participant.email = $id('email').value; participant.phone = $id('phone').value;
   participant.race = $id('race').value; participant.motherTongue = $id('motherTongue').value; participant.gender = $id('gender').value;
@@ -317,11 +295,8 @@ $id('toNextFromInfo').onclick = ()=>{
   $id('codeInfo').innerText = 'Kod: ' + participant.code;
   $id('infoCard').classList.add('hidden');
 
-  if(participant.projectCode === 'Esporcu') {
-    $id('esporcuFormCard').classList.remove('hidden');
-  } else {
-    renderHand(); $id('handUseCard').classList.remove('hidden');
-  }
+  if(participant.projectCode === 'Esporcu') { $id('esporcuFormCard').classList.remove('hidden'); } 
+  else { renderHand(); $id('handUseCard').classList.remove('hidden'); }
 };
 
 $id('toHandFromEsporcu').onclick = ()=>{
@@ -334,10 +309,8 @@ $id('toHandFromEsporcu').onclick = ()=>{
   const rank = $id('topRank').value;
 
   if(!edu || !plat || !type || !years || !hours || !game || !rank){ alert('Lütfen tüm yıldızlı alanları doldurunuz.'); return; }
-
   participant.esporData = { education: edu.value, platform: plat.value, genre: type.value, yearsPlaying: years, dailyHours: hours, topGame: game, highestRank: rank };
-  $id('esporcuFormCard').classList.add('hidden');
-  renderHand(); $id('handUseCard').classList.remove('hidden');
+  $id('esporcuFormCard').classList.add('hidden'); renderHand(); $id('handUseCard').classList.remove('hidden');
 };
 
 function renderHand(){
@@ -356,7 +329,7 @@ $id('toStaiBtn').onclick = ()=>{
 
 function renderStai(){
   const c = $id('staiQuestions'); c.innerHTML = '';
-  const qs = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
+  const qs = ["Şu anda sakinim","Emniyette hissediyorum","Sinirlerim gergin","Pişmanlık içindeyim","Huzurluyum","Keyfim yok","Endişeliyim","Dinlenmişim","Kaygılıyım","Rahatım","Güvenim var","Asabım bozuk","Sinirliyim","Gerginim","Rahatlamışım","Halimden memnunum","Endişeliyim","Şaşkınım","Sevinçliyim","Keyfim yerinde"];
   qs.forEach((q,i)=>{
     c.innerHTML += `<div class="question-group"><p>${i+1}. ${q}</p>
       <div class="stai-options">
@@ -370,24 +343,26 @@ function renderStai(){
 
 $id('toHearingBtn').onclick = ()=>{
   if(document.querySelectorAll('#staiQuestions input:checked').length < 20){ alert('Tüm soruları yanıtlayın.'); return; }
+  unlockAudio(); // iOS Fix: Bu butona basılınca ses motorunu uyandır
   participant.staiAnswers = {};
   document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name]=i.value);
   $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
 };
 
-/* --- AUDIO ENGINE (index-19.html BİREBİR) --- */
-/* iOS için kritik: AudioContext'in referansını kaybetme, global tut */
+/* --- AUDIO ENGINE (GLOBAL VARIABLES, index-19 STYLE) --- */
+function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; leftGain=null; }
 function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; rightGain=null; }
 
 async function startLeft(){
-  initAudio(); // iOS uyanma garantisi
+  ensureCtx(); 
+  if(audioCtx.state === 'suspended') await audioCtx.resume();
   stopRight(); stopLeft();
   
   leftOsc = audioCtx.createOscillator(); 
   leftGain = audioCtx.createGain();
   const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = -1;
+  panner.pan.value = -1; // Sol
 
   leftOsc.frequency.value = 1500; 
   leftGain.gain.value = Number($id('leftSlider').value);
@@ -397,16 +372,19 @@ async function startLeft(){
   panner.connect(audioCtx.destination); 
 
   leftOsc.start();
+  // index-19'daki gibi setTimeout ile durdurma
+  setTimeout(()=>stopLeft(), 1200);
 }
 
 async function startRight(){
-  initAudio(); // iOS uyanma garantisi
+  ensureCtx(); 
+  if(audioCtx.state === 'suspended') await audioCtx.resume();
   stopLeft(); stopRight();
   
   rightOsc = audioCtx.createOscillator(); 
   rightGain = audioCtx.createGain();
   const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = 1;
+  panner.pan.value = 1; // Sağ
 
   rightOsc.frequency.value = 1500; 
   rightGain.gain.value = Number($id('rightSlider').value);
@@ -416,15 +394,18 @@ async function startRight(){
   panner.connect(audioCtx.destination); 
 
   rightOsc.start();
+  // index-19'daki gibi setTimeout ile durdurma
+  setTimeout(()=>stopRight(), 1200);
 }
 
-$id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
-$id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
+$id('playLeft').onclick = ()=> startLeft();
+$id('playRight').onclick = ()=> startRight();
 
 $id('toSessionIntro').onclick = ()=>{
   stopLeft(); stopRight();
   participant.leftLevel = $id('leftSlider').value; participant.rightLevel = $id('rightSlider').value;
   results.push({ session: 'hearing_level', trial: 0, stim: '1500Hz', response: '', responseTime: '', leftLevel: participant.leftLevel, rightLevel: participant.rightLevel });
+  
   sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
   $id('hearingCard').classList.add('hidden'); showSessionIntro();
 };
@@ -438,7 +419,7 @@ function showSessionIntro(){
 }
 
 $id('sessionStartBtn').onclick = async ()=>{
-  initAudio(); // iOS uyanma
+  unlockAudio(); // iOS Fix
   $id('sessionIntro').classList.add('hidden');
   try{ const a = $id('stimAudio'); a.src=''; await a.play().catch(()=>{}); }catch(e){}
   setTimeout(()=> { currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }, 200);
@@ -467,33 +448,33 @@ async function playStim(stim){
     await $id('stimAudio').play();
     responseStart = Date.now();
     setTimeout(()=> isResponseAllowed = true, 500);
-    trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', 4000); nextTrial(); }, 4000);
+    trialTimeout = setTimeout(()=>{ 
+        if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', 4000); 
+        nextTrial(); 
+    }, 4000);
   } catch(e){ nextTrial(); }
 }
 
 function saveTrial(stim, resp, rt){
-  results.push({session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response: resp, responseTime: rt, code: participant.code, 
-    leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age, gender: participant.gender, 
-    race: participant.race, motherTongue: participant.motherTongue, handUseAnswers: JSON.stringify(participant.handUse), 
-    staiAnswers: JSON.stringify(participant.staiAnswers)});
+  results.push({session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response: resp, responseTime: rt, code: participant.code});
 }
 
-/* BUTON ANİMASYON DÜZELTMESİ: 300ms ve 2500ms ayrıldı */
+/* BUTON ANİMASYON DÜZELTMESİ (index-19 stili) */
 document.querySelectorAll('.respBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+  btn.onclick = ()=>{
     if(!isResponseAllowed) return;
     isResponseAllowed = false; clearTimeout(trialTimeout);
     const rt = Date.now() - responseStart;
-    if(sessionOrder[currentSessionIndex]!=='training') saveTrial((sessionOrder[currentSessionIndex]==='training'?trainingPlaylist:mainPlaylist)[currentTrial], btn.dataset.val, rt, rt);
+    if(sessionOrder[currentSessionIndex]!=='training') saveTrial((sessionOrder[currentSessionIndex]==='training'?trainingPlaylist:mainPlaylist)[currentTrial], btn.dataset.val, rt);
     
-    // ANİMASYON
+    // ANİMASYON: Renk hemen değişir, 200ms sonra eski haline döner
     btn.classList.add('respBtn-active');
-    setTimeout(()=> btn.classList.remove('respBtn-active'), 300); // 300ms sonra renk düzelir
-    setTimeout(()=> nextTrial(), 2500); // 2.5 sn sonra yeni soru
-  });
+    setTimeout(()=> btn.classList.remove('respBtn-active'), 200); 
+    // SORU GEÇİŞİ: 2.5 saniye sonra
+    setTimeout(()=> nextTrial(), 2500); 
+  };
 });
 
-/* --- BİTİŞ & CSV --- */
 function makeCsv(){
   let csv = 'KATILIMCI BİLGİLERİ\nKod,Proje,Yaş,Cinsiyet,Eposta,Telefon,Anadil,SolLvl,SağLvl\n';
   csv += `${participant.code},${participant.projectCode},${participant.age},${participant.gender},${participant.email},${participant.phone},${participant.motherTongue},${participant.leftLevel},${participant.rightLevel}\n\n`;
