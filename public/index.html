@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Dikotik Dinleme — Tam Sürüm</title>
+<title>Dikotik Dinleme — Tam Sürüm (OCM & Esporcu)</title>
 
 <meta name="emailjs-user"    content="FLn2zMqKDGso3ePoO">
 <meta name="emailjs-service" content="service_a8bnfmk">
@@ -16,31 +16,16 @@
   .hidden{display:none}
   input,select,textarea{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
 
-  /* Radyo/Checkbox kutucuklarının global genişliğini düzeltir */
+  /* Radyo/Checkbox hizalama düzeltmesi */
   input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 6px; }
-  #participationOptions label { display: block; margin-bottom: 8px; }
+  #participationOptions label, .question-group label { display: block; margin-bottom: 8px; font-size: 14px; }
 
   .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer; width:100%; margin-top:5px;}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
   
-  .respRow{
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 8px; 
-    margin-top: 8px;
-    padding: 0 12px; 
-  }
-
-  .respBtn{
-    padding:10px 14px;
-    border-radius:8px;
-    border:1px solid #444;
-    background:#f2f2f2;
-    cursor:pointer;
-    text-align: center; 
-  }
-
+  .respRow{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; padding: 0 12px; }
+  .respBtn{ padding:10px 14px; border-radius:8px; border:1px solid #444; background:#f2f2f2; cursor:pointer; text-align: center; }
   .respBtn-active{background:#bdbdbd}
   .stai-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
   .hand-grid-header{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
@@ -48,13 +33,12 @@
   .hand-grid-row span{flex:2}
   .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:8px}
   .small{font-size:13px;color:#666}
-  .question-group{margin-bottom:10px}
-  .linklike{color:#007bff;cursor:pointer;text-decoration:underline}
-
+  .question-group{margin-bottom:15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+  .question-title{font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;}
+  
   .modal{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none}
   .modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:10px;max-width:600px;max-height:80vh;overflow-y:auto}
   .close{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888}
-  .close:hover{color:#000}
 </style>
 </head>
 <body>
@@ -68,7 +52,7 @@
     <option value="Izmir">İzmir</option>
     <option value="Esporcu">Esporcu</option>
     <option value="Sporcu">Sporcu</option>
-    <option value="OCM">OCM</option>
+    <option value="OCM">OCM (Koku Duyusu)</option>
   </select>
   <div style="margin-top:8px"><button id="toParticipationBtn" class="bigBtn">Devam</button></div>
 </div>
@@ -81,8 +65,7 @@
 
 <div id="consentCard" class="card hidden">
   <h3>Aydınlatılmış Onam</h3>
-  <div id="consentText" style="border:1px solid #ddd;padding:12px;border-radius:6px;max-height:250px;overflow:auto; background: #fff; font-size: 13px; line-height: 1.5;">
-    </div>
+  <div id="consentText" style="border:1px solid #ddd;padding:12px;border-radius:6px;max-height:250px;overflow:auto; background: #fff; font-size: 13px; line-height: 1.5;"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="consentAccept" class="bigBtn btnGreen">Okudum, onaylıyorum</button>
     <button id="consentDecline" class="bigBtn btnRed">Kabul etmiyorum</button>
@@ -95,8 +78,7 @@
 <div id="consentModal" class="modal">
   <div class="modal-content">
     <span id="closeConsentModal" class="close">&times;</span>
-    <div id="modalConsentBody" style="font-size: 13px; line-height: 1.4;">
-        </div>
+    <div id="modalConsentBody" style="font-size: 13px; line-height: 1.4;"></div>
   </div>
 </div>
 
@@ -112,13 +94,68 @@
   <input id="motherTongue" placeholder="Anadiliniz">
   <select id="gender"><option value="">Cinsiyet</option><option>Kadın</option><option>Erkek</option><option>Diğer</option></select>
   <div id="codeInfo" class="small" style="margin-top:6px;color:#2c3e50"></div>
-  <div style="margin-top:8px"><button id="toHandFromInfo" class="bigBtn">Devam</button></div>
+  <div style="margin-top:8px"><button id="toNextFromInfo" class="bigBtn">Devam</button></div>
+</div>
+
+<div id="esporcuFormCard" class="card hidden">
+  <h3>Esporcu Bilgi Formu</h3>
+  
+  <div class="question-group">
+    <span class="question-title">Eğitim Durumunuz *</span>
+    <label><input type="radio" name="eduStatus" value="Ortaokul"> Ortaokul</label>
+    <label><input type="radio" name="eduStatus" value="Lise"> Lise</label>
+    <label><input type="radio" name="eduStatus" value="Üniversite"> Üniversite</label>
+    <label><input type="radio" name="eduStatus" value="Yüksek Lisans"> Yüksek Lisans</label>
+    <label><input type="radio" name="eduStatus" value="Doktora"> Doktora</label>
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">Kaç yıldır oyun oynuyorsunuz? *</span>
+    <input id="playYears" type="number" placeholder="Yanıtınız">
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">Günde kaç saat oyun oynuyorsunuz? *</span>
+    <input id="dailyHours" type="number" placeholder="Yanıtınız">
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">Oyun oynadığınız platform hangisi? *</span>
+    <label><input type="radio" name="platform" value="Bilgisayar"> Bilgisayar</label>
+    <label><input type="radio" name="platform" value="Mobil"> Mobil</label>
+    <label><input type="radio" name="platform" value="Playstation"> Playstation</label>
+    <label><input type="radio" name="platform" value="Diğer"> Diğer</label>
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">Oynadığınız oyun türünü seçiniz *</span>
+    <label><input type="radio" name="gameType" value="FPS"> FPS</label>
+    <label><input type="radio" name="gameType" value="SPOR"> SPOR</label>
+    <label><input type="radio" name="gameType" value="MMORPG"> MMORPG</label>
+    <label><input type="radio" name="gameType" value="MOBA"> MOBA</label>
+    <label><input type="radio" name="gameType" value="RPG"> RPG</label>
+    <label><input type="radio" name="gameType" value="RTS"> RTS (Real Time Strategy)</label>
+    <label><input type="radio" name="gameType" value="TBS"> TBS (Turn Based Strategy)</label>
+    <label><input type="radio" name="gameType" value="Diğer"> Diğer</label>
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">Oynadığınız oyunun (en çok saat ayırdığınız) adını yazınız *</span>
+    <input id="topGameName" placeholder="Yanıtınız">
+  </div>
+
+  <div class="question-group">
+    <span class="question-title">En Yüksek Rütbeniz (Rank / Seviye) *</span>
+    <p class="small">Oynadığınız oyun sezonlu ise en son başarılı olduğunuz sezona göre yazabilirsiniz.</p>
+    <input id="topRank" placeholder="Yanıtınız">
+  </div>
+
+  <button id="toHandFromEsporcu" class="bigBtn">Devam</button>
 </div>
 
 <div id="enterCodeCard" class="card hidden">
   <h3>Önceki Katılımcı Kodu</h3>
-  <div class="small">Daha önce katıldıysanız lütfen katılımcı kodunuzu girin.</div>
-  <input id="previousCode" placeholder="Örnek: OY_AB_12345">
+  <input id="previousCode" placeholder="OY_AB_12345">
   <div style="margin-top:8px"><button id="toStaiDirectBtn" class="bigBtn">Devam</button></div>
 </div>
 
@@ -131,23 +168,19 @@
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
-  <p class="small">Anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
-  <p class="small">Lütfen kulaklığınızı takın! Sol ve sağ kulak için ses seviyesini ayarlayın.</p>
   <div style="margin-top:8px">
     <label><b>Sol Kulak</b></label>
-    <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5">
-    <button id="playLeft" class="bigBtn">Sol Oynat</button>
+    <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Sol Oynat</button>
   </div>
   <div style="margin-top:12px">
     <label><b>Sağ Kulak</b></label>
-    <input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5">
-    <button id="playRight" class="bigBtn">Sağ Oynat</button>
+    <input type="range" id="rightSlider" min="0" max="1" step="0.01" value="0.5"><button id="playRight" class="bigBtn">Sağ Oynat</button>
   </div>
   <div style="margin-top:12px"><button id="toSessionIntro" class="bigBtn">Devam</button></div>
 </div>
@@ -159,159 +192,85 @@
 </div>
 
 <div id="trialCard" class="card hidden">
-  <div id="trialStatus" class="small" style="margin-bottom:8px"></div>
+  <div id="trialStatus" class="small"></div>
   <audio id="stimAudio" preload="auto"></audio>
   <div class="respRow">
-    <button class="respBtn" data-val="BA">BA</button>
-    <button class="respBtn" data-val="DA">DA</button>
-    <button class="respBtn" data-val="GA">GA</button>
-    <button class="respBtn" data-val="KA">KA</button>
-    <button class="respBtn" data-val="PA">PA</button>
-    <button class="respBtn" data-val="TA">TA</button>
+    <button class="respBtn" data-val="BA">BA</button><button class="respBtn" data-val="DA">DA</button>
+    <button class="respBtn" data-val="GA">GA</button><button class="respBtn" data-val="KA">KA</button>
+    <button class="respBtn" data-val="PA">PA</button><button class="respBtn" data-val="TA">TA</button>
   </div>
 </div>
 
-<div id="endCard" class="card hidden">
-  <h3>Deney tamamlandı ✅</h3>
-  <div id="doneLog" class="small"></div>
-</div>
+<div id="endCard" class="card hidden"><h3>Deney tamamlandı ✅</h3><div id="doneLog" class="small"></div></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', ()=>{
 
-/* ---------- helpers & state ---------- */
 const $id = id => document.getElementById(id);
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
 
 let participant = {}, results = [], sessionOrder = [], currentSessionIndex = 0, currentTrial = -1;
-let audioCtx=null,leftOsc=null,rightOsc=null,leftGain=null,rightGain=null;
+let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null;
 let isResponseAllowed=false, trialTimeout=null, responseStart=0;
 
-/* ---------- BELGEDEKİ TÜM SATIRLARIN OLDUĞU ONAM SÖZLÜĞÜ ---------- */
+/* ---------- ONAM SÖZLÜĞÜ (OCM EKLENDİ) ---------- */
 const CONSENT_TEXTS = {
   "Sport": `
-    <div style="text-align: center; font-weight: bold;">
-      DOKUZ EYLÜL ÜNİVERSİTESİ<br>
-      “GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR” İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU
-    </div>
-    <br>
-    <p><b>Araştırmanın Adı:</b> Basketbolcu ve Elektronik Sporcularda İşitsel Dikkat ve Beyin Asimetrisinin Değerlendirilmesi</p>
-    <p><b>Sorumlu Araştırmacı:</b> Dr. Öğr.Üyesi Emre Eskicioğlu</p>
-    <p><b>Yardımcı Araştırmacılar:</b> Doç. Dr. Egemen MANCI, Doç. Dr. Çağdaş Güdücü </p>
-    <hr>
-    <p>“Basketbolcu ve Elektronik Sporcularda İşitsel Dikkat ve Beyin Asimetrisinin Değerlendirilmesi” isimli araştırmada yer almak üzere davet edilmiş bulunmaktasınız. Bu çalışma bilimsel araştırma amaçlı yapılmaktadır ve katılım gönüllülük esasına dayalıdır.</p>
-    <p><b>Araştırmanın Amacı:</b> Geleneksel sporcular ile elektronik sporcuların işitsel dikkat ve beyin asimetrisini incelenmesidir. Araştırmaya yaş grubunuzdan ortalama 22 kişinin alınması planlanmaktadır.</p>
-    <p><b>Araştırma Yöntemi:</b> Sizlerden yaş, cinsiyet, sporculuk bilgileri ile birlikte bir bilgisayar ya da cep telefonu yardımıyla yaklaşık 10 dk. sürecek dikotik dinleme testleri uygulanacaktır. Kulaklıkla her iki kulağınıza da /ba/, /da/, /ga/, /ka/, /pa/ ve /ta/ hecelerinin dinletilmesi ile yapılmaktadır. Seçeceğiniz heceler ile değerlendirme yapılacaktır.</p>
-    <p><b>Riskler ve Gizlilik:</b> Araştırma dijital ortamda yapılacağı için olası bir yan etki beklenmemektedir. Kişisel bilgileriniz tıp etiği ve KVKK düzenlenmelerine uygun şekilde gizli tutulacak, üçüncü kişilerle paylaşılmayacaktır. </p>
-    <p><b>Haklarınız:</b> İstediğiniz zaman bir neden göstermeksizin araştırmadan ayrılmakta özgürsünüz. Araştırma için masraf size yansıtılmayacak, ödeme de yapılmayacaktır.</p>
-    <hr>
-    <p><b>KATILIMCININ BEYANI:</b> Biyofizik Anabilim dalında, Dr. Öğr. Üyesi Emre Eskicioğlu tarafından bir araştırma yapılacağı belirtilerek bu araştırma ile ilgili yukarıdaki bilgiler bana aktarıldı ve ilgili metni okudum. Araştırmaya katılmam konusunda zorlayıcı bir davranışla karşılaşmış değilim. Araştırma sırasında bir sağlık sorunu ile karşılaştığımda; herhangi bir saatte, Dr. Öğr. Üyesi Emre Eskicioğlu’nu, “0555 740 0187” numaralı telefondan arayabileceğimi biliyorum. Bu koşullarla araştırmaya kendi rızamla katılmayı kabul ediyorum.</p>
+    <div style="text-align: center; font-weight: bold;">DOKUZ EYLÜL ÜNİVERSİTESİ<br>“GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR” İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU</div>
+    <br><p><b>Araştırmanın Adı:</b> Basketbolcu ve Elektronik Sporcularda İşitsel Dikkat ve Beyin Asimetrisinin Değerlendirilmesi</p>
+    <p><b>Sorumlu:</b> Dr. Öğr. Üyesi Emre Eskicioğlu. <b>Yardımcılar:</b> Doç. Dr. Egemen MANCI, Doç. Dr. Çağdaş Güdücü</p>
+    <hr><p>Bu çalışma geleneksel sporcular ile esporcuların beyin asimetrisini incelemeyi amaçlar. Katılım gönüllüdür.</p>
+    <p><b>BEYAN:</b> Dr. Öğr. Üyesi Emre Eskicioğlu tarafından bilgilendirildim. 0555 740 0187 numaralı telefondan ulaşabileceğimi biliyorum. Gönüllülük içerisinde katılmayı kabul ediyorum.</p>
   `,
   "OCM": `
-    <div style="text-align: center; font-weight: bold;">
-      DOKUZ EYLÜL ÜNİVERSİTESİ<br>
-      "GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR" İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU
-    </div>
-    <br>
-    <p><b>Araştırmanın Adı:</b> Koku Duyusunun İşitsel Beyin Asimetrisi Üzerine Etkisinin Değerlendirilmesi</p>
+    <div style="text-align: center; font-weight: bold;">DOKUZ EYLÜL ÜNİVERSİTESİ<br>"GİRİŞİMSEL OLMAYAN KLİNİK ARAŞTIRMALAR" İÇİN BİLGİLENDİRİLMİŞ GÖNÜLLÜ OLUR FORMU</div>
+    <br><p><b>Araştırmanın Adı:</b> Koku Duyusunun İşitsel Beyin Asimetrisi Üzerine Etkisinin Değerlendirilmesi</p>
     <p><b>Sorumlu Araştırıcı:</b> Emre Eskicioğlu</p>
     <p><b>Yardımcı Araştırmacılar:</b> Abdullah Suat Kavun, Beril Demirbilek, Neziha Burçin Tokgöz</p>
     <hr>
-    <p>“Koku Duyusunun İşitsel Beyin Asimetrisi Üzerine Etkisinin Değerlendirilmesi” isimli araştırmada yer almak üzere davet edilmiş bulunmaktasınız. Bu çalışma bilimsel araştırma amaçlı yapılmaktadır ve katılım gönüllülük esasına dayalıdır. Karar vermeden önce araştırmanın neden ve nasıl yapılacağını bilmeniz gerekmektedir.</p>
-    <p><b>Araştırmanın Amacı:</b> Koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmektir. Koku terapisi uygulamasının işitsel dikkat ve lateralizasyon üzerindeki etkileri araştırılacaktır. Toplam 30 sağlıklı gönüllü katılacaktır.</p>
-    <p><b>Araştırma Yöntemi:</b> İlk olarak dikotik dinleme testi uygulanacaktır. Ardından dört farklı kokudan (gül, karanfil, limon ve okaliptüs) oluşan koku çubukları verilecek ve 12 hafta boyunca günde iki kez koklamanız istenecektir. Süreç sonunda test yeniden yapılacaktır. Bu araştırma tamamen non-invazivdir.</p>
-    <p><b>Riskler:</b> Düşük risk grubundadır. Nadir durumlarda koku hassasiyeti veya alerjik reaksiyon görülebilir. Herhangi bir sağlık probleminde tıbbi girişim tarafımızdan karşılanacaktır.</p>
-    <p><b>Gizlilik:</b> Kimlik bilgileriniz tıp etiği ve KVKK düzenlenmelerine uygun şekilde gizli tutulacak, üçüncü kişilerle paylaşılmayacaktır.</p>
-    <hr>
-    <p><b>KATILIMCININ BEYANI:</b> Tıbbi bir araştırma yapılacağı belirtilerek bu araştırma ile ilgili yukarıdaki bilgiler bana aktarıldı ve metni okudum. Araştırmaya katılmam konusunda zorlayıcı bir davranışla karşılaşmış değilim. İstediğim zaman çekilebiliriz. Herhangi bir sağlık sorununda Emre Eskicioğlu'nu 0555 740 01 87 numaralı telefondan arayabileceğimi biliyorum. Bu koşullarla araştırmaya kendi rızamla katılmayı kabul ediyorum.</p>
+    <p>Bu araştırma, koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmeyi amaçlar. Toplam 30 sağlıklı gönüllü katılacaktır.</p>
+    <p><b>Süreç:</b> İlk olarak dikotik dinleme testi uygulanacaktır. Ardından size dört farklı kokudan (gül, karanfil, limon ve okaliptüs) oluşan koku çubukları verilecektir. Sizden bu kokuları 12 hafta boyunca, günde iki kez koklamanız istenecektir. Süreç sonunda test yeniden yapılacaktır.</p>
+    <p><b>Riskler:</b> Düşük risk grubundadır. Çok nadir durumlarda koku hassasiyeti veya alerjik reaksiyon görülebilir.</p>
+    <p><b>BEYAN:</b> Tıbbi bir araştırma yapılacağı belirtilerek bilgiler bana aktarıldı. Herhangi bir sağlık sorununda 0555 740 01 87'den araştırmacıya ulaşabileceğimi biliyorum. Kendi rızamla katılmayı kabul ediyorum.</p>
   `,
-  "OykuTez": `
-    <h3>Aydınlatılmış Onam Formu (Tam Metin)</h3>
-    <p><b>Araştırmanın Adı:</b> WEB Tabanlı Türkçe Dikotik Dinleme Testi Test – Tekrar Test Güvenirliği</p>
-    <p><b>Sorumlu Araştırmacı:</b> Dr. Öğr. Üyesi Emre Eskicioğlu</p>
-    <p><b>Yardımcı Araştırmacı:</b> Öykü Akkay</p>
-    <p><b>Destekleyici:</b> Doç. Dr. Çağdaş Güdücü</p>
-    <hr>
-    <p>Bu araştırma, Türkçe heceler içeren web tabanlı olarak geliştirilen dikotik dinleme testinin test-tekrar test güvenirliğini değerlendirmektir. Normal şartlarda yalnızca laboratuvar ortamında uygulanabilen bu testin dijital ortama aktarılmasıyla daha geniş katılımcı gruplarına ulaşılması hedeflenmektedir.</p>
-    <p>Araştırmanın uygulama süreci toplamda 2 hafta olarak planlanmaktadır. İlk test uygulamasından sonra, ikinci test uygulaması 14 gün sonra yapılacaktır. Her bir oturum yaklaşık 20 dakika sürecektir.</p>
-  `,
-  "Default": `
-    <h3>Aydınlatılmış Onam</h3>
-    <p>Bu çalışma işitsel algı süreçlerini incelemeyi amaçlar. Katılım gönüllülük esasına dayanır; veriler anonim tutulacaktır. Dilediğiniz zaman çalışmadan çekilebilirsiniz.</p>
-  `
+  "OykuTez": `<h3>WEB Tabanlı Türkçe Dikotik Dinleme Testi Güvenirliği</h3><p>Uygulama süreci 2 hafta planlanmaktadır.</p>`,
+  "Default": `<h3>Aydınlatılmış Onam</h3><p>Bu çalışma işitsel algı süreçlerini incelemeyi amaçlar. Katılım gönüllüdür.</p>`
 };
-
 CONSENT_TEXTS["Sporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Esporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Izmir"] = CONSENT_TEXTS["Default"];
 
-/* ---------- STAI & hand questions ---------- */
-const staiQuestions = ["Şu anda sakinim","Kendimi emniyette hissediyorum","Şu anda sinirlerim gergin","Pişmanlık duygusu içindeyim","Şu anda huzur içindeyim","Şu anda hiç keyfim yok","Başıma geleceklerden endişe ediyorum","Kendimi dinlenmiş hissediyorum","Şu anda kaygılıyım","Kendimi rahat hissediyorum","Kendime güvenim var","Şu anda asabım bozuk","Çok sinirliyim","Sinirlerimin çok gergin olduğunu hissediyorum","Kendimi rahatlamış hissediyorum","Şu anda halimden memnunum","Şu anda endişeliyim","Heyecandan kendimi şaşkına dönmüş hissediyorum","Şu anda sevinçliyim","Şu anda keyfim yerinde"];
-const handQs = ["Yazmak","Çizmek","Taş Atmak","Makas kullanmak","Diş fırçası kullanmak","Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"];
-
-function renderStai(){
-  const c = $id('staiQuestions'); c.innerHTML = '';
-  staiQuestions.forEach((q,i)=>{
-    c.innerHTML += `<div class="question-group"><p>${i+1}. ${q}</p>
-      <div class="stai-options">
-        <label><input type="radio" name="staiQ${i+1}" value="1">Hiç</label>
-        <label><input type="radio" name="staiQ${i+1}" value="2">Biraz</label>
-        <label><input type="radio" name="staiQ${i+1}" value="3">Çok</label>
-        <label><input type="radio" name="staiQ${i+1}" value="4">Tamamıyla</label>
-      </div></div>`;
-  });
-}
-
-function renderHand(){
-  const c = $id('handUseQuestions'); c.innerHTML = `<div class="hand-grid-header"><div style="flex:2"></div><div style="flex:1;text-align:center">Sol</div><div style="flex:1;text-align:center">Sağ</div></div>`;
-  handQs.forEach((q,i)=>{
-    c.innerHTML += `<div class="hand-grid-row" data-q="${i+1}"><span>${i+1}. ${q}</span>
-      <div class="col"><input type="checkbox" class="left"><input type="checkbox" class="left"></div>
-      <div class="col"><input type="checkbox" class="right"><input type="checkbox" class="right"></div>
-    </div>`;
-  });
-}
-
-/* ---------- FLOW: project -> participation ---------- */
+/* ---------- FLOW MANTIĞI ---------- */
 $id('toParticipationBtn').onclick = ()=>{
   const proj = $id('projectCode').value;
-  if(!proj){ alert('Lütfen proje kodu seçiniz.'); return; }
+  if(!proj){ alert('Proje kodu seçiniz.'); return; }
   participant.projectCode = proj;
-  $id('projectCard').classList.add('hidden');
-  $id('participationCard').classList.remove('hidden');
+  $id('projectCard').classList.add('hidden'); $id('participationCard').classList.remove('hidden');
   renderParticipationOptions(proj);
 };
 
 function renderParticipationOptions(project){
   const el = $id('participationOptions'); el.innerHTML = '';
-  if(project === 'OykuTez'){
-    el.innerHTML = `
-      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>
-      <label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>
-      <label><input type="radio" name="participation" value="4"> İki kez katıldım ancak tamamlayamadım</label>`;
-  } else {
-    el.innerHTML = `
-      <label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
-      <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>`;
-  }
+  const needsSecond = (project === 'OykuTez' || project === 'OCM');
+  el.innerHTML = `<label><input type="radio" name="participation" value="1"> İlk kez katılıyorum</label>
+    <label><input type="radio" name="participation" value="2"> Bir kez katıldım ama tamamlayamadım</label>` +
+    (needsSecond ? `<label><input type="radio" name="participation" value="3"> İkinci kez katılıyorum</label>` : '');
 }
 
 $id('toNextStepBtn').onclick = ()=>{
   const sel = document.querySelector('input[name="participation"]:checked');
-  if(!sel){ alert('Lütfen bir seçenek seçiniz.'); return; }
+  if(!sel){ alert('Seçenek seçiniz.'); return; }
   participant.participation = sel.value;
   $id('participationCard').classList.add('hidden');
-  if(participant.participation === '1'){
-    const proj = participant.projectCode;
-    const text = CONSENT_TEXTS[proj] || CONSENT_TEXTS["Default"];
-    $id('consentText').innerHTML = text;
-    $id('modalConsentBody').innerHTML = text;
+  if(sel.value === '1'){
+    const txt = CONSENT_TEXTS[participant.projectCode] || CONSENT_TEXTS["Default"];
+    $id('consentText').innerHTML = txt; $id('modalConsentBody').innerHTML = txt;
     $id('consentCard').classList.remove('hidden');
-  } else {
-    $id('enterCodeCard').classList.remove('hidden');
-  }
+  } else { $id('enterCodeCard').classList.remove('hidden'); }
 };
+
+$id('consentAccept').onclick = ()=>{ $id('consentCard').classList.add('hidden'); $id('infoCard').classList.remove('hidden'); };
+$id('consentDecline').onclick = ()=>{ $id('consentDeclinedMsg').classList.remove('hidden'); $id('consentAccept').disabled = true; };
 
 /* --- ONAM MODAL KONTROLÜ --- */
 $id('consentText').insertAdjacentHTML('beforebegin', '<button id="openConsentPopup" class="bigBtn" style="margin-bottom:10px; width: 100%;">Onam Formunu Tam Ekran Görüntüle</button>');
@@ -319,196 +278,177 @@ $id('openConsentPopup').onclick=()=>{ $id('consentModal').style.display='block';
 $id('closeConsentModal').onclick=()=>{ $id('consentModal').style.display='none'; };
 window.onclick=e=>{ if(e.target==$id('consentModal')) $id('consentModal').style.display='none'; };
 
-$id('consentAccept').onclick = ()=>{ $id('consentCard').classList.add('hidden'); $id('infoCard').classList.remove('hidden'); };
-$id('consentDecline').onclick = ()=>{ $id('consentDeclinedMsg').classList.remove('hidden'); $id('consentAccept').disabled = true; $id('consentDecline').disabled = true; };
-
-/* ---------- VERİ TOPLAMA VE FORM GEÇİŞLERİ ---------- */
-$id('toHandFromInfo').onclick = ()=>{
+/* --- KATILIMCI BİLGİLERİ -> ESPORCU FORMU VEYA EL KULLANIMI --- */
+$id('toNextFromInfo').onclick = ()=>{
   const n = $id('name').value.trim(), s = $id('surname').value.trim(), a = $id('age').value.trim();
   if(!n || !s || !a){ alert('Ad, Soyad ve Yaş zorunludur.'); return; }
-  const e=$id('email').value.trim(), p=$id('phone').value.trim();
-  if(!e || !p){ alert('E-posta ve Telefon zorunludur.'); return; }
-  participant.email=e; participant.phone=p;
   participant.name = n.slice(0,2); participant.surname = s.slice(0,2); participant.age = a;
-  participant.race = $id('race').value.trim(); participant.motherTongue = $id('motherTongue').value.trim(); participant.gender = $id('gender').value;
+  participant.email = $id('email').value; participant.phone = $id('phone').value;
+  participant.race = $id('race').value; participant.motherTongue = $id('motherTongue').value; participant.gender = $id('gender').value;
   
-  const four = (participant.name.padEnd(2).slice(0,2) + participant.surname.padEnd(2).slice(0,2)).toUpperCase().replace(/[^A-Z]/g,'X');
-  participant.code = (participant.projectCode ? participant.projectCode + '_' : '') + four + '_' + Math.floor(10000 + Math.random()*90000);
-  $id('codeInfo').innerText = 'Katılımcı kodu: ' + participant.code;
+  participant.code = participant.projectCode + '_' + (n+s).toUpperCase().slice(0,4).padEnd(4,'X') + '_' + Math.floor(10000+Math.random()*90000);
+  $id('codeInfo').innerText = 'Kod: ' + participant.code;
   $id('infoCard').classList.add('hidden');
-  renderHand();
-  $id('handUseCard').classList.remove('hidden');
+
+  if(participant.projectCode === 'Esporcu') {
+    $id('esporcuFormCard').classList.remove('hidden');
+  } else {
+    renderHand(); $id('handUseCard').classList.remove('hidden');
+  }
 };
 
-$id('toStaiDirectBtn').onclick = ()=>{
-  const code = $id('previousCode').value.trim();
-  if(!code){ alert('Lütfen kodunuzu girin.'); return; }
-  participant.code = code;
-  try{ const raw = localStorage.getItem('participant.' + code); if(raw) participant = {...participant, ...JSON.parse(raw)}; }catch(e){}
-  $id('enterCodeCard').classList.add('hidden');
-  renderStai();
-  $id('staiCard').classList.remove('hidden');
+/* --- ESPORCU FORMU VERİ TOPLAMA --- */
+$id('toHandFromEsporcu').onclick = ()=>{
+  const edu = document.querySelector('input[name="eduStatus"]:checked');
+  const plat = document.querySelector('input[name="platform"]:checked');
+  const type = document.querySelector('input[name="gameType"]:checked');
+  const years = $id('playYears').value;
+  const hours = $id('dailyHours').value;
+  const game = $id('topGameName').value;
+  const rank = $id('topRank').value;
+
+  if(!edu || !plat || !type || !years || !hours || !game || !rank){ alert('Lütfen tüm yıldızlı alanları doldurunuz.'); return; }
+
+  participant.esporData = { education: edu.value, platform: plat.value, genre: type.value, yearsPlaying: years, dailyHours: hours, topGame: game, highestRank: rank };
+  
+  $id('esporcuFormCard').classList.add('hidden');
+  renderHand(); $id('handUseCard').classList.remove('hidden');
 };
+
+/* --- GERİ KALAN FONKSİYONLAR (EL, STAI, AUDIO) --- */
+function renderHand(){
+  const c = $id('handUseQuestions'); c.innerHTML = '<div class="hand-grid-header"><span></span><div class="col">Sol</div><div class="col">Sağ</div></div>';
+  ["Yazmak","Çizmek","Taş Atmak","Makas","Fırça","Bıçak","Kaşık","Süpürge","Kibrit","Kapak"].forEach((q,i)=>{
+    c.innerHTML += `<div class="hand-grid-row"><span>${q}</span><div class="col"><input type="checkbox" class="left"><input type="checkbox" class="left"></div><div class="col"><input type="checkbox" class="right"><input type="checkbox" class="right"></div></div>`;
+  });
+}
 
 $id('toStaiBtn').onclick = ()=>{
   const rows = document.querySelectorAll('#handUseQuestions .hand-grid-row');
-  for(const r of rows) if(r.querySelectorAll('input:checked').length !== 2){ alert('Her işlem için 2 kutucuk işaretleyin.'); return; }
-  participant.handUse = Array.from(rows).map(r=>({ q: r.dataset.q, left: r.querySelectorAll('.left:checked').length, right: r.querySelectorAll('.right:checked').length }));
-  try{ if(participant.code) localStorage.setItem('participant.' + participant.code, JSON.stringify({ projectCode: participant.projectCode, handUse: participant.handUse })); }catch(e){}
-  $id('handUseCard').classList.add('hidden');
-  renderStai();
-  $id('staiCard').classList.remove('hidden');
+  for(const r of rows) if(r.querySelectorAll('input:checked').length !== 2){ alert('Her satıra 2 işaret!'); return; }
+  participant.handUse = Array.from(rows).map((r,i)=>({q:i+1, left:r.querySelectorAll('.left:checked').length, right:r.querySelectorAll('.right:checked').length}));
+  $id('handUseCard').classList.add('hidden'); renderStai(); $id('staiCard').classList.remove('hidden');
 };
 
-/* --- AKIŞ DÜZELTME: STAI -> HEARING --- */
+function renderStai(){
+  const c = $id('staiQuestions'); c.innerHTML = '';
+  const qs = ["Şu anda sakinim","Emniyette hissediyorum","Sinirlerim gergin","Pişmanlık içindeyim","Huzurluyum","Keyfim yok","Endişeliyim","Dinlenmişim","Kaygılıyım","Rahatım","Güvenim var","Asabım bozuk","Sinirliyim","Gerginim","Rahatlamışım","Halimden memnunum","Endişeliyim","Şaşkınım","Sevinçliyim","Keyfim yerinde"];
+  qs.forEach((q,i)=>{
+    c.innerHTML += `<div class="question-group"><p>${i+1}. ${q}</p><div class="stai-options">${[1,2,3,4].map(v=>`<label><input type="radio" name="staiQ${i+1}" value="${v}">${v}</label>`).join('')}</div></div>`;
+  });
+}
+
 $id('toHearingBtn').onclick = async ()=>{
-  if(document.querySelectorAll('#staiQuestions input:checked').length < staiQuestions.length){ alert('Tüm soruları yanıtlayın.'); return; }
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
+  if(document.querySelectorAll('#staiQuestions input:checked').length < 20){ alert('Tüm soruları yanıtlayın.'); return; }
+  ensureCtx(); if(audioCtx.state==='suspended') await audioCtx.resume();
   participant.staiAnswers = {};
-  document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name] = i.value);
-  $id('staiCard').classList.add('hidden');
-  $id('hearingCard').classList.remove('hidden');
+  document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name]=i.value);
+  $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
 };
 
-/* ---------- SES VE İŞİTME KONTROLÜ (KRİTİK) ---------- */
+/* --- AUDIO & TRIAL --- */
 function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; }
-function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; }
-
-async function startLeft(){
-  ensureCtx(); stopRight(); stopLeft();
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
-  leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); panner.pan.value = -1;
-  leftOsc.frequency.value = 1500; leftGain.gain.value = Number($id('leftSlider').value);
-  leftOsc.connect(leftGain); leftGain.connect(panner); panner.connect(audioCtx.destination);
-  leftOsc.start();
+async function startTone(side){
+  ensureCtx(); if(audioCtx.state==='suspended') await audioCtx.resume();
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); const panner = audioCtx.createStereoPanner();
+  osc.frequency.value = 1500; panner.pan.value = (side==='left' ? -1 : 1);
+  gain.gain.value = Number($id(side+'Slider').value);
+  osc.connect(gain); gain.connect(panner); panner.connect(audioCtx.destination);
+  osc.start(); setTimeout(()=>osc.stop(), 1000);
 }
-async function startRight(){
-  ensureCtx(); stopLeft(); stopRight();
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
-  rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); panner.pan.value = 1;
-  rightOsc.frequency.value = 1500; rightGain.gain.value = Number($id('rightSlider').value);
-  rightOsc.connect(rightGain); rightGain.connect(panner); panner.connect(audioCtx.destination);
-  rightOsc.start();
-}
- 
-$id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
-$id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
+$id('playLeft').onclick = ()=> startTone('left');
+$id('playRight').onclick = ()=> startTone('right');
 
-/* --- AKIŞ DÜZELTME: HEARING -> SESSION --- */
 $id('toSessionIntro').onclick = async ()=>{
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
-  stopLeft(); stopRight();
+  ensureCtx(); if(audioCtx.state==='suspended') await audioCtx.resume();
   participant.leftLevel = $id('leftSlider').value; participant.rightLevel = $id('rightSlider').value;
-  results.push({ session: 'hearing_level', trial: 0, stim: '1500Hz', response: '', responseTime: '', leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age, gender: participant.gender, race: participant.race, motherTongue: participant.motherTongue, handUseAnswers: JSON.stringify(participant.handUse), staiAnswers: JSON.stringify(participant.staiAnswers), code: participant.code });
   sessionOrder = ['training','NF', ...shuffle(['FR','FL'])];
-  currentSessionIndex = 0;
-  $id('hearingCard').classList.add('hidden');
-  showSessionIntro();
+  $id('hearingCard').classList.add('hidden'); showSessionIntro();
 };
-
-/* ---------- DENEY UYGULAMA DÖNGÜSÜ ---------- */
-const trainingPlaylist = [ "LBA-RBA.wav","LDA-RDA.wav","LGA-RGA.wav","LKA-RKA.wav","LPA-RPA.wav","LTA-RTA.wav","LBA-RDA.wav","LDA-RGA.wav","LGA-RKA.wav","LKA-RTA.wav" ];
-const mainPlaylist = [ "LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav","LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav","LBA-RGA.wav","LKA-RPA.wav","LTA-RDA.wav","LGA-RKA.wav","LPA-RDA.wav","LGA-RGA.wav","LBA-RTA.wav","LGA-RDA.wav","LKA-RTA.wav","LDA-RPA.wav","LTA-RKA.wav","LPA-RPA.wav","LDA-RBA.wav","LGA-RTA.wav","LPA-RKA.wav","LTA-RBA.wav","LKA-RGA.wav","LTA-RTA.wav","LBA-RPA.wav","LDA-RTA.wav","LGA-RBA.wav","LTA-RPA.wav","LDA-RDA.wav","LKA-RBA.wav","LPA-RGA.wav" ];
 
 function showSessionIntro(){
   const s = sessionOrder[currentSessionIndex];
   $id('sessionTitle').innerText = 'Oturum: ' + s;
-  $id('sessionInstr').innerHTML = (s === 'training') ? 'Eğitim oturumuna hoşgeldiniz. Yanıt vermeye çalışmadan heceleri dinleyin.' : (s === 'NF' ? 'En iyi duyduğunuz heceyi seçiniz.' : (s === 'FR' ? 'SAĞ kulağınıza odaklanınız.' : 'SOL kulağınıza odaklanınız.'));
+  const i = {training:'Eğitim: Sadece dinleyin.', NF:'En iyi duyduğunuzu seçin.', FR:'SAĞ kulağa odaklanın.', FL:'SOL kulağa odaklanın.'};
+  $id('sessionInstr').innerText = i[s];
   $id('sessionIntro').classList.remove('hidden');
 }
 
-/* --- AKIŞ DÜZELTME: SESSION -> TRIAL --- */
 $id('sessionStartBtn').onclick = async ()=>{
-  ensureCtx(); if(audioCtx.state === 'suspended') await audioCtx.resume();
+  ensureCtx(); if(audioCtx.state==='suspended') await audioCtx.resume();
   $id('sessionIntro').classList.add('hidden');
-  try{ const a = $id('stimAudio'); a.src=''; await a.play().catch(()=>{}); }catch(e){}
-  setTimeout(()=> { currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }, 200);
+  currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial();
 };
+
+const trainingPlaylist = ["LBA-RBA.wav","LDA-RDA.wav","LGA-RGA.wav","LKA-RKA.wav","LPA-RPA.wav","LTA-RTA.wav","LBA-RDA.wav","LDA-RGA.wav","LGA-RKA.wav","LKA-RTA.wav"];
+const mainPlaylist = ["LBA-RKA.wav","LDA-RGA.wav","LPA-RBA.wav","LKA-RDA.wav","LBA-RBA.wav","LTA-RGA.wav","LBA-RDA.wav","LGA-RPA.wav","LDA-RKA.wav","LPA-RTA.wav","LKA-RKA.wav","LBA-RGA.wav","LKA-RPA.wav","LTA-RDA.wav","LGA-RKA.wav","LPA-RDA.wav","LGA-RGA.wav","LBA-RTA.wav","LGA-RDA.wav","LKA-RTA.wav","LDA-RPA.wav","LTA-RKA.wav","LPA-RPA.wav","LDA-RBA.wav","LGA-RTA.wav","LPA-RKA.wav","LTA-RBA.wav","LKA-RGA.wav","LTA-RTA.wav","LBA-RPA.wav","LDA-RTA.wav","LGA-RBA.wav","LTA-RPA.wav","LDA-RDA.wav","LKA-RBA.wav","LPA-RGA.wav"];
 
 function nextTrial(){
   clearTimeout(trialTimeout);
-  const sType = sessionOrder[currentSessionIndex];
-  const playlist = (sType === 'training') ? trainingPlaylist : mainPlaylist;
+  const list = (sessionOrder[currentSessionIndex]==='training') ? trainingPlaylist : mainPlaylist;
   currentTrial++;
-  if(currentTrial >= playlist.length){
+  if(currentTrial >= list.length){
     $id('trialCard').classList.add('hidden'); currentSessionIndex++;
     if(currentSessionIndex < sessionOrder.length) showSessionIntro(); else endExperiment();
     return;
   }
-  playStim(playlist[currentTrial]);
+  playStim(list[currentTrial]);
 }
 
 async function playStim(stim){
   isResponseAllowed = false;
-  try{
-    const stimAudio = $id('stimAudio');
-    stimAudio.src = './sounds/yeni/erkek/' + stim;
-    await stimAudio.play();
-    responseStart = Date.now(); 
-    setTimeout(()=> isResponseAllowed = true, 500); 
-    trialTimeout = setTimeout(()=>{ 
-        if(sessionOrder[currentSessionIndex] !== 'training') saveTrial(stim, 'no_response', '', Date.now()-responseStart); 
-        nextTrial(); 
-    }, 4000);
-  }catch(e){ setTimeout(nextTrial, 200); }
+  $id('stimAudio').src = './sounds/yeni/erkek/' + stim;
+  try {
+    await $id('stimAudio').play();
+    responseStart = Date.now();
+    setTimeout(()=> isResponseAllowed = true, 500);
+    trialTimeout = setTimeout(()=>{ if(sessionOrder[currentSessionIndex]!=='training') saveTrial(stim, 'no_response', 4000); nextTrial(); }, 4000);
+  } catch(e){ nextTrial(); }
 }
 
-function saveTrial(stim, response, responseTime, rt){
-  results.push({ session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response, responseTime: rt, leftLevel: participant.leftLevel, rightLevel: participant.rightLevel, age: participant.age, gender: participant.gender, race: participant.race, motherTongue: participant.motherTongue, handUseAnswers: JSON.stringify(participant.handUse), staiAnswers: JSON.stringify(participant.staiAnswers), code: participant.code });
+function saveTrial(stim, resp, rt){
+  results.push({session: sessionOrder[currentSessionIndex], trial: currentTrial+1, stim, response: resp, responseTime: rt, code: participant.code});
 }
 
 document.querySelectorAll('.respBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+  btn.onclick = ()=>{
     if(!isResponseAllowed) return;
     isResponseAllowed = false; clearTimeout(trialTimeout);
     const rt = Date.now() - responseStart;
-    if(sessionOrder[currentSessionIndex] !== 'training'){ 
-        const stim = (sessionOrder[currentSessionIndex] === 'training' ? trainingPlaylist : mainPlaylist)[currentTrial];
-        saveTrial(stim, btn.dataset.val, rt, rt); 
-    }
+    if(sessionOrder[currentSessionIndex]!=='training') saveTrial((sessionOrder[currentSessionIndex]==='training'?trainingPlaylist:mainPlaylist)[currentTrial], btn.dataset.val, rt);
     btn.classList.add('respBtn-active');
-    setTimeout(()=> { btn.classList.remove('respBtn-active'); nextTrial(); }, 2500); 
-  });
+    setTimeout(()=>{ btn.classList.remove('respBtn-active'); nextTrial(); }, 2500);
+  };
 });
 
-/* ---------- VERİ GÖNDERİMİ (EMAILJS) ---------- */
+/* --- BİTİŞ & CSV --- */
 function makeCsv(){
-  let csv = 'KATILIMCI BİLGİLERİ\nKod,Proje,Yaş,Cinsiyet,Anadil,DoğumYeri,Eposta,Telefon,SolSeviye,SağSeviye\n';
-  csv += `${participant.code},${participant.projectCode},${participant.age},${participant.gender},${participant.motherTongue},${participant.race},${participant.email},${participant.phone},${participant.leftLevel},${participant.rightLevel}\n\n`;
-  csv += 'EL KULLANIMI\n' + JSON.stringify(participant.handUse) + '\n\n';
-  csv += 'STAI YANITLARI\n' + JSON.stringify(participant.staiAnswers) + '\n\n';
+  let csv = 'KATILIMCI BİLGİLERİ\nKod,Proje,Yaş,Cinsiyet,Eposta,Telefon,Anadil,SolLvl,SağLvl\n';
+  csv += `${participant.code},${participant.projectCode},${participant.age},${participant.gender},${participant.email},${participant.phone},${participant.motherTongue},${participant.leftLevel},${participant.rightLevel}\n\n`;
+  if(participant.esporData) csv += 'ESPORCU VERİLERİ\n' + JSON.stringify(participant.esporData) + '\n\n';
+  csv += 'EL KULLANIMI\n' + JSON.stringify(participant.handUse) + '\n\nSTAI YANITLARI\n' + JSON.stringify(participant.staiAnswers) + '\n\n';
   csv += 'DİKOTİK SONUÇLAR\nSession,Trial,Stimulus,Response,ResponseTime\n';
   results.forEach(r=>{ csv += `${r.session},${r.trial},${r.stim},${r.response},${r.responseTime}\n`; });
   return csv;
 }
 
-async function sendEmail(partial=false){
+async function sendEmail(){
   const csv = makeCsv();
   try{
     if(!window.emailjs){
       const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-      await new Promise(res=>{ s.onload = res; document.head.appendChild(s); });
-      emailjs.init(document.querySelector('meta[name="emailjs-user"]').content);
+      await new Promise(res=>{ s.onload = res; });
+      emailjs.init($id('emailjs-user').content);
     }
-    const service = document.querySelector('meta[name="emailjs-service"]').content;
-    const template = document.querySelector('meta[name="emailjs-template"]').content;
-    await emailjs.send(service, template, { subject: participant.code + (partial ? ' (partial)' : ''), message: csv });
+    await emailjs.send($id('emailjs-service').content, $id('emailjs-template').content, { subject: participant.code, message: csv });
     $id('doneLog').innerText = 'Veriler başarıyla gönderildi.';
-  }catch(e){ $id('doneLog').innerText = 'Gönderim hatası oluştu.'; }
+  }catch(e){ $id('doneLog').innerText = 'E-posta gönderilemedi.'; }
 }
 
-async function endExperiment(){
-  $id('trialCard').classList.add('hidden'); $id('endCard').classList.remove('hidden');
-  await sendEmail(false);
-}
+async function endExperiment(){ $id('trialCard').classList.add('hidden'); $id('endCard').classList.remove('hidden'); await sendEmail(); }
 
-document.addEventListener('click', function initAudioContext() {
-    ensureCtx(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-}, {once: true});
-  
+document.addEventListener('click', ()=>{ ensureCtx(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }, {once:true});
+
 });
 </script>
 </body>
