@@ -168,12 +168,14 @@
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
+  <p class="small">Doğru ya da yanlış cevap yoktur. Anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <div style="margin-top:8px"><button id="toHearingBtn" class="bigBtn">Devam</button></div>
 </div>
 
 <div id="hearingCard" class="card hidden">
   <h3>İşitme Kontrolü</h3>
+  <p class="small">Lütfen kulaklığınızı takın! Sol ve sağ kulak için ayrı ayrı sesi dinleyin.</p>
   <div style="margin-top:8px">
     <label><b>Sol Kulak</b></label>
     <input type="range" id="leftSlider" min="0" max="1" step="0.01" value="0.5"><button id="playLeft" class="bigBtn">Sol Oynat</button>
@@ -210,7 +212,7 @@ const $id = id => document.getElementById(id);
 function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr; }
 
 let participant = {}, results = [], sessionOrder = [], currentSessionIndex = 0, currentTrial = -1;
-let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null;
+let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null, leftPanner=null, rightPanner=null;
 let isResponseAllowed=false, trialTimeout=null, responseStart=0;
 
 /* ---------- ONAM SÖZLÜĞÜ (OCM DAHİL) ---------- */
@@ -228,10 +230,10 @@ const CONSENT_TEXTS = {
     <p><b>Sorumlu Araştırıcı:</b> Emre Eskicioğlu</p>
     <p><b>Yardımcı Araştırmacılar:</b> Abdullah Suat Kavun, Beril Demirbilek, Neziha Burçin Tokgöz</p>
     <hr>
-    <p>Bu araştırma, koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmeyi amaçlar. [cite_start]Toplam 30 sağlıklı gönüllü katılacaktır [cite: 76, 78-81, 86-88, 91].</p>
+    <p>Bu araştırma, koku alma duyusu ile beynin işitsel bölgeleri arasındaki asimetrik aktivite ilişkisini değerlendirmeyi amaçlar. Toplam 30 sağlıklı gönüllü katılacaktır.</p>
     <p><b>Süreç:</b> İlk olarak dikotik dinleme testi uygulanacaktır. Ardından size dört farklı kokudan (gül, karanfil, limon ve okaliptüs) oluşan koku çubukları verilecektir. Sizden bu kokuları 12 hafta boyunca, günde iki kez koklamanız istenecektir. Süreç sonunda test yeniden yapılacaktır.</p>
     <p><b>Riskler:</b> Düşük risk grubundadır. Çok nadir durumlarda koku hassasiyeti veya alerjik reaksiyon görülebilir.</p>
-    <p><b>BEYAN:</b> Tıbbi bir araştırma yapılacağı belirtilerek bilgiler bana aktarıldı. Herhangi bir sağlık sorununda 0555 740 01 87'den araştırmacıya ulaşabileceğimi biliyorum. [cite_start]Kendi rızamla katılmayı kabul ediyorum [cite: 126, 128-129].</p>
+    <p><b>BEYAN:</b> Tıbbi bir araştırma yapılacağı belirtilerek bilgiler bana aktarıldı. Herhangi bir sağlık sorununda 0555 740 01 87'den araştırmacıya ulaşabileceğimi biliyorum. Kendi rızamla katılmayı kabul ediyorum.</p>
   `,
   "OykuTez": `<h3>WEB Tabanlı Türkçe Dikotik Dinleme Testi Güvenirliği</h3><p>Uygulama süreci 2 hafta planlanmaktadır.</p>`,
   "Default": `<h3>Aydınlatılmış Onam</h3><p>Bu çalışma işitsel algı süreçlerini incelemeyi amaçlar. Katılım gönüllüdür.</p>`
@@ -315,7 +317,7 @@ $id('toHandFromEsporcu').onclick = ()=>{
   renderHand(); $id('handUseCard').classList.remove('hidden');
 };
 
-/* --- GERİ KALAN FONKSİYONLAR (EL, STAI, AUDIO) --- */
+/* --- EL KULLANIMI --- */
 function renderHand(){
   const c = $id('handUseQuestions'); c.innerHTML = '<div class="hand-grid-header"><span></span><div class="col">Sol</div><div class="col">Sağ</div></div>';
   ["Yazmak","Çizmek","Taş Atmak","Makas","Fırça","Bıçak","Kaşık","Süpürge","Kibrit","Kapak"].forEach((q,i)=>{
@@ -356,10 +358,14 @@ $id('toHearingBtn').onclick = async ()=>{
   $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
 };
 
-/* --- AUDIO LOGIC (ORIJINAL SÜRÜME GERİ DÖNÜLDÜ) --- */
+/* --- AUDIO LOGIC (SAĞ/SOL DÜZELTME & GLOBAL VARS) --- */
 function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; leftGain=null; }
-function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; rightGain=null; }
+function stopLeft(){ 
+  try{ if(leftOsc){ leftOsc.stop(); leftOsc.disconnect(); } }catch(e){} leftOsc=null; 
+}
+function stopRight(){ 
+  try{ if(rightOsc){ rightOsc.stop(); rightOsc.disconnect(); } }catch(e){} rightOsc=null; 
+}
 
 async function startLeft(){
   ensureCtx(); stopRight(); stopLeft();
@@ -367,17 +373,19 @@ async function startLeft(){
   
   leftOsc = audioCtx.createOscillator(); 
   leftGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = -1; // Sol
+  leftPanner = audioCtx.createStereoPanner(); 
+  leftPanner.pan.value = -1; // Sol
 
   leftOsc.frequency.value = 1500; 
   leftGain.gain.value = Number($id('leftSlider').value);
 
   leftOsc.connect(leftGain);
-  leftGain.connect(panner); 
-  panner.connect(audioCtx.destination); 
+  leftGain.connect(leftPanner); 
+  leftPanner.connect(audioCtx.destination); 
 
   leftOsc.start();
+  // Otomatik durdurma (Buton tıklama ile senkronize değil, başlatma ile senkronize)
+  setTimeout(()=> stopLeft(), 1200);
 }
 
 async function startRight(){
@@ -386,21 +394,25 @@ async function startRight(){
   
   rightOsc = audioCtx.createOscillator(); 
   rightGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = 1; // Sağ
+  rightPanner = audioCtx.createStereoPanner(); 
+  rightPanner.pan.value = 1; // Sağ
 
   rightOsc.frequency.value = 1500; 
   rightGain.gain.value = Number($id('rightSlider').value);
 
   rightOsc.connect(rightGain);
-  rightGain.connect(panner); 
-  panner.connect(audioCtx.destination); 
+  rightGain.connect(rightPanner); 
+  rightPanner.connect(audioCtx.destination); 
 
   rightOsc.start();
+  // Otomatik durdurma
+  setTimeout(()=> stopRight(), 1200);
 }
 
-$id('playLeft').onclick = ()=>{ if(leftOsc) stopLeft(); else startLeft(); setTimeout(()=>stopLeft(),1200); };
-$id('playRight').onclick = ()=>{ if(rightOsc) stopRight(); else startRight(); setTimeout(()=>stopRight(),1200); };
+// Butonlara sadece başlatma komutu veriyoruz, durdurma zaman ayarlı.
+// Çift tıklanırsa zaten fonksiyon başında stopLeft/Right çağrılıyor.
+$id('playLeft').onclick = ()=> startLeft();
+$id('playRight').onclick = ()=> startRight();
 
 $id('toSessionIntro').onclick = async ()=>{
   // AudioContext RESUME FIX
