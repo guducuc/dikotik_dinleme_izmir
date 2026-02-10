@@ -496,11 +496,32 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
   };
 });
 
-/* E-POSTA AYARLARI */
+/* E-POSTA AYARLARI (GÜNCELLENMİŞ HALİ) */
 const EMAIL_CONFIG = {
-  "Esporcu": { service: "service_a8bnfmk", template: "template_r6sddff" }, // ÖZEL AYARINIZ VARSA BURAYI DEĞİŞTİRİN
-  "OCM":     { service: "service_a8bnfmk", template: "template_r6sddff" },
-  "DEFAULT": { service: "service_a8bnfmk", template: "template_r6sddff" }
+  "Esporcu": { 
+      user:     "Dcj_DG2JDke9NmiZa",      // Örn: "user_XyZ123..."
+      service:  "service_4l3letv", 
+      template: "template_m3i8rcd" 
+  },
+  
+  "OCM": { 
+      user:     "Dcj_DG2JDke9NmiZa",
+      service:  "service_4l3letv", 
+      template: "template_pryjpgp" 
+  },
+
+  "Sporcu": { 
+      user:     "Dcj_DG2JDke9NmiZa",
+      service:  "service_4l3letv", 
+      template: "template_m3i8rcd" 
+  },
+
+  // Varsayılan (Mevcut çalışan ayarlarınız):
+  "DEFAULT": { 
+      user:     "FLn2zMqKDGso3ePoO", 
+      service:  "service_a8bnfmk", 
+      template: "template_r6sddff" 
+  }
 };
 
 function makeCsv(){
@@ -516,22 +537,35 @@ function makeCsv(){
   results.forEach(r=>{ csv += `${r.session},${r.trial},${r.stim},${r.response},${r.responseTime}\n`; });
   return csv;
 }
-
 async function sendEmail(){
   const csv = makeCsv();
-  // Projeye özel ayar seçimi
+  
+  // 1. Projeye uygun ayarları seç (Yoksa DEFAULT'u al)
   const config = EMAIL_CONFIG[participant.projectCode] || EMAIL_CONFIG["DEFAULT"];
   
   try{
+    // 2. EmailJS kütüphanesi yüklü değilse yükle
     if(!window.emailjs){
-      const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-      await new Promise(res=>{ s.onload = res; });
-      emailjs.init($id('emailjs-user').content);
+      const s = document.createElement('script'); 
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      await new Promise(res=>{ s.onload = res; document.head.appendChild(s); });
     }
-    // Config'den gelen service ve template ID kullanılıyor
-    await emailjs.send(config.service, config.template, { subject: participant.code, message: csv });
+
+    // 3. KRİTİK DEĞİŞİKLİK: Seçilen projenin User ID'si ile başlat
+    emailjs.init(config.user);
+
+    // 4. İlgili service ve template ile gönder
+    await emailjs.send(config.service, config.template, { 
+        subject: participant.code, 
+        message: csv 
+    });
+
     $id('doneLog').innerText = 'Veriler başarıyla gönderildi.';
-  }catch(e){ $id('doneLog').innerText = 'E-posta gönderilemedi: ' + e.text; }
+
+  } catch(e) { 
+    $id('doneLog').innerText = 'E-posta gönderilemedi: ' + (e.text || e.message); 
+    console.error(e);
+  }
 }
 
 async function endExperiment(){ $id('trialCard').classList.add('hidden'); $id('endCard').classList.remove('hidden'); await sendEmail(); }
