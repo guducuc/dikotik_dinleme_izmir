@@ -14,34 +14,34 @@
   h1{font-size:20px;margin-bottom:10px}
   .card{padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px}
   .hidden{display:none}
-  input,select,textarea{padding:8px;margin:6px 0;width:100%;box-sizing:border-box}
+  input,select,textarea{padding:10px;margin:6px 0;width:100%;box-sizing:border-box; border:1px solid #ccc; border-radius:4px;}
 
-  input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 6px; }
-  #participationOptions label, .question-group label { display: block; margin-bottom: 8px; font-size: 14px; }
+  input[type="radio"], input[type="checkbox"] { width: auto; margin-right: 8px; transform: scale(1.1); }
+  #participationOptions label, .question-group label { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; cursor:pointer; }
 
-  .bigBtn{font-size:1rem;padding:10px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer; width:100%; margin-top:5px;}
+  .bigBtn{font-size:1.1rem;padding:12px 14px;border-radius:8px;border:1px solid #444;background:#eaeaea;cursor:pointer; width:100%; margin-top:8px;}
   .btnGreen{background:#2ecc71;color:white;border:none}
   .btnRed{background:#e74c3c;color:white;border:none}
   
-  .respRow{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; padding: 0 12px; }
-  .respBtn{ padding:10px 14px; border-radius:8px; border:1px solid #444; background:#f2f2f2; cursor:pointer; text-align: center; }
+  .respRow{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; padding: 0 5px; }
+  .respBtn{ padding:15px; border-radius:8px; border:1px solid #444; background:#f2f2f2; cursor:pointer; text-align: center; font-weight:bold; }
   .respBtn-active{background:#999 !important; color:#fff;}
 
-  .stai-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-  .stai-options label { margin-right: 12px; display: inline-block; }
+  .stai-options{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .stai-options label { margin-right: 15px; display: flex; align-items:center; }
   
   .hand-grid-header{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
-  .hand-grid-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;padding:6px 0}
+  .hand-grid-row{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;padding:8px 0}
   .hand-grid-row span{flex:2}
-  .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:8px}
+  .hand-grid-row .col{flex:1;display:flex;justify-content:center;gap:10px}
   
-  .small{font-size:13px;color:#666}
-  .question-group{margin-bottom:15px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
-  .question-title{font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;}
+  .small{font-size:13px;color:#666; line-height: 1.4;}
+  .question-group{margin-bottom:20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;}
+  .question-title{font-weight: 700; font-size: 15px; margin-bottom: 8px; display: block;}
   
   .modal{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none}
   .modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:10px;max-width:600px;max-height:80vh;overflow-y:auto}
-  .close{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888}
+  .close{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#888}
 </style>
 </head>
 <body>
@@ -87,7 +87,7 @@
 
 <div id="infoCard" class="card hidden">
   <h3>Katılımcı Bilgileri</h3>
-  <div class="small">Ad ve soyad için ilk 2 harf yeterli.</div>
+  <div class="small">Ad ve soyad için ilk 2 harf yeterli (gizlilik).</div>
   <input id="name" placeholder="Ad (ilk 2 harf)">
   <input id="surname" placeholder="Soyad (ilk 2 harf)">
   <input id="age" type="number" placeholder="Yaş">
@@ -137,16 +137,16 @@
     <label><input type="radio" name="gameType" value="Diğer"> Diğer</label>
   </div>
   <div class="question-group">
-    <span class="question-title">Oynadığınız oyunun adı *</span>
+    <span class="question-title">Oynadığınız oyunun (en çok saat ayırdığınız) adını yazınız *</span>
     <input id="topGameName" placeholder="Yanıtınız">
   </div>
   <div class="question-group">
-    <span class="question-title">En Yüksek Rütbeniz (Rank) *</span>
+    <span class="question-title">En Yüksek Rütbeniz (Rank / Seviye) *</span>
+    <p class="small">Oynadığınız oyun sezonlu ise en son başarılı olduğunuz sezona göre yazabilirsiniz.</p>
     <input id="topRank" placeholder="Yanıtınız">
   </div>
   <button id="toHandFromEsporcu" class="bigBtn">Devam</button>
 </div>
-
 <div id="sporcuFormCard" class="card hidden">
   <h3>Sporcu Bilgi Formu</h3>
   <div class="question-group">
@@ -174,13 +174,14 @@
 
 <div id="handUseCard" class="card hidden">
   <h3>El Kullanımı Testi</h3>
-  <p class="small">Lütfen her satır için toplam 2 kutucuk işaretleyin.</p>
+  <p class="small">Sağ veya sol elinizi hangi işlemlerde kullandığınızı bilmek istiyoruz. Lütfen her işlemde kullandığınız ele göre ‘sol’ veya ‘sağ’ hanesini işaretleyin. Mesela yazı yazarken, genellikle sağ ama ara sıra sol elinizi kullanıyorsanız, her iki elin altında yalnızca birer kutucuğu tıklayın. Daima sağ elinizi kullanıyorsanız, sağ el altındaki iki kutucuğu da işaretleyin. Diğer soruları aynı şekilde cevaplandırın. Her satırda mutlaka iki işaretleme olmalıdır.</p>
   <div id="handUseQuestions"></div>
   <button id="toStaiBtn" class="bigBtn">Devam</button>
 </div>
 
 <div id="staiCard" class="card hidden">
   <h3>STAI-TXI Formu</h3>
+  <p class="small">Aşağıda kişilerin kendilerine ait duygularını anlatmada kullandıkları bir takım ifadeler verilmiştir. Her ifadeyi okuyun, sonra da nasıl hissettiğinizi ifadelerin sağ tarafındaki parantezlerden uygun olanını karalamak suretiyle belirtin. Doğru ya da yanlış cevap yoktur. Herhangi bir ifadenin üzerinde fazla zaman sarf etmeksizin anında nasıl hissettiğinizi gösteren cevabı işaretleyin.</p>
   <div id="staiQuestions"></div>
   <button id="toHearingBtn" class="bigBtn">Devam</button>
 </div>
@@ -227,26 +228,6 @@ let participant = {}, results = [], sessionOrder = [], currentSessionIndex = 0, 
 let audioCtx=null, leftOsc=null, rightOsc=null, leftGain=null, rightGain=null;
 let isResponseAllowed=false, trialTimeout=null, responseStart=0;
 
-/* iOS UNLOCKER (BUFFER TEKNİĞİ) - SES ÇÖZÜMÜ */
-function unlockAudio() {
-  if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioCtx = new AudioContext();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  // Sessiz buffer çalma
-  const buffer = audioCtx.createBuffer(1, 1, 22050);
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  source.start(0);
-}
-// Sayfadaki herhangi bir tıklama/dokunma sesi açar
-document.body.addEventListener('click', unlockAudio, {once:true});
-document.body.addEventListener('touchstart', unlockAudio, {once:true});
-
 /* ONAM SÖZLÜĞÜ */
 const CONSENT_TEXTS = {
   "Sport": `
@@ -274,7 +255,10 @@ CONSENT_TEXTS["Sporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Esporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Izmir"] = CONSENT_TEXTS["Default"];
 
-/* FLOW */
+/* STAI SORULARI (LÜTFEN DOLDURUN) */
+const staiQuestions = []; // <--- ESKİ KODUNUZDAKİ SORULARI BURAYA YAPIŞTIRIN
+
+/* FLOW MANTIĞI */
 $id('toParticipationBtn').onclick = ()=>{
   const proj = $id('projectCode').value;
   if(!proj){ alert('Seçiniz.'); return; }
@@ -310,8 +294,7 @@ $id('consentText').insertAdjacentHTML('beforebegin', '<button id="openConsentPop
 $id('openConsentPopup').onclick=()=>{ $id('consentModal').style.display='block'; };
 $id('closeConsentModal').onclick=()=>{ $id('consentModal').style.display='none'; };
 window.onclick=e=>{ if(e.target==$id('consentModal')) $id('consentModal').style.display='none'; };
-
-/* BİLGİ TOPLAMA */
+  /* BİLGİ TOPLAMA & AKIŞ KONTROLÜ */
 $id('toNextFromInfo').onclick = ()=>{
   const n = $id('name').value.trim(), s = $id('surname').value.trim(), a = $id('age').value.trim();
   if(!n || !s || !a){ alert('Eksik bilgi.'); return; }
@@ -343,7 +326,7 @@ $id('toHandFromEsporcu').onclick = ()=>{
   $id('esporcuFormCard').classList.add('hidden'); renderHand(); $id('handUseCard').classList.remove('hidden');
 };
 
-/* SPORCU FORMU */
+/* SPORCU FORMU (YENİ) */
 $id('toHandFromSporcu').onclick = ()=>{
   const years = $id('sportYears').value;
   const bYears = $id('basketballYears').value;
@@ -357,8 +340,7 @@ $id('toHandFromSporcu').onclick = ()=>{
 /* EL SORULARI */
 function renderHand(){
   const c = $id('handUseQuestions'); c.innerHTML = '<div class="hand-grid-header"><span></span><div class="col">Sol</div><div class="col">Sağ</div></div>';
-  const questions = ["Yazmak","Çizmek","Taş Atmak","Makas kullanmak","Diş fırçası kullanmak","Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"];
-  questions.forEach((q,i)=>{
+  ["Yazmak","Çizmek","Taş Atmak","Makas kullanmak","Diş fırçası kullanmak","Bıçak kullanmak","Kaşık kullanmak","Süpürge (üst el)","Kibrit çakmak","Kutunun kapağını açmak"].forEach((q,i)=>{
     c.innerHTML += `<div class="hand-grid-row"><span>${q}</span><div class="col"><input type="checkbox" class="left"><input type="checkbox" class="left"></div><div class="col"><input type="checkbox" class="right"><input type="checkbox" class="right"></div></div>`;
   });
 }
@@ -369,7 +351,6 @@ $id('toStaiBtn').onclick = ()=>{
   participant.handUse = Array.from(rows).map((r,i)=>({q:i+1, left:r.querySelectorAll('.left:checked').length, right:r.querySelectorAll('.right:checked').length}));
   $id('handUseCard').classList.add('hidden'); renderStai(); $id('staiCard').classList.remove('hidden');
 };
-
 /* STAI */
 function renderStai(){
   const c = $id('staiQuestions'); c.innerHTML = '';
@@ -386,41 +367,59 @@ function renderStai(){
 }
 
 $id('toHearingBtn').onclick = ()=>{
-  if(document.querySelectorAll('#staiQuestions input:checked').length < 20){ alert('Tüm soruları yanıtlayın.'); return; }
-  unlockAudio(); // iOS Fix
+  if(document.querySelectorAll('#staiQuestions input:checked').length < staiQuestions.length){ alert('Tüm soruları yanıtlayın.'); return; }
   participant.staiAnswers = {};
   document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name]=i.value);
   $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
 };
 
-/* AUDIO ENGINE (index-19 Orijinal) */
-function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; leftGain=null; }
-function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; rightGain=null; }
-
-async function startLeft(){
-  ensureCtx(); 
-  if(audioCtx.state === 'suspended') await audioCtx.resume();
+/* --- SAFARI SES ÇÖZÜMÜ: AudioContext'i Buton Tıklamasında Yarat --- */
+function startLeft(){
   stopRight(); stopLeft();
-  leftOsc = audioCtx.createOscillator(); leftGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = -1; leftOsc.frequency.value = 1500; leftGain.gain.value = Number($id('leftSlider').value);
-  leftOsc.connect(leftGain); leftGain.connect(panner); panner.connect(audioCtx.destination); 
+  // Safari Fix: Context'i burada, tıklama anında oluştur
+  if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(audioCtx.state === 'suspended') { audioCtx.resume(); }
+
+  leftOsc = audioCtx.createOscillator(); 
+  const gain = audioCtx.createGain();
+  // Safari Panner Desteği Kontrolü
+  if(audioCtx.createStereoPanner) {
+    const p = audioCtx.createStereoPanner(); p.pan.value = -1;
+    leftOsc.connect(gain); gain.connect(p); p.connect(audioCtx.destination);
+  } else { // Eski Safari
+    const p = audioCtx.createPanner(); p.setPosition(-1,0,0);
+    leftOsc.connect(gain); gain.connect(p); p.connect(audioCtx.destination);
+  }
+  
+  leftOsc.frequency.value = 1500; 
+  gain.gain.value = Number($id('leftSlider').value);
   leftOsc.start();
   setTimeout(()=>stopLeft(), 1200);
 }
 
-async function startRight(){
-  ensureCtx(); 
-  if(audioCtx.state === 'suspended') await audioCtx.resume();
+function startRight(){
   stopLeft(); stopRight();
-  rightOsc = audioCtx.createOscillator(); rightGain = audioCtx.createGain();
-  const panner = audioCtx.createStereoPanner(); 
-  panner.pan.value = 1; rightOsc.frequency.value = 1500; rightGain.gain.value = Number($id('rightSlider').value);
-  rightOsc.connect(rightGain); rightGain.connect(panner); panner.connect(audioCtx.destination); 
+  if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  if(audioCtx.state === 'suspended') { audioCtx.resume(); }
+
+  rightOsc = audioCtx.createOscillator(); 
+  const gain = audioCtx.createGain();
+  if(audioCtx.createStereoPanner) {
+    const p = audioCtx.createStereoPanner(); p.pan.value = 1;
+    rightOsc.connect(gain); gain.connect(p); p.connect(audioCtx.destination);
+  } else {
+    const p = audioCtx.createPanner(); p.setPosition(1,0,0);
+    rightOsc.connect(gain); gain.connect(p); p.connect(audioCtx.destination);
+  }
+  
+  rightOsc.frequency.value = 1500; 
+  gain.gain.value = Number($id('rightSlider').value);
   rightOsc.start();
   setTimeout(()=>stopRight(), 1200);
 }
+
+function stopLeft(){ try{ if(leftOsc) leftOsc.stop(); }catch(e){} leftOsc=null; }
+function stopRight(){ try{ if(rightOsc) rightOsc.stop(); }catch(e){} rightOsc=null; }
 
 $id('playLeft').onclick = ()=> startLeft();
 $id('playRight').onclick = ()=> startRight();
@@ -442,8 +441,11 @@ function showSessionIntro(){
 }
 
 $id('sessionStartBtn').onclick = async ()=>{
-  unlockAudio();
   $id('sessionIntro').classList.add('hidden');
+  // AudioContext'i heceler için de uyandır
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  
   try{ const a = $id('stimAudio'); a.src=''; await a.play().catch(()=>{}); }catch(e){}
   setTimeout(()=> { currentTrial = -1; $id('trialCard').classList.remove('hidden'); nextTrial(); }, 200);
 };
@@ -483,7 +485,7 @@ function saveTrial(stim, resp, rt){
 }
 
 document.querySelectorAll('.respBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+  btn.onclick = ()=>{
     if(!isResponseAllowed) return;
     isResponseAllowed = false; clearTimeout(trialTimeout);
     const rt = Date.now() - responseStart;
@@ -491,15 +493,24 @@ document.querySelectorAll('.respBtn').forEach(btn=>{
     btn.classList.add('respBtn-active');
     setTimeout(()=>{ btn.classList.remove('respBtn-active'); }, 300);
     setTimeout(()=>{ nextTrial(); }, 2500);
-  });
+  };
 });
 
-/* CSV & MAIL (DÜZELTME EKLENDİ) */
+/* E-POSTA AYARLARI */
+const EMAIL_CONFIG = {
+  "Esporcu": { service: "service_a8bnfmk", template: "template_r6sddff" }, // ÖZEL AYARINIZ VARSA BURAYI DEĞİŞTİRİN
+  "OCM":     { service: "service_a8bnfmk", template: "template_r6sddff" },
+  "DEFAULT": { service: "service_a8bnfmk", template: "template_r6sddff" }
+};
+
 function makeCsv(){
   let csv = 'KATILIMCI BİLGİLERİ\nKod,Proje,Yaş,Cinsiyet,Eposta,Telefon,Anadil,SolLvl,SağLvl\n';
   csv += `${participant.code},${participant.projectCode},${participant.age},${participant.gender},${participant.email},${participant.phone},${participant.motherTongue},${participant.leftLevel},${participant.rightLevel}\n\n`;
+  
+  // DÜZELTİLDİ: Değişken isimleri eşitlendi (esporData -> esporData)
   if(participant.esporData) csv += 'ESPORCU VERİLERİ\n' + JSON.stringify(participant.esporData) + '\n\n';
   if(participant.sporcuData) csv += 'SPORCU VERİLERİ\n' + JSON.stringify(participant.sporcuData) + '\n\n';
+  
   csv += 'EL KULLANIMI\n' + JSON.stringify(participant.handUse) + '\n\nSTAI YANITLARI\n' + JSON.stringify(participant.staiAnswers) + '\n\n';
   csv += 'DİKOTİK SONUÇLAR\nSession,Trial,Stimulus,Response,ResponseTime\n';
   results.forEach(r=>{ csv += `${r.session},${r.trial},${r.stim},${r.response},${r.responseTime}\n`; });
@@ -508,24 +519,22 @@ function makeCsv(){
 
 async function sendEmail(){
   const csv = makeCsv();
+  // Projeye özel ayar seçimi
+  const config = EMAIL_CONFIG[participant.projectCode] || EMAIL_CONFIG["DEFAULT"];
+  
   try{
     if(!window.emailjs){
       const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
       await new Promise(res=>{ s.onload = res; });
       emailjs.init($id('emailjs-user').content);
     }
-    await emailjs.send($id('emailjs-service').content, $id('emailjs-template').content, { subject: participant.code, message: csv });
+    // Config'den gelen service ve template ID kullanılıyor
+    await emailjs.send(config.service, config.template, { subject: participant.code, message: csv });
     $id('doneLog').innerText = 'Veriler başarıyla gönderildi.';
-  }catch(e){ $id('doneLog').innerText = 'E-posta gönderilemedi.'; }
+  }catch(e){ $id('doneLog').innerText = 'E-posta gönderilemedi: ' + e.text; }
 }
 
 async function endExperiment(){ $id('trialCard').classList.add('hidden'); $id('endCard').classList.remove('hidden'); await sendEmail(); }
-
-document.addEventListener('click', function initAudioContext() {
-    ensureCtx();
-    if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.error(e)); }
-    document.removeEventListener('click', initAudioContext);
-}, {once: true});
 
 });
 </script>
