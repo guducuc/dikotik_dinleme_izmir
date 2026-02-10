@@ -150,6 +150,14 @@
 <div id="sporcuFormCard" class="card hidden">
   <h3>Sporcu Bilgi Formu</h3>
   <div class="question-group">
+    <span class="question-title">Eğitim Durumunuz *</span>
+    <label><input type="radio" name="eduStatusSporcu" value="Ortaokul"> Ortaokul</label>
+    <label><input type="radio" name="eduStatusSporcu" value="Lise"> Lise</label>
+    <label><input type="radio" name="eduStatusSporcu" value="Üniversite"> Üniversite</label>
+    <label><input type="radio" name="eduStatusSporcu" value="Yüksek Lisans"> Yüksek Lisans</label>
+    <label><input type="radio" name="eduStatusSporcu" value="Doktora"> Doktora</label>
+  </div>
+  <div class="question-group">
     <span class="question-title">1) Kaç yıldır spor yapmaktasınız? *</span>
     <input id="sportYears" type="number" placeholder="Yıl">
   </div>
@@ -326,15 +334,30 @@ $id('toHandFromEsporcu').onclick = ()=>{
   $id('esporcuFormCard').classList.add('hidden'); renderHand(); $id('handUseCard').classList.remove('hidden');
 };
 
-/* SPORCU FORMU (YENİ) */
+/* SPORCU FORMU (GÜNCELLENDİ: EĞİTİM EKLENDİ) */
 $id('toHandFromSporcu').onclick = ()=>{
+  // 1. Eğitim bilgisini seç
+  const edu = document.querySelector('input[name="eduStatusSporcu"]:checked');
+  
+  // 2. Diğer bilgileri al
   const years = $id('sportYears').value;
   const bYears = $id('basketballYears').value;
   const pos = document.querySelector('input[name="position"]:checked');
 
-  if(!years || !bYears || !pos){ alert('Eksik bilgi.'); return; }
-  participant.sporcuData = { sportYears: years, basketballYears: bYears, position: pos.value };
-  $id('sporcuFormCard').classList.add('hidden'); renderHand(); $id('handUseCard').classList.remove('hidden');
+  // 3. Eksik bilgi kontrolüne 'edu'yu da ekle
+  if(!edu || !years || !bYears || !pos){ alert('Lütfen tüm yıldızlı alanları doldurunuz.'); return; }
+  
+  // 4. Veriyi kaydederken education alanını ekle
+  participant.sporcuData = { 
+      education: edu.value,   // <-- Yeni eklenen veri
+      sportYears: years, 
+      basketballYears: bYears, 
+      position: pos.value 
+  };
+  
+  $id('sporcuFormCard').classList.add('hidden'); 
+  renderHand(); 
+  $id('handUseCard').classList.remove('hidden');
 };
 
 /* EL SORULARI */
