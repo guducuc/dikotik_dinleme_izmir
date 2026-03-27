@@ -176,7 +176,7 @@
 
 <div id="enterCodeCard" class="card hidden">
   <h3>Önceki Katılımcı Kodu</h3>
-  <input id="previousCode" placeholder="Örn: OY_AB_12345">
+  <input id="previousCode" placeholder="OY_AB_12345">
   <button id="toStaiDirectBtn" class="bigBtn">Devam</button>
 </div>
 
@@ -263,6 +263,9 @@ CONSENT_TEXTS["Sporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Esporcu"] = CONSENT_TEXTS["Sport"];
 CONSENT_TEXTS["Izmir"] = CONSENT_TEXTS["Default"];
 
+/* STAI SORULARI (LÜTFEN DOLDURUN) */
+const staiQuestions = []; // <--- ESKİ KODUNUZDAKİ SORULARI BURAYA YAPIŞTIRIN
+
 /* FLOW MANTIĞI */
 $id('toParticipationBtn').onclick = ()=>{
   const proj = $id('projectCode').value;
@@ -299,8 +302,7 @@ $id('consentText').insertAdjacentHTML('beforebegin', '<button id="openConsentPop
 $id('openConsentPopup').onclick=()=>{ $id('consentModal').style.display='block'; };
 $id('closeConsentModal').onclick=()=>{ $id('consentModal').style.display='none'; };
 window.onclick=e=>{ if(e.target==$id('consentModal')) $id('consentModal').style.display='none'; };
-
-/* ÖNCEKİ KATILIMCI KODU GİRİŞİ */
+  /* ÖNCEKİ KATILIMCI KODU GİRİŞİ */
 $id('toStaiDirectBtn').onclick = () => {
   const code = $id('previousCode').value.trim();
   if(!code){ alert('Lütfen önceki katılım kodunuzu giriniz.'); return; }
@@ -318,8 +320,7 @@ $id('toStaiDirectBtn').onclick = () => {
   renderStai();
   $id('staiCard').classList.remove('hidden');
 };
-
-/* BİLGİ TOPLAMA & AKIŞ KONTROLÜ */
+  /* BİLGİ TOPLAMA & AKIŞ KONTROLÜ */
 $id('toNextFromInfo').onclick = ()=>{
   const n = $id('name').value.trim(), s = $id('surname').value.trim(), a = $id('age').value.trim();
   if(!n || !s || !a){ alert('Eksik bilgi.'); return; }
@@ -366,7 +367,7 @@ $id('toHandFromSporcu').onclick = ()=>{
   
   // 4. Veriyi kaydederken education alanını ekle
   participant.sporcuData = { 
-      education: edu.value,   
+      education: edu.value,   // <-- Yeni eklenen veri
       sportYears: years, 
       basketballYears: bYears, 
       position: pos.value 
@@ -387,15 +388,10 @@ function renderHand(){
 
 $id('toStaiBtn').onclick = ()=>{
   const rows = document.querySelectorAll('#handUseQuestions .hand-grid-row');
-  for(const r of rows) if(r.querySelectorAll('input:checked').length !== 2){ alert('Her satıra tam olarak 2 işaretleme yapmalısınız!'); return; }
+  for(const r of rows) if(r.querySelectorAll('input:checked').length !== 2){ alert('Her satıra 2 işaret!'); return; }
   participant.handUse = Array.from(rows).map((r,i)=>({q:i+1, left:r.querySelectorAll('.left:checked').length, right:r.querySelectorAll('.right:checked').length}));
   $id('handUseCard').classList.add('hidden'); renderStai(); $id('staiCard').classList.remove('hidden');
 };
-
-/* STAI */
-function renderStai(){
-  const c = $id('staiQuestions'); c.innerHTML = '';
-  
 /* STAI */
 function renderStai(){
   const c = $id('staiQuestions'); c.innerHTML = '';
@@ -412,14 +408,7 @@ function renderStai(){
 }
 
 $id('toHearingBtn').onclick = ()=>{
-  const numQuestions = document.querySelectorAll('.question-group').length;
-  // Soru dizisi boşsa test ederken kilitlenmemesi için kontrolü esnetebiliriz,
-  // ancak siz soruları yapıştırdıktan sonra burası tam çalışacaktır.
-  if(numQuestions > 0 && document.querySelectorAll('#staiQuestions input:checked').length < numQuestions){ 
-    alert('Tüm soruları yanıtlayın.'); 
-    return; 
-  }
-  
+  if(document.querySelectorAll('#staiQuestions input:checked').length < staiQuestions.length){ alert('Tüm soruları yanıtlayın.'); return; }
   participant.staiAnswers = {};
   document.querySelectorAll('#staiQuestions input:checked').forEach(i=> participant.staiAnswers[i.name]=i.value);
   $id('staiCard').classList.add('hidden'); $id('hearingCard').classList.remove('hidden');
