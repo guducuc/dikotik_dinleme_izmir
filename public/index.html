@@ -300,16 +300,19 @@ $id('openConsentPopup').onclick=()=>{ $id('consentModal').style.display='block';
 $id('closeConsentModal').onclick=()=>{ $id('consentModal').style.display='none'; };
 window.onclick=e=>{ if(e.target==$id('consentModal')) $id('consentModal').style.display='none'; };
 
-/* ÖNCEKİ KATILIMCI KODU GİRİŞİ (YENİ EKLENEN KISIM) */
+/* ÖNCEKİ KATILIMCI KODU GİRİŞİ */
 $id('toStaiDirectBtn').onclick = () => {
   const code = $id('previousCode').value.trim();
   if(!code){ alert('Lütfen önceki katılım kodunuzu giriniz.'); return; }
   participant.code = code;
   
-  // İkinci katılımlarda hata vermemesi için varsayılan değerler
+  // Kayıt aşamasında hata vermemesi için boş değerler atıyoruz
   participant.name = "Tekrar"; participant.surname = "Katılım";
   participant.age = "-"; participant.gender = "-"; participant.email = "-"; participant.phone = "-";
   participant.race = "-"; participant.motherTongue = "-";
+  participant.handUse = [];
+  participant.esporData = null;
+  participant.sporcuData = null;
   
   $id('enterCodeCard').classList.add('hidden');
   renderStai();
